@@ -1,0 +1,10 @@
+@import "../../node_modules/bootstrap/scss/bootstrap.scss";
+@import "../../node_modules/bootstrap-vue/src/index.scss";
+@font-face {
+  font-family: "Nanum Gothic";
+  font-style: normal;
+  font-weight: 500;
+  src: url(/static_fonts/NanumGothic-Regular.woff2) format("woff2"),
+    url(/static_fonts/NanumGothic-Regular.woff) format("woff"),
+    url(/static_fonts/NanumGothic-Regular.ttf) format("truetype");
+}
