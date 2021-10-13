@@ -709,3 +709,45 @@ class FPSProblemImport(CSRFExemptAPIView):
                 problem_data["test_case_score"] = score
                 self._create_problem(problem_data, request.user)
         return self.success({"import_count": len(problems)})
+
+# 추가 부분
+# 파일 경로 불러오기, y_score db에 저장
+# class SolutionCSV():
+#     import pandas as pd
+#     import numpy as np
+
+#     y_true = np.array(pd.read_csv('../solution.csv'))
+#     y_pred = np.array(pd.read_csv('../predict.csv')) 
+    
+
+#     def mean_consequential_error(y_true, y_pred):
+#         '''
+#         Mean consequential error
+#         Parameters
+#         ----------
+#         y_true: numpy.ndarray
+#             Targets
+#         y_pred: numpy.ndarray
+#             Class predictions (0 or 1 values only)
+#         Returns
+#         -------
+#         score: float
+#             Mean consequential error score
+#         References
+#         ----------
+#         .. [1] https://www.kaggle.com/wiki/MeanConsequentialError
+#         .. [2] http://www.machinelearning.ru/wiki/images/5/59/PZAD2016_04_errors.pdf (RU)
+#         Notes
+#         -----
+#         The higher the better.
+#         '''
+
+#         # # Check shapes
+#         # check_shapes(y_true, y_pred)
+#         # y_true, y_pred = align_shape(y_true, y_pred)
+
+#         # # Checking binarity
+#         # check_binary(y_true, y_pred)
+#         y_score = (y_true.astype(bool) == y_pred.astype(bool)).mean()
+#         print(y_score)
+#         # return (y_true.astype(bool) == y_pred.astype(bool)).mean()

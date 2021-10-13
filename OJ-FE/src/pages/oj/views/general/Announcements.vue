@@ -22,7 +22,6 @@
             </div>
           </li>
         </ul>
-    
         <Pagination v-if="!isContest"
                     key="page"
                     :total="total"

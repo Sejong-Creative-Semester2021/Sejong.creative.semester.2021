@@ -599,7 +599,7 @@ class ImportProblemAPI(CSRFExemptAPIView, TestCaseZipProcessor):
                                                              rule_description=problem_info["rule_description"][
                                                                  "value"],
                                                              schedule_description=problem_info["schedule_description"]["value"],
-                                                             hint=problem_info["hint"]["value"],
+                                                             testhint=problem_info["testhint"]["value"],
                                                              test_case_score=test_case_score if test_case_score else [],
                                                              # time_limit=problem_info["time_limit"],
                                                              memory_limit=problem_info["memory_limit"],
@@ -653,7 +653,7 @@ class FPSProblemImport(CSRFExemptAPIView):
                                summary_description=problem_data["input"],
                                rule_description=problem_data["output"],
                                schedule_description=problem_data["schedule"],
-                               hint=problem_data["hint"],
+                               testhint=problem_data["testhint"],
                                test_case_score=problem_data["test_case_score"],
                                # time_limit=time_limit,
                                memory_limit=problem_data["memory_limit"]["value"],

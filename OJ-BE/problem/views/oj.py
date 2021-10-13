@@ -5,8 +5,7 @@ from account.decorators import check_contest_permission
 from ..models import ProblemTag, Problem, ProblemRuleType
 from ..serializers import ProblemSerializer, TagSerializer, ProblemSafeSerializer
 from contest.models import ContestRuleType
-import logging
-logger=logging.getLogger(__name__)
+
 
 class ProblemTagAPI(APIView):
     def get(self, request):
@@ -73,8 +72,7 @@ class ProblemAPI(APIView):
         keyword = request.GET.get("keyword", "").strip()
         if keyword:
             problems = problems.filter(Q(title__icontains=keyword) | Q(_id__icontains=keyword))
-        logger.info("keyword: {}".format(keyword))
-        logger.info("keyword get success")
+
         # 难度筛选
         difficulty = request.GET.get("difficulty")
         if difficulty:

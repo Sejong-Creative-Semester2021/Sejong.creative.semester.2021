@@ -86,6 +86,8 @@ class AIProblem(models.Model):
     # {JudgeStatus.ACCEPTED: 3, JudgeStaus.WRONG_ANSWER: 11}, the number means count
     statistic_info = JSONField(default=dict)
     share_submission = models.BooleanField(default=False)
+    # # 추가 부분
+    # y_score = models.FloatField(default=False)
 
     class Meta:
         db_table = "ai_contest"

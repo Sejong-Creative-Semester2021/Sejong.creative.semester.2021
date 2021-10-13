@@ -13,13 +13,11 @@
     "start": "npm run dev"
   },
   "dependencies": {
-    "@mdi/js": "^5.9.55",
     "axios": "^0.18.0",
     "babel-polyfill": "^6.26.0",
     "bootstrap": "^4.5.3",
     "bootstrap-vue": "^2.21.2",
     "browser-detect": "^0.2.27",
-    "dayjs": "^1.10.6",
     "echarts": "^3.8.5",
     "element-ui": "^2.3.7",
     "font-awesome": "^4.7.0",
@@ -38,7 +36,6 @@
     "vue-clipboard2": "^0.2.1",
     "vue-codemirror-lite": "^1.0.4",
     "vue-cropper": "^0.4.6",
-    "vue-dayjs-plugin": "^1.0.0",
     "vue-echarts": "^2.6.0",
     "vue-i18n": "^7.7.0",
     "vue-router": "^3.0.1",

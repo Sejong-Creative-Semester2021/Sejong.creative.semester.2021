@@ -68,7 +68,7 @@ class CreateOrEditProblemSerializer(serializers.Serializer):
     visible = serializers.BooleanField()
     difficulty = serializers.ChoiceField(choices=Difficulty.choices())
     tags = serializers.ListField(child=serializers.CharField(max_length=32), allow_empty=False)
-    hint = serializers.CharField(allow_blank=True, allow_null=True)
+    testhint = serializers.CharField(allow_blank=True, allow_null=True)
     source = serializers.CharField(max_length=256, allow_blank=True, allow_null=True)
     share_submission = serializers.BooleanField()
 
@@ -149,7 +149,7 @@ class ExportProblemSerializer(serializers.ModelSerializer):
     rule_description = serializers.SerializerMethodField()
     schedule_description = serializers.SerializerMethodField()
     test_case_score = serializers.SerializerMethodField()
-    hint = serializers.SerializerMethodField()
+    testhint = serializers.SerializerMethodField()
     spj = serializers.SerializerMethodField()
     template = serializers.SerializerMethodField()
     source = serializers.SerializerMethodField()
@@ -174,7 +174,7 @@ class ExportProblemSerializer(serializers.ModelSerializer):
         return self._html_format_value(obj.schedule_description)
 
     def get_hint(self, obj):
-        return self._html_format_value(obj.hint)
+        return self._html_format_value(obj.testhint)
 
     def get_test_case_score(self, obj):
         return [{"score": item["score"] if obj.rule_type == ProblemRuleType.OI else 100,
@@ -249,7 +249,7 @@ class ImportProblemSerializer(serializers.Serializer):
     summary_description = FormatValueSerializer()
     rule_description = FormatValueSerializer()
     schedule_description = FormatValueSerializer()
-    hint = FormatValueSerializer()
+    testhint = FormatValueSerializer()
     test_case_score = serializers.ListField(child=TestCaseScoreSerializer(), allow_null=True)
     # time_limit = serializers.IntegerField(min_value=1, max_value=60000)
     memory_limit = serializers.IntegerField(min_value=1, max_value=10240)
@@ -271,7 +271,7 @@ class FPSProblemSerializer(serializers.Serializer):
     description = serializers.CharField()
     input = serializers.CharField()
     output = serializers.CharField()
-    hint = serializers.CharField(allow_blank=True, allow_null=True)
+    testhint = serializers.CharField(allow_blank=True, allow_null=True)
     # time_limit = UnitSerializer()
     memory_limit = UnitSerializer()
     samples = serializers.ListField(child=CreateSampleSerializer())

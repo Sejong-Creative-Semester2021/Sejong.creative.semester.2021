@@ -39,23 +39,23 @@ class FPSParser(object):
                    "input": "No Input Description",
                    "output": "No Output Description",
                    "memory_limit": {"unit": None, "value": None},
-                   "time_limit": {"unit": None, "value": None},
+                   # ": {"unit": None, "value": None},
                    "samples": [], "images": [], "append": [],
                    "template": [], "prepend": [], "test_cases": [],
-                   "hint": None, "source": None, "spj": None, "solution": []}
+                   "testhint": None, "source": None, "spj": None, "solution": []}
         for item in node:
             tag = item.tag
-            if tag in ["title", "description", "input", "output", "hint", "source"]:
+            if tag in ["title", "description", "input", "output", "testhint", "source"]:
                 problem[item.tag] = item.text
-            elif tag == "time_limit":
-                unit = item.attrib.get("unit", "s")
-                if unit not in ["s", "ms"]:
-                    raise ValueError("Invalid time limit unit")
-                problem["time_limit"]["unit"] = item.attrib.get("unit", "s")
-                value = int(item.text)
-                if value <= 0:
-                    raise ValueError("Invalid time limit value")
-                problem["time_limit"]["value"] = value
+            #elif tag == "time_limit":
+            #    unit = item.attrib.get("unit", "s")
+            #    if unit not in ["s", "ms"]:
+            #        raise ValueError("Invalid time limit unit")
+            #    problem["time_limit"]["unit"] = item.attrib.get("unit", "s")
+            #    value = int(item.text)
+            #    if value <= 0:
+            #        raise ValueError("Invalid time limit value")
+            #    problem["time_limit"]["value"] = value
             elif tag == "memory_limit":
                 unit = item.attrib.get("unit", "MB")
                 if unit not in ["MB", "KB", "mb", "kb"]:

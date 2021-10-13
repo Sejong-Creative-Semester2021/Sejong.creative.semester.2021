@@ -176,9 +176,9 @@ export default [
     ]
   },
   {
-    path: '/announcement',
-    name: 'announcement',
-    meta: {title: 'Announcement'},
+    path: '/about',
+    name: 'about',
+    meta: {title: 'About'},
     component: About
   },
   {

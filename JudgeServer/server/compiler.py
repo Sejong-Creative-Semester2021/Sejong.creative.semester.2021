@@ -4,7 +4,6 @@ import os
 
 from config import COMPILER_LOG_PATH, COMPILER_USER_UID, COMPILER_GROUP_GID
 from exception import CompileError
-import shlex
 
 
 class Compiler(object):
@@ -13,7 +12,7 @@ class Compiler(object):
         exe_path = os.path.join(output_dir, compile_config["exe_name"])
         command = command.format(src_path=src_path, exe_dir=output_dir, exe_path=exe_path)
         compiler_out = os.path.join(output_dir, "compiler.out")
-        _command = shlex.split(command)
+        _command = command.split(" ")
 
         os.chdir(output_dir)
         env = compile_config.get("env", [])

@@ -53,8 +53,6 @@ LOCAL_APPS = [
     'options',
     'judge',
     'aicontest',
-    'recruit',
-    'faq'
 ]
 
 INSTALLED_APPS = VENDOR_APPS + LOCAL_APPS
@@ -164,10 +162,6 @@ LOGGING = {
        }
    },
    'loggers': {
-       'root':{
-           'handlers': LOGGING_HANDLERS,
-           'level': 'DEBUG',
-       },
        'django.request': {
            'handlers': LOGGING_HANDLERS,
            'level': 'DEBUG',

@@ -32,8 +32,8 @@
         <template slot="title">
           {{$t('m.About')}}
         </template>
-        <Menu-item name="/announcement">
-          {{$t('m.Announcement')}}
+        <Menu-item name="/about">
+          {{$t('m.Judger')}}
         </Menu-item>
         <Menu-item name="/FAQ">
           {{$t('m.FAQ')}}
