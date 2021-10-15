@@ -36,13 +36,11 @@
           </el-col>
         </el-row>
         <el-row :gutter="20">
-          <!--
           <el-col :span="8">
             <el-form-item :label="$t('m.Time_Limit') + ' (ms)' " required>
               <el-input type="Number" :placeholder="$t('m.Time_Limit')" v-model="problem.time_limit"></el-input>
             </el-form-item>
           </el-col>
-          -->
           <el-col :span="8">
             <el-form-item :label="$t('m.Memory_limit') + ' (MB)' " required>
               <el-input type="Number" :placeholder="$t('m.Memory_limit')" v-model="problem.memory_limit"></el-input>
@@ -149,8 +147,8 @@
           <button type="button" class="add-samples" @click="addSample()"><i class="el-icon-plus"></i>{{$t('m.Add_Sample')}}
           </button>
         </div>
-        <el-form-item style="margin-top: 20px" :label="$t('testhint')">
-          <Simditor v-model="problem.testhint" placeholder=""></Simditor>
+        <el-form-item style="margin-top: 20px" :label="$t('m.Hint')">
+          <Simditor v-model="problem.hint" placeholder=""></Simditor>
         </el-form-item>
         <el-form-item :label="$t('m.Code_Template')">
           <el-row>
@@ -272,7 +270,6 @@
   import Accordion from '../../components/Accordion'
   import CodeMirror from '../../components/CodeMirror'
   import api from '../../api'
-
   export default {
     name: 'Problem',
     components: {
@@ -330,6 +327,7 @@
           description: '',
           input_description: '',
           output_description: '',
+          time_limit: 1000,
           memory_limit: 256,
           difficulty: 'Low',
           visible: true,
@@ -345,7 +343,7 @@
           test_case_id: '',
           test_case_score: [],
           rule_type: 'ACM',
-          testhint: '',
+          hint: '',
           source: '',
           io_mode: {'io_mode': 'Standard IO', 'input': 'input.txt', 'output': 'output.txt'}
         }
@@ -358,12 +356,9 @@
             this.contest = res.data.data
           })
         }
-
         this.problem.spj_language = 'C'
-
         let allLanguage = res.data.data
         this.allLanguage = allLanguage
-
         // get problem after getting languages list to avoid find undefined value in `watch problem.languages`
         if (this.mode === 'edit') {
           this.title = this.$i18n.t('m.Edit_Problem')
@@ -636,7 +631,6 @@
     .add-sample-btn {
       margin-bottom: 10px;
     }
-
   }
 </style>
 
@@ -650,4 +644,3 @@
     overflow-x: scroll;
   }
 </style>
-

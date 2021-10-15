@@ -5,7 +5,9 @@ from account.models import User
 from contest.models import Contest
 from utils.models import RichTextField
 from utils.constants import Choices
-
+import datetime
+import os
+import uuid
 
 class AIProblemTag(models.Model):
     name = models.TextField()
@@ -87,13 +89,20 @@ class AIProblem(models.Model):
     statistic_info = JSONField(default=dict)
     share_submission = models.BooleanField(default=False)
     # # 추가 부분
+    path = models.FileField(upload_to=file_upload_path, null =True)
     # y_score = models.FloatField(default=False)
 
     class Meta:
         db_table = "ai_contest"
         unique_together = (("_id", "contest"),)
         ordering = ("create_time",)
-
+    def file_upload_path(instance, filename):
+        ext = filename.split('.')[-1]
+        d = datatime.datetiem.now()
+        filepath = d.strfile("%Y/%m/%d")
+        suffix = d.strftime("%Y%m%d%H%M%S")
+        filename = "%s_%s.%s" % (uuid.uuid4().hex, suffix, ext)
+        return os.path.join(filepath, filename)
     def add_submission_number(self):
         self.submission_number = models.F("submission_number") + 1
         self.save(update_fields=["submission_number"])

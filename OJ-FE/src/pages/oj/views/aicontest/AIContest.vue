@@ -54,13 +54,22 @@
             <b-tab title="제출">
             <p class="subtitle">{{'제출'}}</p>
               <b-card>
-                <b-form-file
+                <!-- <v-file-input truncate-length="15" @change="uploadFile"></v-file-input> -->
+                <v-file-input
+                  accept=".txt"
+                  label="Click here to select a .txt file"
+                  outlined
+                  v-model="chosenFile"
+                ></v-file-input>
+                <v-btn right @click="importTxt">Read File</v-btn>
+                <p>{{ data }}</p>
+                <!-- <b-form-file
                   v-model="file1"
                   placeholder="Choose a file or drop it here..."
                   drop-placeholder="Drop file here..."
                   size="lg"
                 ></b-form-file>
-                <div class="mt-3">Selected file: {{ file1 ? file1.name : '' }}</div>
+                <div class="mt-3">Selected file: {{ file1 ? file1.name : '' }}</div> -->
               </b-card>
             </b-tab>
           </b-tabs>
@@ -287,6 +296,8 @@
     mixins: [FormMixin],
     data () {
       return {
+        chosenFile: null,
+        data: null,
         // 추가 부분
         dataRank: [],
         columns: [
@@ -433,6 +444,18 @@
         })
       },
       // 추가 부분
+      importTxt () {
+        if (!this.chosenFile) { this.data = 'No File Chosen' }
+        var reader = new window.FileReader()
+        reader.readAsText(this.chosenFile)
+        reader.onload = () => {
+          this.data = reader.result
+        }
+      },
+      uploadFile (e) {
+        // let file = e
+        console.log(e)
+      },
       getRankData (page) {
         let offset = (page - 1) * this.limit
         let bar = this.$refs.chart

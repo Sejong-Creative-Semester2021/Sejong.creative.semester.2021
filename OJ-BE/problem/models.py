@@ -43,15 +43,14 @@ class Problem(models.Model):
     title = models.TextField()
     # HTML
     description = RichTextField()
-    summary_description = RichTextField()
-    rule_description = RichTextField()
-    schedule_description = RichTextField(null=True)
+    input_description = RichTextField()
+    output_description = RichTextField()
     # [{input: "test", output: "123"}, {input: "test123", output: "456"}]
     samples = JSONField()
     test_case_id = models.TextField()
     # [{"input_name": "1.in", "output_name": "1.out", "score": 0}]
     test_case_score = JSONField()
-    testhint = RichTextField(null=True)
+    hint = RichTextField(null=True)
     languages = JSONField()
     template = JSONField()
     create_time = models.DateTimeField(auto_now_add=True)
@@ -59,7 +58,7 @@ class Problem(models.Model):
     last_update_time = models.DateTimeField(null=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     # ms
-    # time_limit = models.IntegerField()
+    time_limit = models.IntegerField()
     # MB
     memory_limit = models.IntegerField()
     # io mode

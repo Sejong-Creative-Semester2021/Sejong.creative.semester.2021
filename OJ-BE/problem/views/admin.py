@@ -594,14 +594,13 @@ class ImportProblemAPI(CSRFExemptAPIView, TestCaseZipProcessor):
                         problem_obj = Problem.objects.create(_id=problem_info["display_id"],
                                                              title=problem_info["title"],
                                                              description=problem_info["description"]["value"],
-                                                             summary_description=problem_info["summary_description"][
+                                                             input_description=problem_info["input_description"][
                                                                  "value"],
-                                                             rule_description=problem_info["rule_description"][
+                                                             output_description=problem_info["output_description"][
                                                                  "value"],
-                                                             schedule_description=problem_info["schedule_description"]["value"],
-                                                             testhint=problem_info["testhint"]["value"],
+                                                             hint=problem_info["hint"]["value"],
                                                              test_case_score=test_case_score if test_case_score else [],
-                                                             # time_limit=problem_info["time_limit"],
+                                                             time_limit=problem_info["time_limit"],
                                                              memory_limit=problem_info["memory_limit"],
                                                              samples=problem_info["samples"],
                                                              template=problem_info["template"],
@@ -630,10 +629,10 @@ class FPSProblemImport(CSRFExemptAPIView):
     request_parsers = ()
 
     def _create_problem(self, problem_data, creator):
-        #if problem_data["time_limit"]["unit"] == "ms":
-        #    time_limit = problem_data["time_limit"]["value"]
-        #else:
-        #    time_limit = problem_data["time_limit"]["value"] * 1000
+        if problem_data["time_limit"]["unit"] == "ms":
+            time_limit = problem_data["time_limit"]["value"]
+        else:
+            time_limit = problem_data["time_limit"]["value"] * 1000
         template = {}
         prepend = {}
         append = {}
@@ -650,12 +649,11 @@ class FPSProblemImport(CSRFExemptAPIView):
         Problem.objects.create(_id=f"fps-{rand_str(4)}",
                                title=problem_data["title"],
                                description=problem_data["description"],
-                               summary_description=problem_data["input"],
-                               rule_description=problem_data["output"],
-                               schedule_description=problem_data["schedule"],
-                               testhint=problem_data["testhint"],
+                               input_description=problem_data["input"],
+                               output_description=problem_data["output"],
+                               hint=problem_data["hint"],
                                test_case_score=problem_data["test_case_score"],
-                               # time_limit=time_limit,
+                               time_limit=time_limit,
                                memory_limit=problem_data["memory_limit"]["value"],
                                samples=problem_data["samples"],
                                template=template,
