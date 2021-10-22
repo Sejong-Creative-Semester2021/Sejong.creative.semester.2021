@@ -75,7 +75,7 @@ class CreateOrEditProblemSerializer(serializers.Serializer):
     hint = serializers.CharField(allow_blank=True, allow_null=True)
     source = serializers.CharField(max_length=256, allow_blank=True, allow_null=True)
     share_submission = serializers.BooleanField()
-    path = serializes.FileField(required=False)
+
 
 class CreateProblemSerializer(CreateOrEditProblemSerializer):
     pass
@@ -162,7 +162,7 @@ class ExportProblemSerializer(serializers.ModelSerializer):
     template = serializers.SerializerMethodField()
     source = serializers.SerializerMethodField()
     tags = serializers.SlugRelatedField(many=True, slug_field="name", read_only=True)
-    path = serializes.FileField(required=False)
+
 
     ## 함수는 아직 변경 안함
     def get_display_id(self, obj):
@@ -216,7 +216,7 @@ class ExportProblemSerializer(serializers.ModelSerializer):
                   "rule_description", "schedule_description",
                   "start_time", "end_time", "reward_description", "data_description",
                   "test_case_score", "hint", "memory_limit", "samples",
-                  "template", "spj", "rule_type", "source", "template","path")
+                  "template", "spj", "rule_type", "source", "template")
 
 
 class AddContestProblemSerializer(serializers.Serializer):
@@ -282,7 +282,7 @@ class ImportProblemSerializer(serializers.Serializer):
     source = serializers.CharField(max_length=200, allow_blank=True, allow_null=True)
     answers = serializers.ListField(child=AnswerSerializer())
     tags = serializers.ListField(child=serializers.CharField())
-    path = serializes.FileField(required=False)
+
 
 class FPSProblemSerializer(serializers.Serializer):
     class UnitSerializer(serializers.Serializer):
@@ -304,4 +304,3 @@ class FPSProblemSerializer(serializers.Serializer):
     template = serializers.ListField(child=serializers.DictField(), allow_empty=True, allow_null=True)
     append = serializers.ListField(child=serializers.DictField(), allow_empty=True, allow_null=True)
     prepend = serializers.ListField(child=serializers.DictField(), allow_empty=True, allow_null=True)
-    path = serializes.FileField(required=False)
