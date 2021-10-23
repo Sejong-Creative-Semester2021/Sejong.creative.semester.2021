@@ -53,26 +53,26 @@ class ProblemAPI(APIView):
                 else:
                     problem["my_status"] = oi_problems_status.get(str(problem["id"]), {}).get("status")
     
-    def post(self, request):
-        data = request.data
-        _id = data["problemID"]
-        csv_file = data["formdata"]
-        logger.info("data={}".format(data))
-        logger.info("data={}".format(data["problemID"]))
-        logger.info("data={}".format(data["formdata"]))
-        if not _id:
-            return self.error("Display ID is required")
+    # def post(self, request):
+    #     data = request.data
+    #     _id = data["problemID"]
+    #     csv_file = data["formdata"]
+    #     logger.info("data={}".format(data))
+    #     logger.info("data={}".format(data["problemID"]))
+    #     logger.info("data={}".format(data["formdata"]))
+    #     if not _id:
+    #         return self.error("Display ID is required")
 
-        error_info = self.common_checks(request)
-        if error_info:
-            return self.error(error_info)
+    #     error_info = self.common_checks(request)
+    #     if error_info:
+    #         return self.error(error_info)
 
-        # todo check filename and score info
-        problem = AIProblem.objects.create(**data)
+    #     # todo check filename and score info
+    #     problem = AIProblem.objects.create(**data)
 
-        logger.info("data={}".format(problem))
+    #     logger.info("data={}".format(problem))
 
-        return self.success(ProblemSerializer(problem).data)
+    #     return self.success(ProblemSerializer(problem).data)
         
     def get(self, request):
         # 问题详情页

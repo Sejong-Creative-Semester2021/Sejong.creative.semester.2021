@@ -77,7 +77,7 @@ class CreateOrEditProblemSerializer(serializers.Serializer):
     hint = serializers.CharField(allow_blank=True, allow_null=True)
     source = serializers.CharField(max_length=256, allow_blank=True, allow_null=True)
     share_submission = serializers.BooleanField()
-    csv_file = serializers.FileField()
+    # csv_file = serializers.FileField()
 
 
 class CreateProblemSerializer(CreateOrEditProblemSerializer):
