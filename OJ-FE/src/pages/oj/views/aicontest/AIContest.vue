@@ -54,14 +54,20 @@
             <b-tab title="제출">
             <p class="subtitle">{{'제출'}}</p>
               <b-card>
+                <upload
+                  action="/api/upload_csv"
+                  name="file"
+                  :show-file-list="true">
+                  <button size="small" type="primary" icon="el-icon-fa-upload">Choose File</button>
+                </upload>
                 <!-- <v-file-input truncate-length="15" @change="uploadFile"></v-file-input> -->
                 <v-file-input
-                  accept=".txt"
-                  label="Click here to select a .txt file"
+                  accept=".csv"
+                  label="Click here to select a .csv file"
                   outlined
-                  v-model="chosenFile"
+                  @change="selectFile"
                 ></v-file-input>
-                <v-btn right @click="importTxt">Read File</v-btn>
+                <v-btn right @click="submit()">Read File</v-btn>
                 <p>{{ data }}</p>
                 <!-- <b-form-file
                   v-model="file1"
@@ -296,7 +302,7 @@
     mixins: [FormMixin],
     data () {
       return {
-        chosenFile: null,
+        chosenFile: '',
         data: null,
         // 추가 부분
         dataRank: [],
@@ -446,11 +452,9 @@
       // 추가 부분
       importTxt () {
         if (!this.chosenFile) { this.data = 'No File Chosen' }
-        var reader = new window.FileReader()
-        reader.readAsText(this.chosenFile)
-        reader.onload = () => {
-          this.data = reader.result
-        }
+        this.data = this.chosenFile
+        console.log(this.data)
+        api.upload_file(this.problem.id, this.data)
       },
       uploadFile (e) {
         // let file = e
@@ -561,6 +565,9 @@
           })
         }
         this.refreshStatus = setTimeout(checkStatus, 2000)
+      },
+      selectFile (file) {
+        this.chosenFile = file
       },
       submitCode () {
         if (this.code.trim() === '') {
@@ -797,4 +804,3 @@
     height: 480px;
   }
 </style>
-

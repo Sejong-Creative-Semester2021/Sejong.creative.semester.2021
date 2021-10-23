@@ -10,7 +10,9 @@ from utils.serializers import LanguageNameMultiChoiceField, SPJLanguageNameChoic
 from .models import AIProblem, AIProblemRuleType, AIProblemTag, AIProblemIOMode
 from .utils import parse_problem_template
 
-
+class FileUploadForm(forms.Form):
+    file = forms.FileField()
+    
 class TestCaseUploadForm(forms.Form):
     spj = forms.CharField(max_length=12)
     file = forms.FileField()
@@ -75,6 +77,7 @@ class CreateOrEditProblemSerializer(serializers.Serializer):
     hint = serializers.CharField(allow_blank=True, allow_null=True)
     source = serializers.CharField(max_length=256, allow_blank=True, allow_null=True)
     share_submission = serializers.BooleanField()
+    csv_file = serializers.FileField()
 
 
 class CreateProblemSerializer(CreateOrEditProblemSerializer):

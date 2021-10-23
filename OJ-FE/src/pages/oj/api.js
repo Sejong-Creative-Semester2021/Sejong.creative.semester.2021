@@ -139,6 +139,18 @@ export default {
       }
     })
   },
+  upload_file (file, problemID) {
+    console.log('in')
+    const formdata = new window.FormData()
+    formdata.append('file', file)
+    console.log(formdata)
+    return ajax('aicontest', 'post', {
+      data: {
+        formdata,
+        problemID
+      }
+    })
+  },
   getAIProblemTagList () {
     return ajax('aicontest/tags', 'get')
   },
