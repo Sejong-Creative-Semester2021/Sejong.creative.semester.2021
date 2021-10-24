@@ -12,7 +12,7 @@ import os
 import json
 import csv
 # import pandas as pd
-import numpy as np
+# import numpy as np
 
 import logging
 logger=logging.getLogger(__name__)
@@ -187,7 +187,7 @@ class FileAPI(CSRFExemptAPIView, TestCaseZipProcessor):
         logger.info("form={}".format(form))
 
         if form.is_valid():
-            id = form.cleaned_data["id"] 
+            # id = form.cleaned_data["id"] 
             file = form.cleaned_data["file"]
         else:
             return self.error("Upload failed")
@@ -203,12 +203,12 @@ class FileAPI(CSRFExemptAPIView, TestCaseZipProcessor):
                 
         info, predict_id = self.process_csv(tmp_file)
 
-        logger.info("id={}".format(id))
-        csv = AIProblem.objects.filter(_id=id)
+        # logger.info("id={}".format(id))
+        # csv = AIProblem.objects.filter(_id=id)
         
-        logger.info("csv={}".format(csv))
-        logger.info("os_sol={}".format(os.path.join(settings.SOLUTION_DIR, csv.solution_id, "solution.csv")))
-        logger.info("os_pre={}".format(os.path.join(settings.PREDICT_DIR, predict_id, "predict.csv")))
+        # logger.info("csv={}".format(csv))
+        # logger.info("os_sol={}".format(os.path.join(settings.SOLUTION_DIR, csv.solution_id, "solution.csv")))
+        # logger.info("os_pre={}".format(os.path.join(settings.PREDICT_DIR, predict_id, "predict.csv")))
 
         # y_true = np.array(pd.read_csv(os.path.join(settings.SOLUTION_DIR, csv.solution_id, "solution.csv")))
         # y_pred = np.array(pd.read_csv(os.path.join(settings.PREDICT_DIR, predict_id, "predict.csv")))
