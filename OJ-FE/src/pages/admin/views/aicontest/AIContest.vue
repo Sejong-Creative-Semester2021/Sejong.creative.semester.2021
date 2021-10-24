@@ -120,6 +120,18 @@
               </el-upload>
             </el-form-item>
           </el-col>
+          <el-col :span="6">
+            <el-form-item :label="$t('CSV File')">
+              <el-upload
+                action="/api/admin/upload_csv"
+                name="file"
+                :show-file-list="true"
+                :on-success="uploadFileSucceeded"
+                :on-error="uploadFailed">
+                <el-button size="small" type="primary" icon="el-icon-fa-upload">Choose File</el-button>
+              </el-upload>
+            </el-form-item>
+          </el-col>
           <el-col :span="8">
             <el-form-item :label="$t('m.Tag')" :error="error.tags" required>
               <span class="tags">
@@ -387,6 +399,7 @@
           spj_code: '',
           spj_compile_ok: false,
           test_case_id: '',
+          solution_id: '',
           test_case_score: [],
           rule_type: 'ACM',
           hint: '',
@@ -523,6 +536,14 @@
         this.problem.test_case_score = fileList
         this.testCaseUploaded = true
         this.problem.test_case_id = response.data.id
+      },
+      uploadFileSucceeded (response) {
+        if (response.error) {
+          this.$error(response.data)
+          return
+        }
+        this.testCaseUploaded = true
+        this.problem.solution_id = response.data.id
       },
       uploadFailed () {
         this.$error('Upload failed')

@@ -11,6 +11,8 @@ from utils.shortcuts import rand_str, natural_sort_key
 import os
 import json
 import csv
+# import pandas as pd
+import numpy as np
 
 import logging
 logger=logging.getLogger(__name__)
@@ -183,17 +185,40 @@ class FileAPI(CSRFExemptAPIView, TestCaseZipProcessor):
         logger.info("in_post")
         form = FileUploadForm(request.POST, request.FILES)
         logger.info("form={}".format(form))
+
         if form.is_valid():
+            id = form.cleaned_data["id"] 
             file = form.cleaned_data["file"]
         else:
             return self.error("Upload failed")
+
         logger.info("file={}".format(file))
         tmp_file = f"/tmp/{rand_str()}.csv"
         logger.info("tmp_file={}".format(tmp_file))
+        
         with open(tmp_file, "wb") as f:
             for chunk in file:
                 logger.info("chunk={}".format(chunk))
                 f.write(chunk)
+                
         info, predict_id = self.process_csv(tmp_file)
+
+        logger.info("id={}".format(id))
+        csv = AIProblem.objects.filter(_id=id)
+        
+        logger.info("csv={}".format(csv))
+        logger.info("os_sol={}".format(os.path.join(settings.SOLUTION_DIR, csv.solution_id, "solution.csv")))
+        logger.info("os_pre={}".format(os.path.join(settings.PREDICT_DIR, predict_id, "predict.csv")))
+
+        # y_true = np.array(pd.read_csv(os.path.join(settings.SOLUTION_DIR, csv.solution_id, "solution.csv")))
+        # y_pred = np.array(pd.read_csv(os.path.join(settings.PREDICT_DIR, predict_id, "predict.csv")))
+
+        # logger.info("y_true={}".format(y_true))
+        # logger.info("y_pred={}".format(y_pred))
+
+        # y_score = (y_true.astype(bool) == y_pred.astype(bool)).mean()
+        # logger.info("y_score={}".format(y_score))
+        
         os.remove(tmp_file)
+
         return self.success({"id": predict_id, "info": info})

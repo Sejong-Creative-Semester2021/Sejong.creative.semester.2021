@@ -11,6 +11,7 @@ from .models import AIProblem, AIProblemRuleType, AIProblemTag, AIProblemIOMode
 from .utils import parse_problem_template
 
 class FileUploadForm(forms.Form):
+    id = forms.CharField(max_length=32)
     file = forms.FileField()
     
 class TestCaseUploadForm(forms.Form):

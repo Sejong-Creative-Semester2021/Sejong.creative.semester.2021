@@ -217,7 +217,10 @@ class ProblemAPI(ProblemBase):
         # todo check filename and score info
         tags = data.pop("tags")
         data["created_by"] = request.user
+        logger.info("data={}".format(data))
+        
         problem = AIProblem.objects.create(**data)
+        logger.info("problem={}".format(problem))
 
         for item in tags:
             try:
@@ -715,7 +718,7 @@ class CSVFileProcessor(object):
     def process_csv(self, uploaded_csv_file, dir=""):
         logger.info("admin_in_process_csv")
         solution_id = rand_str()
-        solution_dir = os.path.join(settings.PREDICT_DIR, solution_id)
+        solution_dir = os.path.join(settings.SOLUTION_DIR, solution_id)
         os.makedirs(solution_dir)
         os.chmod(solution_dir, 0o710)
         logger.info("admin_dif={}".format(solution_dir))

@@ -57,6 +57,7 @@
                 <upload
                   action="/api/upload_csv"
                   name="file"
+                  :data="{id: problem._id}"
                   :show-file-list="true">
                   <button size="small" type="primary" icon="el-icon-fa-upload">Choose File</button>
                 </upload>
