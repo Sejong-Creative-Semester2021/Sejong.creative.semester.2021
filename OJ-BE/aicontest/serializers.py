@@ -78,6 +78,7 @@ class CreateOrEditProblemSerializer(serializers.Serializer):
     source = serializers.CharField(max_length=256, allow_blank=True, allow_null=True)
     share_submission = serializers.BooleanField()
     # csv_file = serializers.FileField()
+    solution_id = serializers.CharField(max_length=32)
 
 
 class CreateProblemSerializer(CreateOrEditProblemSerializer):
@@ -131,7 +132,7 @@ class ProblemSerializer(BaseProblemSerializer):
     class Meta:
         model = AIProblem
         exclude = ("test_case_score", "test_case_id", "visible", "is_public",
-                   "spj_code", "spj_version", "spj_compile_ok")
+                   "spj_code", "spj_version", "spj_compile_ok", "solution_id")
 
 
 class ProblemSafeSerializer(BaseProblemSerializer):
@@ -141,7 +142,7 @@ class ProblemSafeSerializer(BaseProblemSerializer):
         model = AIProblem
         exclude = ("test_case_score", "test_case_id", "visible", "is_public",
                    "spj_code", "spj_version", "spj_compile_ok",
-                   "difficulty", "submission_number", "accepted_number", "statistic_info")
+                   "difficulty", "submission_number", "accepted_number", "statistic_info","solution_id")
 
 
 class ContestProblemMakePublicSerializer(serializers.Serializer):
@@ -219,7 +220,7 @@ class ExportProblemSerializer(serializers.ModelSerializer):
                   "rule_description", "schedule_description",
                   "start_time", "end_time", "reward_description", "data_description",
                   "test_case_score", "hint", "memory_limit", "samples",
-                  "template", "spj", "rule_type", "source", "template")
+                  "template", "spj", "rule_type", "source", "template", "solution_id")
 
 
 class AddContestProblemSerializer(serializers.Serializer):

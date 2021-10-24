@@ -1,6 +1,7 @@
 import hashlib
 import json
 import os
+import csv
 # import shutil
 import tempfile
 import zipfile
@@ -27,7 +28,7 @@ from ..serializers import (CreateContestProblemSerializer, CompileSPJSerializer,
                            ProblemAdminSerializer, TestCaseUploadForm, ContestProblemMakePublicSerializer,
                            AddContestProblemSerializer, ExportProblemSerializer,
                            ExportProblemRequestSerialzier, UploadProblemForm, ImportProblemSerializer,
-                           FPSProblemSerializer)
+                           FPSProblemSerializer, FileUploadForm)
 from ..utils import TEMPLATE_BASE, build_problem_template
 
 import logging
@@ -709,6 +710,56 @@ class FPSProblemImport(CSRFExemptAPIView):
                 problem_data["test_case_score"] = score
                 self._create_problem(problem_data, request.user)
         return self.success({"import_count": len(problems)})
+# 추가 부분
+class CSVFileProcessor(object):
+    def process_csv(self, uploaded_csv_file, dir=""):
+        logger.info("admin_in_process_csv")
+        solution_id = rand_str()
+        solution_dir = os.path.join(settings.PREDICT_DIR, solution_id)
+        os.makedirs(solution_dir)
+        os.chmod(solution_dir, 0o710)
+        logger.info("admin_dif={}".format(solution_dir))
+
+        with open(os.path.join(solution_dir, "solution.csv"), "w") as f:
+            open_file=open(uploaded_csv_file, "r")
+            logger.info("admin_open_file={}".format(open_file))
+            rr = csv.reader(open_file, delimiter=',')
+            logger.info("admin_rr={}".format(rr))
+            wr = csv.writer(f)
+            logger.info("admin_wr={}".format(wr))
+            wr.writerows(rr)
+
+        os.chmod(os.path.join(solution_dir, uploaded_csv_file), 0o640)
+
+        info = []
+
+        return info, solution_id
+
+
+class FileAPI(CSRFExemptAPIView, CSVFileProcessor):
+    request_parsers = ()
+    logger.info("admin_inin")
+    def post(self, request):
+        logger.info("admin_in_post")
+        logger.info("admin_request={}".format(request))
+        logger.info("admin_request_post={}".format(request.POST))
+        logger.info("admin_request_files={}".format(request.FILES))
+        form = FileUploadForm(request.POST, request.FILES)
+        logger.info("admin_form={}".format(form))
+        if form.is_valid():
+            file = form.cleaned_data["file"]
+        else:
+            return self.error("Upload failed")
+        logger.info("admin_file={}".format(file))
+        tmp_file = f"/tmp/{rand_str()}.csv"
+        logger.info("admin_tmp_file={}".format(tmp_file))
+        with open(tmp_file, "wb") as f:
+            for chunk in file:
+                logger.info("chunk={}".format(chunk))
+                f.write(chunk)
+        info, solution_id = self.process_csv(tmp_file)
+        os.remove(tmp_file)
+        return self.success({"id": solution_id, "info": info})
 
 # 추가 부분
 # 파일 경로 불러오기, y_score db에 저장

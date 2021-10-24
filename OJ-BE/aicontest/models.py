@@ -89,6 +89,7 @@ class AIProblem(models.Model):
     # # 추가 부분
     # y_score = models.FloatField(default=False)
     # csv_file = models.FileField(null=True)
+    solution_id = models.TextField(null=True)
 
     class Meta:
         db_table = "ai_contest"
