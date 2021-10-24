@@ -125,9 +125,7 @@
               <el-upload
                 action="/api/admin/upload_csv"
                 name="file"
-                :show-file-list="true"
-                :on-success="uploadFileSucceeded"
-                :on-error="uploadFailed">
+                :on-success="uploadFileSucceeded">
                 <el-button size="small" type="primary" icon="el-icon-fa-upload">Choose File</el-button>
               </el-upload>
             </el-form-item>
@@ -318,7 +316,6 @@
   import Accordion from '../../components/Accordion'
   import CodeMirror from '../../components/CodeMirror'
   import api from '../../api'
-
   export default {
     name: 'AIContest',
     components: {
@@ -381,7 +378,6 @@
           title: '',
           contest_description: '',
           rule_description: '',
-          schedule_description: '',
           start_time: '',
           end_time: '',
           reward_description: '',
@@ -415,12 +411,9 @@
             this.contest = res.data.data
           })
         }
-
         this.problem.spj_language = 'C'
-
         let allLanguage = res.data.data
         this.allLanguage = allLanguage
-
         // get problem after getting languages list to avoid find undefined value in `watch problem.languages`
         if (this.mode === 'edit') {
           this.title = this.$i18n.t('Edit AIProblem')
@@ -533,16 +526,18 @@
             file.output_name = '-'
           }
         }
+        // console.log(response)
         this.problem.test_case_score = fileList
         this.testCaseUploaded = true
         this.problem.test_case_id = response.data.id
       },
       uploadFileSucceeded (response) {
+        console.log(response)
         if (response.error) {
           this.$error(response.data)
           return
         }
-        this.testCaseUploaded = true
+        console.log(response)
         this.problem.solution_id = response.data.id
       },
       uploadFailed () {
@@ -701,7 +696,6 @@
     .add-sample-btn {
       margin-bottom: 10px;
     }
-
   }
 </style>
 

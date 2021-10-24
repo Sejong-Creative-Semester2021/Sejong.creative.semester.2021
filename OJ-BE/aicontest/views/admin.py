@@ -28,7 +28,7 @@ from ..serializers import (CreateContestProblemSerializer, CompileSPJSerializer,
                            ProblemAdminSerializer, TestCaseUploadForm, ContestProblemMakePublicSerializer,
                            AddContestProblemSerializer, ExportProblemSerializer,
                            ExportProblemRequestSerialzier, UploadProblemForm, ImportProblemSerializer,
-                           FPSProblemSerializer, FileUploadForm)
+                           FPSProblemSerializer, SolutionFileUploadForm)
 from ..utils import TEMPLATE_BASE, build_problem_template
 
 import logging
@@ -747,7 +747,7 @@ class FileAPI(CSRFExemptAPIView, CSVFileProcessor):
         logger.info("admin_request={}".format(request))
         logger.info("admin_request_post={}".format(request.POST))
         logger.info("admin_request_files={}".format(request.FILES))
-        form = FileUploadForm(request.POST, request.FILES)
+        form = SolutionFileUploadForm(request.POST, request.FILES)
         logger.info("admin_form={}".format(form))
         if form.is_valid():
             file = form.cleaned_data["file"]
@@ -761,6 +761,11 @@ class FileAPI(CSRFExemptAPIView, CSVFileProcessor):
                 logger.info("chunk={}".format(chunk))
                 f.write(chunk)
         info, solution_id = self.process_csv(tmp_file)
+        logger.info("id={}".format(id))
+        logger.info("solution_id={}".format(solution_id))
+        logger.info("values={}".format(AIProblem.objects.values()))
+        # csv = AIProblem.objects.get(_id=id)
+        # csv.solution_id = solution_id
         os.remove(tmp_file)
         return self.success({"id": solution_id, "info": info})
 

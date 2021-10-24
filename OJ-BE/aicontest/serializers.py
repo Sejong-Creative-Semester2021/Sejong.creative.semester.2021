@@ -10,8 +10,11 @@ from utils.serializers import LanguageNameMultiChoiceField, SPJLanguageNameChoic
 from .models import AIProblem, AIProblemRuleType, AIProblemTag, AIProblemIOMode
 from .utils import parse_problem_template
 
+class SolutionFileUploadForm(forms.Form):
+    file = forms.FileField()
+
 class FileUploadForm(forms.Form):
-    # id = forms.CharField(max_length=32)
+    id = forms.CharField(max_length=32)
     file = forms.FileField()
     
 class TestCaseUploadForm(forms.Form):

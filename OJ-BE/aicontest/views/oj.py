@@ -187,7 +187,7 @@ class FileAPI(CSRFExemptAPIView, TestCaseZipProcessor):
         logger.info("form={}".format(form))
 
         if form.is_valid():
-            # id = form.cleaned_data["id"] 
+            id = form.cleaned_data["id"] 
             file = form.cleaned_data["file"]
         else:
             return self.error("Upload failed")
@@ -198,17 +198,19 @@ class FileAPI(CSRFExemptAPIView, TestCaseZipProcessor):
         
         with open(tmp_file, "wb") as f:
             for chunk in file:
-                logger.info("chunk={}".format(chunk))
+                # logger.info("chunk={}".format(chunk))
                 f.write(chunk)
                 
         info, predict_id = self.process_csv(tmp_file)
 
-        # logger.info("id={}".format(id))
-        # csv = AIProblem.objects.filter(_id=id)
+        logger.info("id={}".format(id))
+        csv = AIProblem.objects.get(_id=id)
         
-        # logger.info("csv={}".format(csv))
-        # logger.info("os_sol={}".format(os.path.join(settings.SOLUTION_DIR, csv.solution_id, "solution.csv")))
-        # logger.info("os_pre={}".format(os.path.join(settings.PREDICT_DIR, predict_id, "predict.csv")))
+        logger.info("csv={}".format(csv))
+        logger.info("csv={}".format(AIProblem.objects.values()))
+        logger.info("solution_id={}".format(csv.solution_id))
+        logger.info("os_sol={}".format(os.path.join(settings.SOLUTION_DIR, str(csv.solution_id), "solution.csv")))
+        logger.info("os_pre={}".format(os.path.join(settings.PREDICT_DIR, predict_id, "predict.csv")))
 
         # y_true = np.array(pd.read_csv(os.path.join(settings.SOLUTION_DIR, csv.solution_id, "solution.csv")))
         # y_pred = np.array(pd.read_csv(os.path.join(settings.PREDICT_DIR, predict_id, "predict.csv")))
