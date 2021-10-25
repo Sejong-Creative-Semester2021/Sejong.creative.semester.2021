@@ -21,7 +21,7 @@
             </b-card-text>
           </b-card>
           -->
-          
+
           <b-tabs content-class="mt-3" fill>
             <b-tab title="대회안내">
               <p v-html=problem.description></p>
@@ -56,12 +56,12 @@
               <b-card>
                 <!-- <v-file-input truncate-length="15" @change="uploadFile"></v-file-input> -->
                 <v-file-input
-                  accept=".txt"
+                  accept="text/csv"
                   label="Click here to select a .txt file"
                   outlined
                   v-model="chosenFile"
                 ></v-file-input>
-                <v-btn right @click="importTxt">Read File</v-btn>
+                <v-btn right @click="importTxt">Sumission 제출</v-btn>
                 <p>{{ data }}</p>
                 <!-- <b-form-file
                   v-model="file1"
@@ -298,6 +298,7 @@
       return {
         chosenFile: null,
         data: null,
+        jsonArray: null,
         // 추가 부분
         dataRank: [],
         columns: [
@@ -444,12 +445,31 @@
         })
       },
       // 추가 부분
+      csvToJSON (csvString) {
+        // CSV 평식의 문자열(string)을 읽어, JSON으로 변환하는 함수.
+        const rows = csvString.split(/\r\n|\n/)
+        this.jsonArray = []
+        const header = rows[0].split(',')
+        for (let i = 1; i < rows.length; i++) {
+          let obj = {}
+          let row = rows[i].split(',')
+          for (let j = 0; j < header.length; j++) {
+            obj[header[j]] = row[j]
+          }
+          this.jsonArray.push(obj)
+          // jsonArray - JSON 객체 배열
+        }
+      },
       importTxt () {
+        console.log('importTxt 실행')
         if (!this.chosenFile) { this.data = 'No File Chosen' }
         var reader = new window.FileReader()
         reader.readAsText(this.chosenFile)
         reader.onload = () => {
           this.data = reader.result
+          this.csvToJSON(this.data)
+          console.log(this.jsonArray)
+          // this.data = this.data.split(/\r\n|\n/)
         }
       },
       uploadFile (e) {
@@ -797,4 +817,3 @@
     height: 480px;
   }
 </style>
-

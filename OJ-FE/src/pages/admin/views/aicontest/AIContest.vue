@@ -156,7 +156,21 @@
               </el-checkbox-group>
             </el-form-item>
           </el-col> -->
-        </el-row>        
+        </el-row>
+        <el-row>
+          <el-col>
+            <el-form-item :label="$t('csv file upload')">
+              <el-upload
+                accept="text/csv"
+                outlined
+                label="Click here to select a .csv file"
+                v-model="chosenFile">
+                <el-button @click="importTxt" size="small" type="primary" icon="el-icon-fa-upload">CSV 파일 upload</el-button>
+              </el-upload>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <div><p>{{ data }}</p></div>   
         <div>
           <el-form-item v-for="(sample, index) in problem.samples" :key="'sample'+index">
             <Accordion :title="'Sample' + (index + 1)">
@@ -306,6 +320,7 @@
   import Accordion from '../../components/Accordion'
   import CodeMirror from '../../components/CodeMirror'
   import api from '../../api'
+  import utils from '@/utils/utils'
 
   export default {
     name: 'AIContest',
@@ -353,7 +368,11 @@
           spj: '',
           languages: '',
           testCase: ''
-        }
+        },
+        // 추가한 부분
+        chosenFile: null,
+        data: null,
+        jsonArray: null
       }
     },
     mounted () {
@@ -461,6 +480,35 @@
       }
     },
     methods: {
+      // 추가한 부분 시작
+      csvToJSON (csvString) {
+        // CSV 평식의 문자열(string)을 읽어, JSON으로 변환하는 함수.
+        const rows = csvString.split(/\r\n|\n/)
+        this.jsonArray = []
+        const header = rows[0].split(',')
+        for (let i = 1; i < rows.length; i++) {
+          let obj = {}
+          let row = rows[i].split(',')
+          for (let j = 0; j < header.length; j++) {
+            obj[header[j]] = row[j]
+          }
+          this.jsonArray.push(obj)
+          // jsonArray - JSON 객체 배열
+        }
+      },
+      importTxt () {
+        console.log('importTxt 실행')
+        if (!this.chosenFile) { this.data = 'No File Chosen' }
+        var reader = new window.FileReader()
+        reader.readAsText(this.chosenFile)
+        reader.onload = () => {
+          this.data = reader.result
+          this.csvToJSON(this.data)
+          console.log(this.jsonArray)
+          // this.data = this.data.split(/\r\n|\n/)
+        }
+      },
+      // 추가한 부분 끝
       switchSpj () {
         if (this.testCaseUploaded) {
           this.$confirm('If you change problem judge method, you need to re-upload test cases', 'Warning', {
