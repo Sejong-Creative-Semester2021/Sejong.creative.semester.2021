@@ -13,7 +13,6 @@ class AIProblemTag(models.Model):
     class Meta:
         db_table = "ai_contest_tag"
 
-
 class AIProblemRuleType(Choices):
     ACM = "ACM"
     OI = "OI"
@@ -90,6 +89,7 @@ class AIProblem(models.Model):
     # y_score = models.FloatField(default=False)
     # csv_file = models.FileField(null=True)
     solution_id = models.TextField(null=True)
+    rank = JSONField(default=dict) # 여기에 rank 추가
 
     class Meta:
         db_table = "ai_contest"
@@ -103,3 +103,40 @@ class AIProblem(models.Model):
     def add_ac_number(self):
         self.accepted_number = models.F("accepted_number") + 1
         self.save(update_fields=["accepted_number"])
+
+
+# 추가한 부분
+# class AbstractContestRank(models.Model): # 이거를 base로 사용해서 ACMContestRank, OIContestRank 생성
+#     user = models.ForeignKey(User, on_delete=models.CASCADE)
+#     contest = models.ForeignKey(Contest, on_delete=models.CASCADE)
+#     submission_number = models.IntegerField(default=0)
+
+#     class Meta:
+#         abstract = True
+
+# # ACM이랑 OI 차이점 알고 우리한테 맞는게 뭔지 확인하기
+# # 근데 어디서 submission_info를 받아오는거지?
+# # 제일 궁금한거는 도대체 점수는 어디에다가 보관? - user에다가 보관안하고 바로 점수 rank하는 형식?
+
+# class ACMContestRank(AbstractContestRank):
+#     accepted_number = models.IntegerField(default=0)
+#     # total_time is only for ACM contest, total_time =  ac time + none-ac times * 20 * 60
+#     total_time = models.IntegerField(default=0)
+#     # {"23": {"is_ac": True, "ac_time": 8999, "error_number": 2, "is_first_ac": True}}
+#     # key is problem id
+#     submission_info = JSONField(default=dict)
+
+#     class Meta:
+#         db_table = "acm_contest_rank"
+#         unique_together = (("user", "contest"),)
+
+
+# class OIContestRank(AbstractContestRank):
+#     total_score = models.IntegerField(default=0)
+#     # {"23": 333}
+#     # key is problem id, value is current score
+#     submission_info = JSONField(default=dict)
+
+#     class Meta:
+#         db_table = "oi_contest_rank"
+#         unique_together = (("user", "contest"),)
