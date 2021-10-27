@@ -42,10 +42,8 @@
               </b-card>
               <p class="subtitle">{{'상세'}}</p>
                 <b-card>
-                  <b-text>
-                    This will always be an aspect of
-                    except when the content is too tall.
-                  </b-text>
+                  <v-btn right icon="download" name="Download Data"
+                      @click.native="downloadData(problem.id)">Download</v-btn>
               </b-card>
             </b-tab>
             <b-tab title="리더보드">
@@ -449,6 +447,10 @@
         }, () => {
           this.$Loading.error()
         })
+      },
+      downloadData (problemID) {
+        let url = '/admin/data_csv?problem_id=' + problemID
+        utils.downloadFile(url)
       },
       // 추가 부분
       importTxt () {

@@ -809,6 +809,38 @@ class FileProcessor(object):
 class DataFileAPI(CSRFExemptAPIView, FileProcessor):
     request_parsers = ()
     logger.info("data_inin")
+
+    def get(self, request):
+        problem_id = request.GET.get("problem_id")
+        if not problem_id:
+            return self.error("Parameter error, problem_id is required")
+        try:
+            problem = AIProblem.objects.get(id=problem_id)
+        except AIProblem.DoesNotExist:
+            return self.error("Problem does not exists")
+
+        if problem.contest:
+            ensure_created_by(problem.contest, request.user)
+        else:
+            ensure_created_by(problem, request.user)
+
+        data_dir = os.path.join(settings.DATA_DIR, problem.data_id)
+        if not os.path.isdir(data_dir):
+            return self.error("Data does not exists")
+
+        name_list=os.listdir(data_dir)
+        logger.info("name_list={}".format(name_list))
+        file_name = os.path.join(data_dir, problem.data_id + ".zip")
+        with zipfile.ZipFile(file_name, "w") as file:
+            for data in name_list:
+                file.write(f"{data_dir}/{data}", data)
+        response = StreamingHttpResponse(FileWrapper(open(file_name, "rb")),
+                                         content_type="application/octet-stream")
+
+        response["Content-Disposition"] = f"attachment; filename=problem_{problem.id}_data.zip"
+        response["Content-Length"] = os.path.getsize(file_name)
+        return response
+    
     def post(self, request):
         logger.info("data_in_post")
         logger.info("data_request={}".format(request))
@@ -838,7 +870,6 @@ class DataFileAPI(CSRFExemptAPIView, FileProcessor):
         os.remove(tmp_file)
 
         return self.success({"id": data_id, "info": info})
-
 
 # 추가 부분
 # 파일 경로 불러오기, y_score db에 저장
