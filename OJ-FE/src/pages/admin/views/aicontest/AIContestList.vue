@@ -235,7 +235,7 @@
         this.InlineEditDialogVisible = true
       },
       downloadTestCase (problemID) {
-        let url = '/admin/test_case?problem_id=' + problemID
+        let url = '/admin/aifile_download?problem_id=' + problemID
         utils.downloadFile(url)
       },
       getPublicProblem () {

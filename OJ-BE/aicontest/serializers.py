@@ -10,6 +10,9 @@ from utils.serializers import LanguageNameMultiChoiceField, SPJLanguageNameChoic
 from .models import AIProblem, AIProblemRuleType, AIProblemTag, AIProblemIOMode
 from .utils import parse_problem_template
 
+class DataFileUploadForm(forms.Form):
+    file = forms.FileField()
+
 class SolutionFileUploadForm(forms.Form):
     file = forms.FileField()
 
@@ -83,6 +86,7 @@ class CreateOrEditProblemSerializer(serializers.Serializer):
     share_submission = serializers.BooleanField()
     # csv_file = serializers.FileField()
     solution_id = serializers.CharField(max_length=32)
+    data_id = serializers.CharField(max_length=32)
 
 
 class CreateProblemSerializer(CreateOrEditProblemSerializer):
@@ -182,8 +186,8 @@ class ExportProblemSerializer(serializers.ModelSerializer):
     def get_description(self, obj):
         return self._html_format_value(obj.contest_description)
 
-    def get_input_description(self, obj):
-        return self._html_format_value(obj.summary_description)
+    # def get_input_description(self, obj):
+    #     return self._html_format_value(obj.summary_description)
 
     def get_output_description(self, obj):
         return self._html_format_value(obj.rule_description)
@@ -272,7 +276,7 @@ class ImportProblemSerializer(serializers.Serializer):
     display_id = serializers.CharField(max_length=128)
     title = serializers.CharField(max_length=128)
     contest_description = FormatValueSerializer()
-    summary_description = FormatValueSerializer()
+    # summary_description = FormatValueSerializer()
     rule_description = FormatValueSerializer()
     schedule_description = FormatValueSerializer()
     start_time = serializers.DateTimeField()

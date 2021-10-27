@@ -43,9 +43,9 @@ class Problem(models.Model):
     title = models.TextField()
     # HTML
     description = RichTextField()
-    summary_description = RichTextField()
-    rule_description = RichTextField()
-    schedule_description = RichTextField(null=True)
+    # summary_description = RichTextField()
+    # rule_description = RichTextField()
+    # schedule_description = RichTextField(null=True)
     # [{input: "test", output: "123"}, {input: "test123", output: "456"}]
     samples = JSONField()
     test_case_id = models.TextField()
