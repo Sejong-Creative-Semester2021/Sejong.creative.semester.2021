@@ -23,8 +23,9 @@
           -->
           
           <b-tabs content-class="mt-3" fill>
-            <b-tab title="대회안내">
-              <p v-html=problem.description></p>
+            <b-tab title="대회안내" id="contest-content">
+              <p class="subtitle">{{'대회 주요 일정'}}</p>
+              <p class="content" v-html=problem.schedule_description></p>
               <b-tabs content-class="mt-3" fill>
                 <b-tab title="개요"><p class="content" v-html=problem.summary_description></p></b-tab>
                 <b-tab title="규칙"><p class="content" v-html=problem.rule_description></p></b-tab>
@@ -34,17 +35,16 @@
 
             <b-tab title="데이터">
               <p class="subtitle">{{'설명'}}</p>
-              <b-card>
+              <b-card class="data-card">
                 <b-text>
-                  This will always be an aspect of
-                  except when the content is too tall.
+                  <p class="content" v-html=problem.data_description></p>
                 </b-text>
               </b-card>
+              <b-button class="download-button" variant="light" name="Download Data" @click="downloadData(problem.id)">다운로드</b-button>
               <p class="subtitle">{{'상세'}}</p>
                 <b-card>
-                  <v-btn right icon="download" name="Download Data"
-                      @click.native="downloadData(problem.id)">Download</v-btn>
-              </b-card>
+                  
+                </b-card>
             </b-tab>
             <b-tab title="리더보드">
               <Table :data="dataRank" :columns="columns" :loading="loadingTable" size="large"></Table>
@@ -57,7 +57,7 @@
                   name="file"
                   :data="{id: problem._id}"
                   :show-file-list="true">
-                  <button size="small" type="primary" icon="el-icon-fa-upload">Choose File</button>
+                  <b-button class="download-button" variant="light">파일 제출</b-button>
                 </upload>
                 <!-- <v-file-input truncate-length="15" @change="uploadFile"></v-file-input> -->
                 <v-file-input
@@ -703,8 +703,18 @@
   }
 
   .subtitle{
-    font-size: 20px;
+    font-size: 18px;
     font-weight: bold;
+  }
+  
+  .data-card{
+    margin-top: 15px;
+    margin-bottom: 15px;
+  }
+
+  .download-button{
+    font-weight: bold;
+    float: right;
   }
 
   #problem-content {
@@ -741,6 +751,16 @@
         border-style: solid;
         background: transparent;
       }
+    }
+  }
+
+  #contest-content{
+    text-align: center;
+    .subtitle{
+      margin-top: 50px;
+    }
+    p.content {
+      margin-bottom: 50px;
     }
   }
 
