@@ -789,6 +789,12 @@ class FileProcessor(object):
         
         zip_file.extractall(data_dir)
 
+        file_name = os.path.join(data_dir, data_id + ".zip")
+        logger.info("file_name={}".format(file_name))
+        with zipfile.ZipFile(file_name, "w") as file:
+            for data in name_list:
+                file.write(f"{data_dir}/{data}", data)
+
         # for item in name_list:
         #     with open(os.path.join(data_dir, item), "w") as f:
         #         open_file=zip_file.open(f"{dir}{item}")
@@ -829,14 +835,15 @@ class DataFileAPI(CSRFExemptAPIView, FileProcessor):
         if not os.path.isdir(data_dir):
             return self.error("Data does not exists")
 
-        name_list=os.listdir(data_dir)
-        logger.info("name_list={}".format(name_list))
-        os.makedirs(settings.ZIP_DIR)
-        file_name = os.path.join(settings.ZIP_DIR, problem.data_id + ".zip")
+        # name_list=os.listdir(data_dir)
+        # logger.info("name_list={}".format(name_list))
+        # zip_dir=os.path.join(settings.ZIP_DIR, problem.data_id)
+        # os.makedirs(zip_dir)
+        file_name = os.path.join(data_dir, problem.data_id + ".zip")
         logger.info("file_name={}".format(file_name))
-        with zipfile.ZipFile(file_name, "w") as file:
-            for data in name_list:
-                file.write(f"{data_dir}/{data}", data)
+        # with zipfile.ZipFile(file_name, "w") as file:
+        #     for data in name_list:
+        #         file.write(f"{data_dir}/{data}", data)
         response = StreamingHttpResponse(FileWrapper(open(file_name, "rb")),
                                          content_type="application/octet-stream")
 
