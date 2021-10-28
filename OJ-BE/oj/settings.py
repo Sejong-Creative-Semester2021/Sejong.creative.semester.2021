@@ -127,6 +127,7 @@ STATIC_URL = '/public/'
 
 AUTH_USER_MODEL = 'account.User'
 
+ZIP_DIR = os.path.join(DATA_DIR, "zip")
 TEST_CASE_DIR = os.path.join(DATA_DIR, "test_case")
 PREDICT_DIR = os.path.join(DATA_DIR, "predict")
 SOLUTION_DIR = os.path.join(DATA_DIR, "solution")

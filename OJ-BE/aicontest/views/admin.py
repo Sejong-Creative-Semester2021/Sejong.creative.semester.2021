@@ -825,12 +825,15 @@ class DataFileAPI(CSRFExemptAPIView, FileProcessor):
             ensure_created_by(problem, request.user)
 
         data_dir = os.path.join(settings.DATA_DIR, problem.data_id)
+        logger.info("data_dir={}".format(data_dir))
         if not os.path.isdir(data_dir):
             return self.error("Data does not exists")
 
         name_list=os.listdir(data_dir)
         logger.info("name_list={}".format(name_list))
-        file_name = os.path.join(data_dir, problem.data_id + ".zip")
+        os.makedirs(settings.ZIP_DIR)
+        file_name = os.path.join(settings.ZIP_DIR, problem.data_id + ".zip")
+        logger.info("file_name={}".format(file_name))
         with zipfile.ZipFile(file_name, "w") as file:
             for data in name_list:
                 file.write(f"{data_dir}/{data}", data)
