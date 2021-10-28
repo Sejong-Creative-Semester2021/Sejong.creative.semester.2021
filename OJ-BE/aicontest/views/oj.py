@@ -1,11 +1,21 @@
 import random
 from django.db.models import Q, Count
-from utils.api import APIView
+from utils.api import APIView, CSRFExemptAPIView
 from account.decorators import check_contest_permission
 from ..models import AIProblemTag, AIProblem, AIProblemRuleType
-from ..serializers import ProblemSerializer, TagSerializer, ProblemSafeSerializer
+from ..serializers import ProblemSerializer, TagSerializer, ProblemSafeSerializer, FileUploadForm
 from contest.models import ContestRuleType
 
+from django.conf import settings
+from utils.shortcuts import rand_str, natural_sort_key
+import os
+import json
+import csv
+# import pandas as pd
+# import numpy as np
+
+import logging
+logger=logging.getLogger(__name__)
 
 class ProblemTagAPI(APIView):
     def get(self, request):
@@ -44,7 +54,28 @@ class ProblemAPI(APIView):
                     problem["my_status"] = acm_problems_status.get(str(problem["id"]), {}).get("status")
                 else:
                     problem["my_status"] = oi_problems_status.get(str(problem["id"]), {}).get("status")
+    
+    # def post(self, request):
+    #     data = request.data
+    #     _id = data["problemID"]
+    #     csv_file = data["formdata"]
+    #     logger.info("data={}".format(data))
+    #     logger.info("data={}".format(data["problemID"]))
+    #     logger.info("data={}".format(data["formdata"]))
+    #     if not _id:
+    #         return self.error("Display ID is required")
 
+    #     error_info = self.common_checks(request)
+    #     if error_info:
+    #         return self.error(error_info)
+
+    #     # todo check filename and score info
+    #     problem = AIProblem.objects.create(**data)
+
+    #     logger.info("data={}".format(problem))
+
+    #     return self.success(ProblemSerializer(problem).data)
+        
     def get(self, request):
         # 问题详情页
         problem_id = request.GET.get("problem_id")
@@ -118,3 +149,78 @@ class ContestProblemAPI(APIView):
         else:
             data = ProblemSafeSerializer(contest_problems, many=True).data
         return self.success(data)
+
+class TestCaseZipProcessor(object):
+    def process_csv(self, uploaded_csv_file, dir=""):
+        logger.info("in_process_csv")
+        predict_id = rand_str()
+        predict_dir = os.path.join(settings.PREDICT_DIR, predict_id)
+        os.makedirs(predict_dir)
+        os.chmod(predict_dir, 0o710)
+        logger.info("dif={}".format(predict_dir))
+
+        with open(os.path.join(predict_dir, "predict.csv"), "w") as f:
+            open_file=open(uploaded_csv_file, "r")
+            logger.info("open_file={}".format(open_file))
+            rr = csv.reader(open_file, delimiter=',')
+            logger.info("rr={}".format(rr))
+            wr = csv.writer(f)
+            logger.info("wr={}".format(wr))
+            wr.writerows(rr)
+            
+        # with open(os.path.join(predict_dir, "predict.csv"), "w") as f:
+        #     f.write(uploaded_csv_file)
+
+        os.chmod(os.path.join(predict_dir, uploaded_csv_file), 0o640)
+
+        info = []
+
+        return info, predict_id
+
+
+class FileAPI(CSRFExemptAPIView, TestCaseZipProcessor):
+    request_parsers = ()
+    logger.info("inin")
+    def post(self, request):
+        logger.info("in_post")
+        form = FileUploadForm(request.POST, request.FILES)
+        logger.info("form={}".format(form))
+
+        if form.is_valid():
+            id = form.cleaned_data["id"] 
+            file = form.cleaned_data["file"]
+        else:
+            return self.error("Upload failed")
+
+        logger.info("file={}".format(file))
+        tmp_file = f"/tmp/{rand_str()}.csv"
+        logger.info("tmp_file={}".format(tmp_file))
+        
+        with open(tmp_file, "wb") as f:
+            for chunk in file:
+                # logger.info("chunk={}".format(chunk))
+                f.write(chunk)
+                
+        info, predict_id = self.process_csv(tmp_file)
+
+        logger.info("id={}".format(id))
+        csv = AIProblem.objects.get(_id=id)
+        
+        logger.info("csv={}".format(csv))
+        logger.info("csv={}".format(AIProblem.objects.values()))
+        logger.info("solution_id={}".format(csv.solution_id))
+        logger.info("os_sol={}".format(os.path.join(settings.SOLUTION_DIR, str(csv.solution_id), "solution.csv")))
+        logger.info("os_pre={}".format(os.path.join(settings.PREDICT_DIR, predict_id, "predict.csv")))
+
+        # y_true = np.array(pd.read_csv(os.path.join(settings.SOLUTION_DIR, csv.solution_id, "solution.csv")))
+        # y_pred = np.array(pd.read_csv(os.path.join(settings.PREDICT_DIR, predict_id, "predict.csv")))
+
+        # logger.info("y_true={}".format(y_true))
+        # logger.info("y_pred={}".format(y_pred))
+
+        # y_score = (y_true.astype(bool) == y_pred.astype(bool)).mean()
+        # logger.info("y_score={}".format(y_score))
+        
+        os.remove(tmp_file)
+
+        return self.success({"id": predict_id, "info": info})

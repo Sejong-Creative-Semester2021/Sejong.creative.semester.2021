@@ -594,8 +594,6 @@ class ImportProblemAPI(CSRFExemptAPIView, TestCaseZipProcessor):
                         problem_obj = Problem.objects.create(_id=problem_info["display_id"],
                                                              title=problem_info["title"],
                                                              description=problem_info["description"]["value"],
-                                                             summary_description=problem_info["summary_description"][
-                                                                 "value"],
                                                              rule_description=problem_info["rule_description"][
                                                                  "value"],
                                                              schedule_description=problem_info["schedule_description"]["value"],
@@ -650,7 +648,6 @@ class FPSProblemImport(CSRFExemptAPIView):
         Problem.objects.create(_id=f"fps-{rand_str(4)}",
                                title=problem_data["title"],
                                description=problem_data["description"],
-                               summary_description=problem_data["input"],
                                rule_description=problem_data["output"],
                                schedule_description=problem_data["schedule"],
                                testhint=problem_data["testhint"],

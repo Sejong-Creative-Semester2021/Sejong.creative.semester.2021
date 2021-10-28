@@ -10,7 +10,16 @@ from utils.serializers import LanguageNameMultiChoiceField, SPJLanguageNameChoic
 from .models import AIProblem, AIProblemRuleType, AIProblemTag, AIProblemIOMode
 from .utils import parse_problem_template
 
+class DataFileUploadForm(forms.Form):
+    file = forms.FileField()
 
+class SolutionFileUploadForm(forms.Form):
+    file = forms.FileField()
+
+class FileUploadForm(forms.Form):
+    id = forms.CharField(max_length=32)
+    file = forms.FileField()
+    
 class TestCaseUploadForm(forms.Form):
     spj = forms.CharField(max_length=12)
     file = forms.FileField()
@@ -75,6 +84,9 @@ class CreateOrEditProblemSerializer(serializers.Serializer):
     hint = serializers.CharField(allow_blank=True, allow_null=True)
     source = serializers.CharField(max_length=256, allow_blank=True, allow_null=True)
     share_submission = serializers.BooleanField()
+    # csv_file = serializers.FileField()
+    solution_id = serializers.CharField(max_length=32)
+    data_id = serializers.CharField(max_length=32)
 
 
 class CreateProblemSerializer(CreateOrEditProblemSerializer):
@@ -128,7 +140,7 @@ class ProblemSerializer(BaseProblemSerializer):
     class Meta:
         model = AIProblem
         exclude = ("test_case_score", "test_case_id", "visible", "is_public",
-                   "spj_code", "spj_version", "spj_compile_ok")
+                   "spj_code", "spj_version", "spj_compile_ok", "solution_id")
 
 
 class ProblemSafeSerializer(BaseProblemSerializer):
@@ -138,7 +150,7 @@ class ProblemSafeSerializer(BaseProblemSerializer):
         model = AIProblem
         exclude = ("test_case_score", "test_case_id", "visible", "is_public",
                    "spj_code", "spj_version", "spj_compile_ok",
-                   "difficulty", "submission_number", "accepted_number", "statistic_info")
+                   "difficulty", "submission_number", "accepted_number", "statistic_info","solution_id")
 
 
 class ContestProblemMakePublicSerializer(serializers.Serializer):
@@ -174,8 +186,8 @@ class ExportProblemSerializer(serializers.ModelSerializer):
     def get_description(self, obj):
         return self._html_format_value(obj.contest_description)
 
-    def get_input_description(self, obj):
-        return self._html_format_value(obj.summary_description)
+    # def get_input_description(self, obj):
+    #     return self._html_format_value(obj.summary_description)
 
     def get_output_description(self, obj):
         return self._html_format_value(obj.rule_description)
@@ -216,7 +228,7 @@ class ExportProblemSerializer(serializers.ModelSerializer):
                   "rule_description", "schedule_description",
                   "start_time", "end_time", "reward_description", "data_description",
                   "test_case_score", "hint", "memory_limit", "samples",
-                  "template", "spj", "rule_type", "source", "template")
+                  "template", "spj", "rule_type", "source", "template", "solution_id")
 
 
 class AddContestProblemSerializer(serializers.Serializer):
@@ -264,7 +276,7 @@ class ImportProblemSerializer(serializers.Serializer):
     display_id = serializers.CharField(max_length=128)
     title = serializers.CharField(max_length=128)
     contest_description = FormatValueSerializer()
-    summary_description = FormatValueSerializer()
+    # summary_description = FormatValueSerializer()
     rule_description = FormatValueSerializer()
     schedule_description = FormatValueSerializer()
     start_time = serializers.DateTimeField()

@@ -36,6 +36,7 @@ import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import '@/styles/app.scss'
+import vuetify from '@/plugins/vuetify'
 
 // import Vuetify from '@/plugins/vuetify'
 
@@ -72,4 +73,4 @@ Vue.prototype.$error = (s) => Vue.prototype.$Message.error(s)
 Vue.prototype.$info = (s) => Vue.prototype.$Message.info(s)
 Vue.prototype.$success = (s) => Vue.prototype.$Message.success(s)
 
-new Vue(Vue.util.extend({router, store, i18n}, App)).$mount('#app')
+new Vue(Vue.util.extend({router, store, i18n, vuetify}, App)).$mount('#app')

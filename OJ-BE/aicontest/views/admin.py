@@ -1,6 +1,7 @@
 import hashlib
 import json
 import os
+import csv
 # import shutil
 import tempfile
 import zipfile
@@ -27,7 +28,7 @@ from ..serializers import (CreateContestProblemSerializer, CompileSPJSerializer,
                            ProblemAdminSerializer, TestCaseUploadForm, ContestProblemMakePublicSerializer,
                            AddContestProblemSerializer, ExportProblemSerializer,
                            ExportProblemRequestSerialzier, UploadProblemForm, ImportProblemSerializer,
-                           FPSProblemSerializer)
+                           FPSProblemSerializer, SolutionFileUploadForm, DataFileUploadForm)
 from ..utils import TEMPLATE_BASE, build_problem_template
 
 import logging
@@ -43,7 +44,6 @@ class TestCaseZipProcessor(object):
         test_case_list = self.filter_name_list(name_list, spj=spj, dir=dir)
         if not test_case_list:
             raise APIError("Empty file")
-
         test_case_id = rand_str()
         test_case_dir = os.path.join(settings.TEST_CASE_DIR, test_case_id)
         os.mkdir(test_case_dir)
@@ -52,7 +52,7 @@ class TestCaseZipProcessor(object):
         size_cache = {}
         md5_cache = {}
 
-        for item in test_case_list:
+        for item in name_list:
             with open(os.path.join(test_case_dir, item), "wb") as f:
                 content = zip_file.read(f"{dir}{item}").replace(b"\r\n", b"\n")
                 size_cache[item] = len(content)
@@ -216,7 +216,10 @@ class ProblemAPI(ProblemBase):
         # todo check filename and score info
         tags = data.pop("tags")
         data["created_by"] = request.user
+        logger.info("data={}".format(data))
+        
         problem = AIProblem.objects.create(**data)
+        logger.info("problem={}".format(problem))
 
         for item in tags:
             try:
@@ -709,6 +712,174 @@ class FPSProblemImport(CSRFExemptAPIView):
                 problem_data["test_case_score"] = score
                 self._create_problem(problem_data, request.user)
         return self.success({"import_count": len(problems)})
+# 추가 부분
+class CSVFileProcessor(object):
+    def process_csv(self, uploaded_csv_file, dir=""):
+        logger.info("admin_in_process_csv")
+        
+        solution_id = rand_str()
+        solution_dir = os.path.join(settings.SOLUTION_DIR, solution_id)
+        os.makedirs(solution_dir)
+        os.chmod(solution_dir, 0o710)
+        logger.info("admin_dif={}".format(solution_dir))
+
+        with open(os.path.join(solution_dir, "solution.csv"), "w") as f:
+            open_file=open(uploaded_csv_file, "r")
+            logger.info("admin_open_file={}".format(open_file))
+            rr = csv.reader(open_file, delimiter=',')
+            logger.info("admin_rr={}".format(rr))
+            wr = csv.writer(f)
+            logger.info("admin_wr={}".format(wr))
+            wr.writerows(rr)
+
+        os.chmod(os.path.join(solution_dir, uploaded_csv_file), 0o640)
+
+        info = []
+
+        return info, solution_id
+
+
+class FileAPI(CSRFExemptAPIView, CSVFileProcessor):
+    request_parsers = ()
+    logger.info("admin_inin")
+    def post(self, request):
+        logger.info("admin_in_post")
+        logger.info("admin_request={}".format(request))
+        logger.info("admin_request_post={}".format(request.POST))
+        logger.info("admin_request_files={}".format(request.FILES))
+        form = SolutionFileUploadForm(request.POST, request.FILES)
+        logger.info("admin_form={}".format(form))
+
+        if form.is_valid():
+            file = form.cleaned_data["file"]
+        else:
+            return self.error("Upload failed")
+        logger.info("admin_file={}".format(file))
+
+        tmp_file = f"/tmp/{rand_str()}.csv"
+        logger.info("admin_tmp_file={}".format(tmp_file))
+
+        with open(tmp_file, "wb") as f:
+            for chunk in file:
+                logger.info("chunk={}".format(chunk))
+                f.write(chunk)
+
+        info, solution_id = self.process_csv(tmp_file)
+        logger.info("id={}".format(id))
+        logger.info("solution_id={}".format(solution_id))
+        logger.info("values={}".format(AIProblem.objects.values()))
+        # csv = AIProblem.objects.get(_id=id)
+        # csv.solution_id = solution_id
+        os.remove(tmp_file)
+        return self.success({"id": solution_id, "info": info})
+
+class FileProcessor(object):
+    def process_data(self, uploaded_csv_file, dir=""):
+        try:
+            zip_file = zipfile.ZipFile(uploaded_csv_file, "r")
+        except zipfile.BadZipFile:
+            raise APIError("Bad zip file")
+        name_list = zip_file.namelist()
+        
+        data_id = rand_str()
+        data_dir = os.path.join(settings.DATA_DIR, data_id)
+        os.makedirs(data_dir)
+        os.chmod(data_dir, 0o710)
+        logger.info("admin_dif={}".format(data_dir))
+        
+        zip_file.extractall(data_dir)
+
+        file_name = os.path.join(data_dir, data_id + ".zip")
+        logger.info("file_name={}".format(file_name))
+        with zipfile.ZipFile(file_name, "w") as file:
+            for data in name_list:
+                file.write(f"{data_dir}/{data}", data)
+
+        # for item in name_list:
+        #     with open(os.path.join(data_dir, item), "w") as f:
+        #         open_file=zip_file.open(f"{dir}{item}")
+        #         logger.info("open_file={}".format(open_file))
+        #         rr = csv.reader(open_file, delimiter=',')
+        #         for item in rr:
+        #             logger.info("rr={}".format(item))
+        #         wr = csv.writer(f)
+        #         logger.info("admin_wr={}".format(wr))
+        #         wr.writerows(rr)
+
+        os.chmod(os.path.join(data_dir, uploaded_csv_file), 0o640)
+
+        info = []
+
+        return info, data_id
+
+class DataFileAPI(CSRFExemptAPIView, FileProcessor):
+    request_parsers = ()
+    logger.info("data_inin")
+
+    def get(self, request):
+        problem_id = request.GET.get("problem_id")
+        if not problem_id:
+            return self.error("Parameter error, problem_id is required")
+        try:
+            problem = AIProblem.objects.get(id=problem_id)
+        except AIProblem.DoesNotExist:
+            return self.error("Problem does not exists")
+
+        if problem.contest:
+            ensure_created_by(problem.contest, request.user)
+        else:
+            ensure_created_by(problem, request.user)
+
+        data_dir = os.path.join(settings.DATA_DIR, problem.data_id)
+        logger.info("data_dir={}".format(data_dir))
+        if not os.path.isdir(data_dir):
+            return self.error("Data does not exists")
+
+        # name_list=os.listdir(data_dir)
+        # logger.info("name_list={}".format(name_list))
+        # zip_dir=os.path.join(settings.ZIP_DIR, problem.data_id)
+        # os.makedirs(zip_dir)
+        file_name = os.path.join(data_dir, problem.data_id + ".zip")
+        logger.info("file_name={}".format(file_name))
+        # with zipfile.ZipFile(file_name, "w") as file:
+        #     for data in name_list:
+        #         file.write(f"{data_dir}/{data}", data)
+        response = StreamingHttpResponse(FileWrapper(open(file_name, "rb")),
+                                         content_type="application/octet-stream")
+
+        response["Content-Disposition"] = f"attachment; filename=problem_{problem.id}_data.zip"
+        response["Content-Length"] = os.path.getsize(file_name)
+        return response
+    
+    def post(self, request):
+        logger.info("data_in_post")
+        logger.info("data_request={}".format(request))
+        form = DataFileUploadForm(request.POST, request.FILES)
+        logger.info("data_form={}".format(form))
+
+        if form.is_valid():
+            file = form.cleaned_data["file"]
+        else:
+            return self.error("Upload failed")
+        logger.info("admin_file={}".format(file))
+
+        tmp_file = f"/tmp/{rand_str()}.zip"
+        logger.info("admin_tmp_file={}".format(tmp_file))
+
+        with open(tmp_file, "wb") as f:
+            for chunk in file:
+                logger.info("chunk={}".format(chunk))
+                f.write(chunk)
+
+        info, data_id = self.process_data(tmp_file)
+        # logger.info("id={}".format(id))
+        logger.info("data_id={}".format(data_id))
+        # logger.info("values={}".format(AIProblem.objects.values()))
+        # csv = AIProblem.objects.get(_id=id)
+        # csv.solution_id = solution_id
+        os.remove(tmp_file)
+
+        return self.success({"id": data_id, "info": info})
 
 # 추가 부분
 # 파일 경로 불러오기, y_score db에 저장

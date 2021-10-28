@@ -10,7 +10,6 @@ from utils.serializers import LanguageNameMultiChoiceField, SPJLanguageNameChoic
 from .models import Problem, ProblemRuleType, ProblemTag, ProblemIOMode
 from .utils import parse_problem_template
 
-
 class TestCaseUploadForm(forms.Form):
     spj = forms.CharField(max_length=12)
     file = forms.FileField()
@@ -49,8 +48,8 @@ class CreateOrEditProblemSerializer(serializers.Serializer):
     _id = serializers.CharField(max_length=32, allow_blank=True, allow_null=True)
     title = serializers.CharField(max_length=1024)
     description = serializers.CharField()
-    summary_description = serializers.CharField()
-    rule_description = serializers.CharField()
+    # summary_description = serializers.CharField()
+    # rule_description = serializers.CharField()
     schedule_description = serializers.CharField()
     samples = serializers.ListField(child=CreateSampleSerializer(), allow_empty=False)
     test_case_id = serializers.CharField(max_length=32)
@@ -145,7 +144,7 @@ class ContestProblemMakePublicSerializer(serializers.Serializer):
 class ExportProblemSerializer(serializers.ModelSerializer):
     display_id = serializers.SerializerMethodField()
     description = serializers.SerializerMethodField()
-    summary_description = serializers.SerializerMethodField()
+    # summary_description = serializers.SerializerMethodField()
     rule_description = serializers.SerializerMethodField()
     schedule_description = serializers.SerializerMethodField()
     test_case_score = serializers.SerializerMethodField()
@@ -164,8 +163,8 @@ class ExportProblemSerializer(serializers.ModelSerializer):
     def get_description(self, obj):
         return self._html_format_value(obj.description)
 
-    def get_input_description(self, obj):
-        return self._html_format_value(obj.summary_description)
+    # def get_input_description(self, obj):
+    #     return self._html_format_value(obj.summary_description)
 
     def get_output_description(self, obj):
         return self._html_format_value(obj.rule_description)
@@ -197,7 +196,7 @@ class ExportProblemSerializer(serializers.ModelSerializer):
     class Meta:
         model = Problem
         fields = ("display_id", "title", "description", "tags",
-                  "summary_description", "rule_description", "memory_limit", "samples",
+                   "rule_description", "memory_limit", "samples",
                   "template", "spj", "rule_type", "source", "template")
 
 
@@ -246,7 +245,7 @@ class ImportProblemSerializer(serializers.Serializer):
     display_id = serializers.CharField(max_length=128)
     title = serializers.CharField(max_length=128)
     description = FormatValueSerializer()
-    summary_description = FormatValueSerializer()
+    # summary_description = FormatValueSerializer()
     rule_description = FormatValueSerializer()
     schedule_description = FormatValueSerializer()
     testhint = FormatValueSerializer()
