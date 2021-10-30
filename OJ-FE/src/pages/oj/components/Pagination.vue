@@ -51,12 +51,26 @@
 <style scoped lang="less">
   .page {
     margin: 20px;
-    float: right;
+    text-align: center;
   }
 </style>
 
 <style lang="less">
   .ivu-page-options-sizer {
     min-width: 85px;
+  }
+  .ivu-page-item:hover{
+    border-color: gray !Important;
+  }
+  .ivu-page-prev:hover{
+    border-color: gray !Important;
+  }
+  .ivu-page-next:hover{
+    border-color: gray !Important;
+  }
+  .ivu-page-item-active {
+    background: gray !Important;
+    border: gray !Important;
+    color: white !Important;
   }
 </style>

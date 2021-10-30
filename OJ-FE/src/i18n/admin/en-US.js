@@ -4,6 +4,7 @@ export const m = {
   General: 'General',
   User: 'User',
   Announcement: 'Announcement',
+  FAQ: 'FAQ',
   System_Config: 'System Config',
   Judge_Server: 'Judge Server',
   Prune_Test_Case: 'Prune Test Case',
@@ -36,6 +37,12 @@ export const m = {
   Announcement_Title: 'Title',
   Announcement_Content: 'Content',
   Announcement_visible: 'Visible',
+  Announcement_important: 'Important',
+  // FAQ.vue
+  General_FAQ: 'FAQ',
+  FAQ_Question: 'Question',
+  FAQ_Answer: 'Answer',
+  FAQ_visible: 'Visible',
   // Conf.vue
   SMTP_Config: 'SMTP Config',
   Server: 'Server',

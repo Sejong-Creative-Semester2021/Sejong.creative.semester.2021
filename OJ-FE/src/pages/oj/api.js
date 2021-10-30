@@ -13,14 +13,23 @@ export default {
       params
     })
   },
-  getAnnouncementList (offset, limit) {
+  getAnnouncementList (offset, limit, searchParams) {
     let params = {
+      paging: true,
       offset: offset,
       limit: limit
     }
+    Object.keys(searchParams).forEach((element) => {
+      if (searchParams[element]) {
+        params[element] = searchParams[element]
+      }
+    })
     return ajax('announcement', 'get', {
       params
     })
+  },
+  getFAQList () {
+    return ajax('faq', 'get')
   },
   login (data) {
     return ajax('login', 'post', {
