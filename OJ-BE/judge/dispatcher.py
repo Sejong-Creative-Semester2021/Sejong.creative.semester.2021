@@ -199,7 +199,6 @@ class JudgeDispatcher(DispatcherBase):
                 self.update_problem_status()
 
         # 至此判题结束，尝试处理任务队列中剩余的任务
-        # 여기에서 문제를 판정하고, 작업 대열의 남은 작업을 처리합니다
         process_pending_task()
 
     def update_problem_status_rejudge(self):

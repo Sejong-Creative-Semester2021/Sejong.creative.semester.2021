@@ -7,6 +7,7 @@ import i18n from '@/i18n'
 import VueClipboard from 'vue-clipboard2'
 import VueAnalytics from 'vue-analytics'
 import { GOOGLE_ANALYTICS_ID } from '@/utils/constants'
+import VueDayjs from 'vue-dayjs-plugin'
 
 import iView from 'iview'
 import 'iview/dist/styles/iview.css'
@@ -16,6 +17,7 @@ import VerticalMenu from '@oj/components/verticalMenu/verticalMenu.vue'
 import VerticalMenuItem from '@oj/components/verticalMenu/verticalMenu-item.vue'
 import '@/styles/index.less'
 
+import vuetify from '@/plugins/vuetify'
 import highlight from '@/plugins/highlight'
 import katex from '@/plugins/katex'
 import filters from '@/utils/filters.js'
@@ -35,8 +37,6 @@ import 'echarts/lib/component/markPoint'
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
-import '@/styles/app.scss'
-import vuetify from '@/plugins/vuetify'
 
 // import Vuetify from '@/plugins/vuetify'
 
@@ -49,7 +49,7 @@ Vue.use(iView, {
   i18n: (key, value) => i18n.t(key, value)
 })
 
-// Vue.use(Vuetify)
+Vue.use(VueDayjs)
 Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
 Vue.use(VueClipboard)

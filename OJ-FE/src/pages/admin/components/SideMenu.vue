@@ -9,6 +9,7 @@
       <template slot="title"><i class="el-icon-menu"></i>{{$t('m.General')}}</template>
       <el-menu-item index="/user">{{$t('m.User')}}</el-menu-item>
       <el-menu-item index="/announcement">{{$t('m.Announcement')}}</el-menu-item>
+      <el-menu-item index="/faq">{{$t('m.FAQ')}}</el-menu-item>
       <el-menu-item index="/conf">{{$t('m.System_Config')}}</el-menu-item>
       <el-menu-item index="/judge-server">{{$t('m.Judge_Server')}}</el-menu-item>
       <el-menu-item index="/prune-test-case">{{$t('m.Prune_Test_Case')}}</el-menu-item>
@@ -25,12 +26,10 @@
       <el-menu-item index="/contest">{{$t('m.Contest_List')}}</el-menu-item>
       <el-menu-item index="/contest/create">{{$t('m.Create_Contest')}}</el-menu-item>
     </el-submenu>
-
-    <el-submenu index="aicontest" v-if="hasProblemPermission">
-      <template slot="title"><i class="el-icon-fa-bars"></i>{{$t('AIContest')}}</template>
-      <el-menu-item index="/aicontest">{{$t('m.Problem_List')}}</el-menu-item>
-      <el-menu-item index="/aicontest/create">{{$t('m.Create_Problem')}}</el-menu-item>
-
+    <el-submenu index="recruit" v-if="hasRecruitPermission">
+      <template slot="title"><i class="el-icon-fa-clipboard"></i>Recruit</template>
+      <el-menu-item index="/recruit">Recruit List</el-menu-item>
+      <el-menu-item index="/recruit/create">Create RecruiteList</el-menu-item>
     </el-submenu>
   </el-menu>
 </template>
@@ -49,7 +48,7 @@
       this.currentPath = this.$route.path
     },
     computed: {
-      ...mapGetters(['user', 'isSuperAdmin', 'hasProblemPermission'])
+      ...mapGetters(['user', 'isSuperAdmin', 'hasProblemPermission', 'hasRecruitPermission'])
     }
   }
 </script>

@@ -100,7 +100,7 @@
 </template>
 
 <script>
-  import {mapGetters} from 'vuex'
+  import {mapGetters, mapActions} from 'vuex'
   import api from '@oj/api'
   import utils from '@/utils/utils'
   import { ProblemMixin } from '@oj/components/mixins'

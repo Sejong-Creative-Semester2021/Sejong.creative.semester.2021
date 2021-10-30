@@ -8,6 +8,16 @@ axios.defaults.baseURL = '/api'
 axios.defaults.xsrfHeaderName = 'X-CSRFToken'
 axios.defaults.xsrfCookieName = 'csrftoken'
 
+let url = 'http://localhost:8000/' // 장고 서버 주소
+
+axios.get(url)
+.then(function (response) {
+  console.log(response)
+})
+.catch(function (response) {
+  console.log(response)
+})
+
 export default {
   // 登录
   login (username, password) {
@@ -34,6 +44,49 @@ export default {
       }
     })
   },
+  getFAQList (offset, limit) {
+    return ajax('admin/faq', 'get', {
+      params: {
+        paging: true,
+        offset,
+        limit
+      }
+    })
+  },
+  deleteFAQ (id) {
+    return ajax('admin/faq', 'delete', {
+      params: {
+        id
+      }
+    })
+  },
+  // 修改公告
+  updateFAQ (data) {
+    return ajax('admin/faq', 'put', {
+      data
+    })
+  },
+  // 添加公告
+  createFAQ (data) {
+    return ajax('admin/faq', 'post', {
+      data
+    })
+  },
+  getRecruitList (offset, limit) {
+    return ajax('admin/recruit', 'get', {
+      params: {
+        paging: true,
+        offset,
+        limit
+      }
+    })
+  },
+  createRecruit (data) {
+    return ajax('admin/recruit', 'post', {
+      data
+    })
+  },
+
   // 删除公告
   deleteAnnouncement (id) {
     return ajax('admin/announcement', 'delete', {
@@ -240,36 +293,6 @@ export default {
   getProblemList (params) {
     params = utils.filterEmptyValue(params)
     return ajax('admin/problem', 'get', {
-      params
-    })
-  },
-  createAIProblem (data) {
-    return ajax('admin/aicontest', 'post', {
-      data
-    })
-  },
-  editAIProblem (data) {
-    return ajax('admin/aicontest', 'put', {
-      data
-    })
-  },
-  deleteAIProblem (id) {
-    return ajax('admin/aicontest', 'delete', {
-      params: {
-        id
-      }
-    })
-  },
-  getAIProblem (id) {
-    return ajax('admin/aicontest', 'get', {
-      params: {
-        id
-      }
-    })
-  },
-  getAIProblemList (params) {
-    params = utils.filterEmptyValue(params)
-    return ajax('admin/aicontest', 'get', {
       params
     })
   },

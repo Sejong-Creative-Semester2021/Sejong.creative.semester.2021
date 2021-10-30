@@ -28,7 +28,7 @@ DEFAULT_PROBLEM_DATA = {"_id": "A-110", "title": "test", "contest_description": 
                                              "input_size": 0, "score": 0}],
                         "io_mode": {"io_mode": AIProblemIOMode.standard, "input": "input.txt", "output": "output.txt"},
                         "share_submission": False,
-                        "rule_type": "ACM", "hint": "<p>test</p>", "source": "test", "solution_id": "499b26290cc7994e0b497212e842ea86"}
+                        "rule_type": "ACM", "hint": "<p>test</p>", "source": "test"}
 
 
 class ProblemCreateTestBase(APITestCase):

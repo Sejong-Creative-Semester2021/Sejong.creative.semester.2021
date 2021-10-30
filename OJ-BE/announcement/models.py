@@ -12,6 +12,7 @@ class Announcement(models.Model):
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     last_update_time = models.DateTimeField(auto_now=True)
     visible = models.BooleanField(default=True)
+    important = models.BooleanField(default=False)
 
     class Meta:
         db_table = "announcement"

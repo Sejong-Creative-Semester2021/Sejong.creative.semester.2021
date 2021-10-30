@@ -10,6 +10,7 @@ from utils.serializers import LanguageNameMultiChoiceField, SPJLanguageNameChoic
 from .models import Problem, ProblemRuleType, ProblemTag, ProblemIOMode
 from .utils import parse_problem_template
 
+
 class TestCaseUploadForm(forms.Form):
     spj = forms.CharField(max_length=12)
     file = forms.FileField()
@@ -48,8 +49,8 @@ class CreateOrEditProblemSerializer(serializers.Serializer):
     _id = serializers.CharField(max_length=32, allow_blank=True, allow_null=True)
     title = serializers.CharField(max_length=1024)
     description = serializers.CharField()
-    # summary_description = serializers.CharField()
-    # rule_description = serializers.CharField()
+    summary_description = serializers.CharField()
+    rule_description = serializers.CharField()
     schedule_description = serializers.CharField()
     samples = serializers.ListField(child=CreateSampleSerializer(), allow_empty=False)
     test_case_id = serializers.CharField(max_length=32)
@@ -67,7 +68,7 @@ class CreateOrEditProblemSerializer(serializers.Serializer):
     visible = serializers.BooleanField()
     difficulty = serializers.ChoiceField(choices=Difficulty.choices())
     tags = serializers.ListField(child=serializers.CharField(max_length=32), allow_empty=False)
-    testhint = serializers.CharField(allow_blank=True, allow_null=True)
+    hint = serializers.CharField(allow_blank=True, allow_null=True)
     source = serializers.CharField(max_length=256, allow_blank=True, allow_null=True)
     share_submission = serializers.BooleanField()
 
@@ -144,11 +145,11 @@ class ContestProblemMakePublicSerializer(serializers.Serializer):
 class ExportProblemSerializer(serializers.ModelSerializer):
     display_id = serializers.SerializerMethodField()
     description = serializers.SerializerMethodField()
-    # summary_description = serializers.SerializerMethodField()
+    summary_description = serializers.SerializerMethodField()
     rule_description = serializers.SerializerMethodField()
     schedule_description = serializers.SerializerMethodField()
     test_case_score = serializers.SerializerMethodField()
-    testhint = serializers.SerializerMethodField()
+    hint = serializers.SerializerMethodField()
     spj = serializers.SerializerMethodField()
     template = serializers.SerializerMethodField()
     source = serializers.SerializerMethodField()
@@ -163,8 +164,8 @@ class ExportProblemSerializer(serializers.ModelSerializer):
     def get_description(self, obj):
         return self._html_format_value(obj.description)
 
-    # def get_input_description(self, obj):
-    #     return self._html_format_value(obj.summary_description)
+    def get_input_description(self, obj):
+        return self._html_format_value(obj.summary_description)
 
     def get_output_description(self, obj):
         return self._html_format_value(obj.rule_description)
@@ -173,7 +174,7 @@ class ExportProblemSerializer(serializers.ModelSerializer):
         return self._html_format_value(obj.schedule_description)
 
     def get_hint(self, obj):
-        return self._html_format_value(obj.testhint)
+        return self._html_format_value(obj.hint)
 
     def get_test_case_score(self, obj):
         return [{"score": item["score"] if obj.rule_type == ProblemRuleType.OI else 100,
@@ -196,7 +197,7 @@ class ExportProblemSerializer(serializers.ModelSerializer):
     class Meta:
         model = Problem
         fields = ("display_id", "title", "description", "tags",
-                   "rule_description", "memory_limit", "samples",
+                  "summary_description", "rule_description", "memory_limit", "samples",
                   "template", "spj", "rule_type", "source", "template")
 
 
@@ -245,10 +246,10 @@ class ImportProblemSerializer(serializers.Serializer):
     display_id = serializers.CharField(max_length=128)
     title = serializers.CharField(max_length=128)
     description = FormatValueSerializer()
-    # summary_description = FormatValueSerializer()
+    summary_description = FormatValueSerializer()
     rule_description = FormatValueSerializer()
     schedule_description = FormatValueSerializer()
-    testhint = FormatValueSerializer()
+    hint = FormatValueSerializer()
     test_case_score = serializers.ListField(child=TestCaseScoreSerializer(), allow_null=True)
     # time_limit = serializers.IntegerField(min_value=1, max_value=60000)
     memory_limit = serializers.IntegerField(min_value=1, max_value=10240)
@@ -270,7 +271,7 @@ class FPSProblemSerializer(serializers.Serializer):
     description = serializers.CharField()
     input = serializers.CharField()
     output = serializers.CharField()
-    testhint = serializers.CharField(allow_blank=True, allow_null=True)
+    hint = serializers.CharField(allow_blank=True, allow_null=True)
     # time_limit = UnitSerializer()
     memory_limit = UnitSerializer()
     samples = serializers.ListField(child=CreateSampleSerializer())

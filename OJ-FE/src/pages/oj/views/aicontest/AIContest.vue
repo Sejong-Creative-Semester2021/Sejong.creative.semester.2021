@@ -23,9 +23,8 @@
           -->
           
           <b-tabs content-class="mt-3" fill>
-            <b-tab title="대회안내" id="contest-content">
-              <p class="subtitle">{{'대회 주요 일정'}}</p>
-              <p class="content" v-html=problem.schedule_description></p>
+            <b-tab title="대회안내">
+              <p v-html=problem.description></p>
               <b-tabs content-class="mt-3" fill>
                 <b-tab title="개요"><p class="content" v-html=problem.summary_description></p></b-tab>
                 <b-tab title="규칙"><p class="content" v-html=problem.rule_description></p></b-tab>
@@ -35,16 +34,19 @@
 
             <b-tab title="데이터">
               <p class="subtitle">{{'설명'}}</p>
-              <b-card class="data-card">
+              <b-card>
                 <b-text>
-                  <p class="content" v-html=problem.data_description></p>
+                  This will always be an aspect of
+                  except when the content is too tall.
                 </b-text>
               </b-card>
-              <b-button class="download-button" variant="light" name="Download Data" @click="downloadData(problem.id)">다운로드</b-button>
               <p class="subtitle">{{'상세'}}</p>
                 <b-card>
-                  
-                </b-card>
+                  <b-text>
+                    This will always be an aspect of
+                    except when the content is too tall.
+                  </b-text>
+              </b-card>
             </b-tab>
             <b-tab title="리더보드">
               <Table :data="dataRank" :columns="columns" :loading="loadingTable" size="large"></Table>
@@ -52,29 +54,13 @@
             <b-tab title="제출">
             <p class="subtitle">{{'제출'}}</p>
               <b-card>
-                <upload
-                  action="/api/upload_csv"
-                  name="file"
-                  :data="{id: problem._id}"
-                  :show-file-list="true">
-                  <b-button class="download-button" variant="light">파일 제출</b-button>
-                </upload>
-                <!-- <v-file-input truncate-length="15" @change="uploadFile"></v-file-input> -->
-                <v-file-input
-                  accept=".csv"
-                  label="Click here to select a .csv file"
-                  outlined
-                  @change="selectFile"
-                ></v-file-input>
-                <v-btn right @click="submit()">Read File</v-btn>
-                <p>{{ data }}</p>
-                <!-- <b-form-file
+                <b-form-file
                   v-model="file1"
                   placeholder="Choose a file or drop it here..."
                   drop-placeholder="Drop file here..."
                   size="lg"
                 ></b-form-file>
-                <div class="mt-3">Selected file: {{ file1 ? file1.name : '' }}</div> -->
+                <div class="mt-3">Selected file: {{ file1 ? file1.name : '' }}</div>
               </b-card>
             </b-tab>
           </b-tabs>
@@ -301,8 +287,6 @@
     mixins: [FormMixin],
     data () {
       return {
-        chosenFile: '',
-        data: null,
         // 추가 부분
         dataRank: [],
         columns: [
@@ -448,21 +432,7 @@
           this.$Loading.error()
         })
       },
-      downloadData (problemID) {
-        let url = '/admin/data_csv?problem_id=' + problemID
-        utils.downloadFile(url)
-      },
       // 추가 부분
-      importTxt () {
-        if (!this.chosenFile) { this.data = 'No File Chosen' }
-        this.data = this.chosenFile
-        console.log(this.data)
-        api.upload_file(this.problem.id, this.data)
-      },
-      uploadFile (e) {
-        // let file = e
-        console.log(e)
-      },
       getRankData (page) {
         let offset = (page - 1) * this.limit
         let bar = this.$refs.chart
@@ -568,9 +538,6 @@
           })
         }
         this.refreshStatus = setTimeout(checkStatus, 2000)
-      },
-      selectFile (file) {
-        this.chosenFile = file
       },
       submitCode () {
         if (this.code.trim() === '') {
@@ -703,18 +670,8 @@
   }
 
   .subtitle{
-    font-size: 18px;
+    font-size: 20px;
     font-weight: bold;
-  }
-  
-  .data-card{
-    margin-top: 15px;
-    margin-bottom: 15px;
-  }
-
-  .download-button{
-    font-weight: bold;
-    float: right;
   }
 
   #problem-content {
@@ -751,16 +708,6 @@
         border-style: solid;
         background: transparent;
       }
-    }
-  }
-
-  #contest-content{
-    text-align: center;
-    .subtitle{
-      margin-top: 50px;
-    }
-    p.content {
-      margin-bottom: 50px;
     }
   }
 
@@ -827,3 +774,4 @@
     height: 480px;
   }
 </style>
+

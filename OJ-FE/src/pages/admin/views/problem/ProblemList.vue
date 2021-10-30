@@ -124,6 +124,7 @@
   import api from '../../api.js'
   import utils from '@/utils/utils'
   import AddProblemComponent from './AddPublicProblem.vue'
+
   export default {
     name: 'ProblemList',
     components: {

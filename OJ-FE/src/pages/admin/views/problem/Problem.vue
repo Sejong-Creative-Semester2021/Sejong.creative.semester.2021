@@ -270,6 +270,7 @@
   import Accordion from '../../components/Accordion'
   import CodeMirror from '../../components/CodeMirror'
   import api from '../../api'
+
   export default {
     name: 'Problem',
     components: {
@@ -356,9 +357,12 @@
             this.contest = res.data.data
           })
         }
+
         this.problem.spj_language = 'C'
+
         let allLanguage = res.data.data
         this.allLanguage = allLanguage
+
         // get problem after getting languages list to avoid find undefined value in `watch problem.languages`
         if (this.mode === 'edit') {
           this.title = this.$i18n.t('m.Edit_Problem')
@@ -631,6 +635,7 @@
     .add-sample-btn {
       margin-bottom: 10px;
     }
+
   }
 </style>
 
@@ -644,3 +649,4 @@
     overflow-x: scroll;
   }
 </style>
+
