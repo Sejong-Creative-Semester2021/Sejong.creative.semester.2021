@@ -5,29 +5,9 @@
       <Menu-item name="/">
         {{$t('m.Home')}}
       </Menu-item>
-      <Menu-item name="/problem">
-        {{$t('m.NavProblems')}}
-      </Menu-item>
       <Menu-item name="/aicontest">
         {{$t('AI Contest')}}
       </Menu-item>
-      <Menu-item name="/contest">
-        {{$t('m.Contests')}}
-      </Menu-item>
-      <Menu-item name="/status">
-        {{$t('m.NavStatus')}}
-      </Menu-item>
-      <Submenu name="rank">
-        <template slot="title">
-          {{$t('m.Rank')}}
-        </template>
-        <Menu-item name="/acm-rank">
-          {{$t('m.ACM_Rank')}}
-        </Menu-item>
-        <Menu-item name="/oi-rank">
-          {{$t('m.OI_Rank')}}
-        </Menu-item>
-      </Submenu>
       <Submenu name="about">
         <template slot="title">
           {{$t('m.About')}}
