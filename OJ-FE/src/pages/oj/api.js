@@ -13,14 +13,23 @@ export default {
       params
     })
   },
-  getAnnouncementList (offset, limit) {
+  getAnnouncementList (offset, limit, searchParams) {
     let params = {
+      paging: true,
       offset: offset,
       limit: limit
     }
+    Object.keys(searchParams).forEach((element) => {
+      if (searchParams[element]) {
+        params[element] = searchParams[element]
+      }
+    })
     return ajax('announcement', 'get', {
       params
     })
+  },
+  getFAQList () {
+    return ajax('faq', 'get')
   },
   login (data) {
     return ajax('login', 'post', {
@@ -136,18 +145,6 @@ export default {
     return ajax('problem', 'get', {
       params: {
         problem_id: problemID
-      }
-    })
-  },
-  upload_file (file, problemID) {
-    console.log('in')
-    const formdata = new window.FormData()
-    formdata.append('file', file)
-    console.log(formdata)
-    return ajax('aicontest', 'post', {
-      data: {
-        formdata,
-        problemID
       }
     })
   },

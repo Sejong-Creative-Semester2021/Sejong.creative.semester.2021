@@ -57,8 +57,8 @@
             <b-card-title class="problem-title" @click="goProblem(problem._id)">{{problem.title}}</b-card-title>
             <b-card-sub-title class="problem-subtitle">{{problem.created_by.username}}</b-card-sub-title>
             <b-card-text class="problem-text">
-              <p class="content">{{problem.start_time}}</p> 
-              <p class="content">~ {{problem.end_time}}</p> 
+              <p class="content">{{problem.start_time | localtime}}</p> 
+              <p class="content">~ {{problem.end_time | localtime}}</p> 
             </b-card-text>
             <b-button block variant="dark" size="sm" @click="goProblem(problem._id)">JOIN</b-button>
           </b-card-body>
@@ -100,7 +100,7 @@
 </template>
 
 <script>
-  import {mapGetters} from 'vuex'
+  import {mapGetters, mapActions} from 'vuex'
   import api from '@oj/api'
   import utils from '@/utils/utils'
   import { ProblemMixin } from '@oj/components/mixins'

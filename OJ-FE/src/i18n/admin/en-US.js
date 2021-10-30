@@ -4,6 +4,7 @@ export const m = {
   General: 'General',
   User: 'User',
   Announcement: 'Announcement',
+  FAQ: 'FAQ',
   System_Config: 'System Config',
   Judge_Server: 'Judge Server',
   Prune_Test_Case: 'Prune Test Case',
@@ -36,6 +37,12 @@ export const m = {
   Announcement_Title: 'Title',
   Announcement_Content: 'Content',
   Announcement_visible: 'Visible',
+  Announcement_important: 'Important',
+  // FAQ.vue
+  General_FAQ: 'FAQ',
+  FAQ_Question: 'Question',
+  FAQ_Answer: 'Answer',
+  FAQ_visible: 'Visible',
   // Conf.vue
   SMTP_Config: 'SMTP Config',
   Server: 'Server',
@@ -120,5 +127,15 @@ export const m = {
   Welcome_to_Login: 'Welcome to Login',
   GO: 'GO',
   username: 'username',
-  password: 'password'
+  password: 'password',
+  // Recruit.vue
+  Company_Name: 'Company Name',
+  Recruit_Title: 'Recruit Title',
+  job: 'Job',
+  location: 'Location',
+  career: 'Career',
+  work: 'Work Type',
+  // RecruitList.vue
+  Recruit_List: 'Recruit List',
+  Recruit_Company_Name: 'Company Name'
 }

@@ -42,8 +42,10 @@
               </b-card>
               <p class="subtitle">{{'상세'}}</p>
                 <b-card>
-                  <v-btn right icon="download" name="Download Data"
-                      @click.native="downloadData(problem.id)">Download</v-btn>
+                  <b-text>
+                    This will always be an aspect of
+                    except when the content is too tall.
+                  </b-text>
               </b-card>
             </b-tab>
             <b-tab title="리더보드">
@@ -52,29 +54,13 @@
             <b-tab title="제출">
             <p class="subtitle">{{'제출'}}</p>
               <b-card>
-                <upload
-                  action="/api/upload_csv"
-                  name="file"
-                  :data="{id: problem._id}"
-                  :show-file-list="true">
-                  <button size="small" type="primary" icon="el-icon-fa-upload">Choose File</button>
-                </upload>
-                <!-- <v-file-input truncate-length="15" @change="uploadFile"></v-file-input> -->
-                <v-file-input
-                  accept=".csv"
-                  label="Click here to select a .csv file"
-                  outlined
-                  @change="selectFile"
-                ></v-file-input>
-                <v-btn right @click="submit()">Read File</v-btn>
-                <p>{{ data }}</p>
-                <!-- <b-form-file
+                <b-form-file
                   v-model="file1"
                   placeholder="Choose a file or drop it here..."
                   drop-placeholder="Drop file here..."
                   size="lg"
                 ></b-form-file>
-                <div class="mt-3">Selected file: {{ file1 ? file1.name : '' }}</div> -->
+                <div class="mt-3">Selected file: {{ file1 ? file1.name : '' }}</div>
               </b-card>
             </b-tab>
           </b-tabs>
@@ -301,8 +287,6 @@
     mixins: [FormMixin],
     data () {
       return {
-        chosenFile: '',
-        data: null,
         // 추가 부분
         dataRank: [],
         columns: [
@@ -448,21 +432,7 @@
           this.$Loading.error()
         })
       },
-      downloadData (problemID) {
-        let url = '/admin/data_csv?problem_id=' + problemID
-        utils.downloadFile(url)
-      },
       // 추가 부분
-      importTxt () {
-        if (!this.chosenFile) { this.data = 'No File Chosen' }
-        this.data = this.chosenFile
-        console.log(this.data)
-        api.upload_file(this.problem.id, this.data)
-      },
-      uploadFile (e) {
-        // let file = e
-        console.log(e)
-      },
       getRankData (page) {
         let offset = (page - 1) * this.limit
         let bar = this.$refs.chart
@@ -568,9 +538,6 @@
           })
         }
         this.refreshStatus = setTimeout(checkStatus, 2000)
-      },
-      selectFile (file) {
-        this.chosenFile = file
       },
       submitCode () {
         if (this.code.trim() === '') {
@@ -807,3 +774,4 @@
     height: 480px;
   }
 </style>
+

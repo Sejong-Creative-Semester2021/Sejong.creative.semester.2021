@@ -1,5 +1,5 @@
 # 세종대 창의학기제 Repository
-- 멤버 : 김주연, 노주현, 신민경, 조동현
+- 멤버 : 김주연, 노효주, 신민경, 조동현
 - 이슈를 통해서 일정 공유 및 문제 상황 공유
 
 Notion
@@ -30,6 +30,6 @@ cd OJ-FE
 npm install
 export NODE_ENV=development
 npm run build:dll
-export TARGET=위에 가져온 gateway 값 (ex: http://172.21.0.1)
+export TARGET=http://172.18.0.1위에 가져온 gateway 값 (ex: http://172.21.0.1)
 npm run dev
 ```
