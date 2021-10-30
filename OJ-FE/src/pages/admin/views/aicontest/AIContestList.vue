@@ -70,6 +70,8 @@
           label="Operation"
           width="250">
           <div slot-scope="scope">
+            <icon-btn icon="download" name="Download Data"
+                      @click.native="downloadData(scope.row.id)"></icon-btn>
             <icon-btn name="Edit" icon="edit" @click.native="goEdit(scope.row.id)"></icon-btn>
             <icon-btn v-if="contestId" name="Make Public" icon="clone"
                       @click.native="makeContestProblemPublic(scope.row.id)"></icon-btn>
@@ -235,7 +237,11 @@
         this.InlineEditDialogVisible = true
       },
       downloadTestCase (problemID) {
-        let url = '/admin/test_case?problem_id=' + problemID
+        let url = '/admin/aifile_download?problem_id=' + problemID
+        utils.downloadFile(url)
+      },
+      downloadData (problemID) {
+        let url = '/admin/data_csv?problem_id=' + problemID
         utils.downloadFile(url)
       },
       getPublicProblem () {

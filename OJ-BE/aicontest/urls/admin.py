@@ -2,10 +2,10 @@ from django.conf.urls import url
 
 from ..views.admin import (ContestProblemAPI, ProblemAPI, TestCaseAPI, MakeContestProblemPublicAPIView,
                            CompileSPJAPI, AddContestProblemAPI, ExportProblemAPI, ImportProblemAPI,
-                           FPSProblemImport)
+                           FPSProblemImport, FileAPI, DataFileAPI)
 
 urlpatterns = [
-    url(r"^test_case/?$", TestCaseAPI.as_view(), name="test_case_api"),
+    url(r"^aitest_case/?$", TestCaseAPI.as_view(), name="test_case_api"),
     url(r"^compile_spj/?$", CompileSPJAPI.as_view(), name="compile_spj"),
     url(r"^aicontest?$", ProblemAPI.as_view(), name="problem_admin_api"),
     url(r"^contest/problem/?$", ContestProblemAPI.as_view(), name="contest_problem_admin_api"),
@@ -14,4 +14,7 @@ urlpatterns = [
     url(r"^export_problem/?$", ExportProblemAPI.as_view(), name="export_problem_api"),
     url(r"^import_problem/?$", ImportProblemAPI.as_view(), name="import_problem_api"),
     url(r"^import_fps/?$", FPSProblemImport.as_view(), name="fps_problem_api"),
+    url(r"^upload_csv/?$", FileAPI.as_view(), name="csv_file"),
+    url(r"^data_csv/?$", DataFileAPI.as_view(), name="data_csv"),
+    # url(r"^aifile_download/?$", DownloadFileAPI.as_view(), name="csv_file")
 ]

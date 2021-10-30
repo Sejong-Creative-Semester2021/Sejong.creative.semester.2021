@@ -1,38 +1,49 @@
 <template>
-  <div class="wrapper">
-      <Col :span="19">
-      <panel shadow v-if="contests.length" class="contest">
-        <div slot="title">
-          <Button type="text"  class="contest-title" @click="goContest">{{contests[index].title}}</Button>
-        </div>
-        <Carousel v-model="index" trigger="hover" autoplay :autoplay-speed="6000" class="contest">
-          <CarouselItem v-for="(contest, index) of contests" :key="index">
-            <span class="contest-content">
-              <div class="contest-content-tags">
-                <Button type="info" shape="circle" size="small" icon="calendar">
-                  {{contest.start_time | localtime('YYYY-M-D HH:mm') }}
-                </Button>
-                <Button type="success" shape="circle" size="small" icon="android-time">
-                  {{getDuration(contest.start_time, contest.end_time)}}
-                </Button>
-                <Button type="warning" shape="circle" size="small" icon="trophy">
-                  {{contest.rule_type}}
-                </Button>
-              </div>
-              <div class="contest-content-description">
-                <blockquote v-html="contest.description"></blockquote>
-              </div>
-            </span>
-          </CarouselItem>
-        </Carousel>
-      </panel>
-      <Announcements class="announcement"></Announcements>
-      </Col>
+  <div class="home">
+    <Row type="flex" align="center">
+      <b-carousel
+          id="carousel-1"
+          v-model="slide"
+          :interval="3000"
+          controls
+          indicators
+          background="#ababab"
+          img-width="1920"
+          img-height="320"
+          style="position: relative"
+          @sliding-start="onSlideStart"
+          @sliding-end="onSlideEnd"
+      >
+          <!-- Slide with blank fluid image to maintain slide aspect ratio -->
+        <b-carousel-slide caption="Blank Image 1" img-blank img-alt="Blank image">
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse eros felis, tincidunt
+            a tincidunt eget, convallis vel est. Ut pellentesque ut lacus vel interdum.
+          </p>
+        </b-carousel-slide>
+
+        <b-carousel-slide caption="Blank Image 2" img-blank img-alt="Blank image">
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse eros felis, tincidunt
+            a tincidunt eget, convallis vel est. Ut pellentesque ut lacus vel interdum.
+          </p>
+        </b-carousel-slide>
+
+        <b-carousel-slide caption="Blank Image 3" img-blank img-alt="Blank image">
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse eros felis, tincidunt
+            a tincidunt eget, convallis vel est. Ut pellentesque ut lacus vel interdum.
+          </p>
+        </b-carousel-slide>
+      </b-carousel>
+    </Row>
+    <AIContestHome class="aicontesthome"></AIContestHome>
   </div>
 </template>
 
 <script>
-  import Announcements from './Announcements.vue'
+  // import Announcements from './Announcements.vue'
+  import AIContestHome from '../aicontest/AIContestHome.vue'
   import api from '@oj/api'
   import time from '@/utils/time'
   import { CONTEST_STATUS } from '@/utils/constants'
@@ -40,57 +51,76 @@
   export default {
     name: 'home',
     components: {
-      Announcements
+      // Announcements,
+      AIContestHome
     },
     data () {
       return {
-        contests: [],
-        index: 0,
-        userInput: '',
-        type: false,
-        query: {
-          keyword: ''
-        }
+        // contests: [],
+        // index: 0,
+        // userInput: '',
+        // type: false,
+        // query: {
+        //   keyword: ''
+        // },
+        // 슬라이드 부분
+        slide: 0,
+        sliding: null
       }
     },
-    mounted () {
-      let params = {status: CONTEST_STATUS.NOT_START}
-      api.getContestList(0, 5, params).then(res => {
-        this.contests = res.data.data.results
-      })
-    },
+    // mounted () {
+    //   let params = {status: CONTEST_STATUS.NOT_START}
+    //   api.getContestList(0, 5, params).then(res => {
+    //     this.contests = res.data.data.results
+    //   })
+    // },
     methods: {
       // Announcements
-      getDuration (startTime, endTime) {
-        return time.duration(startTime, endTime)
+      // getDuration (startTime, endTime) {
+      //   return time.duration(startTime, endTime)
+      // },
+      // goContest () {
+      //   this.$router.push({
+      //     name: 'contest-details',
+      //     params: {contestID: this.contests[this.index].id}
+      //   })
+      // },
+      // 슬라이드 부분
+      onSlideStart (slide) {
+        this.sliding = true
       },
-      goContest () {
-        this.$router.push({
-          name: 'contest-details',
-          params: {contestID: this.contests[this.index].id}
-        })
+      onSlideEnd (slide) {
+        this.sliding = false
       }
     }
   }
 </script>
 
 <style lang="less" scoped>
-  .contest {
-    &-title {
-      font-style: italic;
-      font-size: 21px;
-    }
-    &-content {
-      padding: 0 70px 40px 70px;
-      &-description {
-        margin-top: 25px;
-      }
-    }
+  // .contest {
+  //   &-title {
+  //     font-style: italic;
+  //     font-size: 21px;
+  //   }
+  //   &-content {
+  //     padding: 0 70px 40px 70px;
+  //     &-description {
+  //       margin-top: 25px;
+  //     }
+  //   }
+  // }
+
+  // .announcement {
+  //   margin-top: 20px;
+  //   margin-right: 20px;
+  // }
+  .home {
+    margin-top: -20px;
+  }
+  
+  .aicontesthome {
+    margin-top: 10px;
   }
 
-  .announcement {
-    margin-top: 20px;
-    margin-right: 20px;
-  }
 
 </style>

@@ -37,18 +37,6 @@
           </el-table-column>
           <el-table-column
             width="100"
-            prop="vimportant"
-            label="Important">
-            <template slot-scope="scope">
-              <el-switch v-model="scope.row.important"
-                         active-text=""
-                         inactive-text=""
-                         @change="handleVisibleSwitch(scope.row)">
-              </el-switch>
-            </template>
-          </el-table-column>
-          <el-table-column
-            width="100"
             prop="visible"
             label="Visible">
             <template slot-scope="scope">
@@ -103,14 +91,6 @@
             inactive-text="">
           </el-switch>
         </div>
-        <div class="visible-box">
-          <span>{{$t('m.Announcement_important')}}</span>
-          <el-switch
-            v-model="announcement.important"
-            active-text=""
-            inactive-text="">
-          </el-switch>
-        </div>
       </el-form>
       <span slot="footer" class="dialog-footer">
           <cancel @click.native="showEditAnnouncementDialog = false"></cancel>
@@ -147,8 +127,7 @@
         announcement: {
           title: '',
           visible: true,
-          content: '',
-          important: false
+          content: ''
         },
         // 对话框标题
         announcementDialogTitle: 'Edit Announcement',
@@ -217,8 +196,7 @@
             id: this.currentAnnouncementId,
             title: this.announcement.title,
             content: this.announcement.content,
-            visible: this.announcement.visible,
-            important: this.announcement.important
+            visible: this.announcement.visible
           }
         }
         if (this.contestID) {
@@ -260,7 +238,6 @@
             if (item.id === this.currentAnnouncementId) {
               this.announcement.title = item.title
               this.announcement.visible = item.visible
-              this.announcement.important = item.important
               this.announcement.content = item.content
               this.mode = 'edit'
             }
@@ -269,7 +246,6 @@
           this.announcementDialogTitle = 'Create Announcement'
           this.announcement.title = ''
           this.announcement.visible = true
-          this.announcement.important = false
           this.announcement.content = ''
           this.mode = 'create'
         }
@@ -280,8 +256,7 @@
           id: row.id,
           title: row.title,
           content: row.content,
-          visible: row.visible,
-          important: row.important
+          visible: row.visible
         })
       }
     },

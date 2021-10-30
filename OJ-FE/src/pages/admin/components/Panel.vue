@@ -55,14 +55,14 @@
       > .title {
         margin: 0;
         color: #333;
-        border-color: #ddd;
+        border-color: transparent;
         font-size: 18px;
         font-weight: 300;
         letter-spacing: 0.025em;
         height: 60px;
         line-height: 45px;
         padding: 10px 15px;
-        border-bottom: 1px solid #eee;
+        border-bottom: 1px;
         border-top-left-radius: 3px;
         border-top-right-radius: 3px;
       }
