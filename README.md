@@ -31,7 +31,5 @@ npm install
 export NODE_ENV=development
 npm run build:dll
 export TARGET=http://172.18.0.1위에 가져온 gateway 값 (ex: http://172.21.0.1)
-npm install --save @mdi/js
-npm install vue-dayjs-plugin
 npm run dev
 ```
