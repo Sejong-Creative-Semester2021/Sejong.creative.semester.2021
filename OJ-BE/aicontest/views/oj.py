@@ -1,10 +1,13 @@
 import random
 from django.db.models import Q, Count
-from utils.api import APIView, CSRFExemptAPIView
-from account.decorators import check_contest_permission
+from utils.api import APIView, CSRFExemptAPIView, APIError
+from account.decorators import check_contest_permission, ensure_created_by
 from ..models import AIProblemTag, AIProblem, AIProblemRuleType
 from ..serializers import ProblemSerializer, TagSerializer, ProblemSafeSerializer, FileUploadForm
 from contest.models import ContestRuleType
+
+from wsgiref.util import FileWrapper
+from django.http import StreamingHttpResponse, FileResponse
 
 from django.conf import settings
 from utils.shortcuts import rand_str, natural_sort_key
@@ -224,3 +227,45 @@ class FileAPI(CSRFExemptAPIView, TestCaseZipProcessor):
         os.remove(tmp_file)
 
         return self.success({"id": predict_id, "info": info})
+
+
+class DataFileAPI(CSRFExemptAPIView):
+    request_parsers = ()
+    logger.info("data_inin")
+
+    def get(self, request):
+        logger.info("user data_inin")
+        problem_id = request.GET.get("problem_id")
+        logger.info("user problem id={}".format(problem_id))
+        if not problem_id:
+            return self.error("Parameter error, problem_id is required")
+        try:
+            problem = AIProblem.objects.get(id=problem_id)
+        except AIProblem.DoesNotExist:
+            return self.error("Problem does not exists")
+        logger.info("user problem={}".format(problem))
+        logger.info("user problem.data id={}".format(problem.data_id))
+        # if problem.contest:
+        #     ensure_created_by(problem.contest, request.user)
+        # else:
+        #     ensure_created_by(problem, request.user)
+        data_dir = os.path.join(settings.DATA_DIR, problem.data_id)
+        logger.info("user data_dir={}".format(data_dir))
+        if not os.path.isdir(data_dir):
+            return self.error("Data does not exists")
+
+        # name_list=os.listdir(data_dir)
+        # logger.info("name_list={}".format(name_list))
+        # zip_dir=os.path.join(settings.ZIP_DIR, problem.data_id)
+        # os.makedirs(zip_dir)
+        file_name = os.path.join(data_dir, problem.data_id + ".zip")
+        logger.info("file_name={}".format(file_name))
+        # with zipfile.ZipFile(file_name, "w") as file:
+        #     for data in name_list:
+        #         file.write(f"{data_dir}/{data}", data)
+        response = StreamingHttpResponse(FileWrapper(open(file_name, "rb")),
+                                         content_type="application/octet-stream")
+
+        response["Content-Disposition"] = f"attachment; filename=problem_{problem.id}_data.zip"
+        response["Content-Length"] = os.path.getsize(file_name)
+        return response

@@ -449,7 +449,7 @@
         })
       },
       downloadData (problemID) {
-        let url = '/admin/data_csv?problem_id=' + problemID
+        let url = '/data_csv?problem_id=' + problemID
         utils.downloadFile(url)
       },
       // 추가 부분
