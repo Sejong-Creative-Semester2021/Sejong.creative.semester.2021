@@ -78,17 +78,21 @@ class ProblemAPI(APIView):
         
     def get(self, request):
         # 问题详情页
+        logger.info('problem get oj inin')
         problem_id = request.GET.get("problem_id")
+        logger.info('problem_id={}'.format(problem_id))
         if problem_id:
             try:
                 problem = AIProblem.objects.select_related("created_by") \
                     .get(_id=problem_id, contest_id__isnull=True, visible=True)
                 problem_data = ProblemSerializer(problem).data
                 self._add_problem_status(request, problem_data)
+                logger.info('problem={}'.format(problem))
+                logger.info('problem_data={}'.format(problem_data))
                 return self.success(problem_data)
             except AIProblem.DoesNotExist:
                 return self.error("Problem does not exist")
-
+        logger.info('problem get continue')
         limit = request.GET.get("limit")
         if not limit:
             return self.error("Limit is needed")
@@ -222,104 +226,92 @@ class FileAPI(CSRFExemptAPIView, TestCaseZipProcessor):
         # logger.info("y_score={}".format(y_score))
         
         os.remove(tmp_file)
-
         # 임시
         y_score = 10
-        # 여기서 받은 y_score를 유저명과 함께 rank에 넣어준다 json형식으로
+
+        return self.success({"predictId": predict_id, "solutionId": csv.solution_id, "info": info, "y_score": y_score})
+    
+
+class AIRankAPI(APIView):
+    def put(self, request):
+        logger.info("AIRank inside put")
+        # logger.info("request", request)
+        # logger.info('request.data.rank={}'.format(request.data.rank))
+        # logger.info('data={}'.format(data))
+        # logger.info('request.data.pop("rank")={}'.format(data("rank"))) // error - TypeError: 'dict' object is not callable
+        # logger.info('request.data["rank"]={}'.format(data["rank"]))
+        # logger.info("request.data", request.data)
+
+        data = request.data
+        problem_id = data['problemID'] # 우리가 가져온 id - DisplayID
+
+        try:
+            problem = AIProblem.objects.get(_id=problem_id)
+            logger.info('problem={}'.format(problem))
+            # ensure_created_by(problem, request.user)
+        except AIProblem.DoesNotExist:
+            return self.error("Problem does not exist")
+
+        # _id = data["_id"] # Display ID
+        # if not _id:
+        #     return self.error("Display ID is required")
+        # if AIProblem.objects.exclude(id=problem_id).filter(_id=_id, contest_id__isnull=True).exists():
+        #     return self.error("Display ID already exists")
+
+        # error_info = self.common_checks(request)
+        # if error_info:
+        #     return self.error(error_info)
+        # todo check filename and score info
+        # tags = data.pop("tags")
+        # data["languages"] = list(data["languages"])
 
 
-        return self.success({"id": predict_id, "info": info})
+        #rank = {'problemID': '211026 test', 'rank': [{'userid': 1, 'username': 'root', 'score': 10}, {'userid': 1, 'username': 'root', 'score': 10}]}
 
-# class AIRankAPI(APIView)
-#     # 생각한 방법 - aicontest model에 leaderboard 리스트 생성
-#     # 여기에 등수, 유저명, 점수 <- 이 세가지를 저장할 예정
-#     # 학생이 제출한 점수를 받으면 leaderborad에 저장 -> 정렬해서 등수를 오름차순으로 표시
-#     # 찾아보니 listfield가 있는지도 확실x -> 분명한거는 이런 방식으로 사용하지 말라고함 -> 다른 방법 써치
-#     # contest에서 사용한 것을 보니까 models에 AbstractContestRank 만들어서 여기에 rank 저장하는 방식으로 저장
-#     def get_rank(self):
-#         if self.contest.rule_type == ContestRuleType.ACM:
-#             return ACMContestRank.objects.filter(contest=self.contest,
-#                                                  user__admin_type=AdminType.REGULAR_USER,
-#                                                  user__is_disabled=False).\
-#                 select_related("user").order_by("-accepted_number", "total_time")
-#         else:
-#             return OIContestRank.objects.filter(contest=self.contest,
-#                                                 user__admin_type=AdminType.REGULAR_USER,
-#                                                 user__is_disabled=False). \
-#                 select_related("user").order_by("-total_score")
 
-#     def column_string(self, n):
-#         string = ""
-#         while n > 0:
-#             n, remainder = divmod(n - 1, 26)
-#             string = chr(65 + remainder) + string
-#         return string
+        old_rank = problem.rank
+        logger.info("old_rank={}".format(old_rank))
+        logger.info("data['rank'][0]={}".format(data['rank'][0]))
+        if old_rank == None:
+            old_rank = [data['rank'][0]]
+        # new_rank = [old_rank, data['rank'][0]]
+        else:
+            old_rank.append(data['rank'][0])
+        logger.info("old_rank_after_append={}".format(old_rank))
+        # logger.info("data={}".format(data))
+        # logger.info("data.items()={}".format(data.items()))
+        # data['rank']['rank_list'] = ['bi','asdf','zxcv']
+        # data['rank']['rank_list'] = []
+        # for k, v in data.items():
+        #     logger.info("k={}".format(k))
+        #     logger.info("v={}".format(v))
+            # data['rank']['rank_list'].append(v)
+        setattr(problem, 'rank', old_rank)
+        problem.save()
+        logger.info("problem saved")
+        # problem.tags.remove(*problem.tags.all())
+        # for tag in tags:
+        #     try:
+        #         tag = AIProblemTag.objects.get(name=tag)
+        #     except AIProblemTag.DoesNotExist:
+        #         tag = AIProblemTag.objects.create(name=tag)
+        #     problem.tags.add(tag)
 
-#     @check_contest_permission(check_type="ranks")
-#     def get(self, request):
-#         download_csv = request.GET.get("download_csv")
-#         force_refresh = request.GET.get("force_refresh")
-#         is_contest_admin = request.user.is_authenticated and request.user.is_contest_admin(self.contest)
-#         if self.contest.rule_type == ContestRuleType.OI:
-#             serializer = OIContestRankSerializer
-#         else:
-#             serializer = ACMContestRankSerializer
+        return self.success()
+    
+    def get(self, request):
+        # data = request.date
+        # problem_id = data['problemID']
+        logger.info("AIRank get")
+        problem_id = request.GET.get("problemID")
+        logger.info("problemID={}".format(problem_id))
+        rank = request.GET.get("rank")
+        logger.info("rank={}".format(rank))
+        problem = AIProblem.objects.get(_id=problem_id)
+        logger.info("problem={}".format(problem))
+        logger.info("problem.rank={}".format(problem.rank))
+        return self.success(problem.rank)
 
-#         if force_refresh == "1" and is_contest_admin:
-#             qs = self.get_rank()
-#         else:
-#             cache_key = f"{CacheKey.contest_rank_cache}:{self.contest.id}"
-#             qs = cache.get(cache_key)
-#             if not qs:
-#                 qs = self.get_rank()
-#                 cache.set(cache_key, qs)
 
-#         if download_csv:
-#             data = serializer(qs, many=True, is_contest_admin=is_contest_admin).data
-#             contest_problems = Problem.objects.filter(contest=self.contest, visible=True).order_by("_id")
-#             problem_ids = [item.id for item in contest_problems]
+    
 
-#             f = io.BytesIO()
-#             workbook = xlsxwriter.Workbook(f)
-#             worksheet = workbook.add_worksheet()
-#             worksheet.write("A1", "User ID")
-#             worksheet.write("B1", "Username")
-#             worksheet.write("C1", "Real Name")
-#             if self.contest.rule_type == ContestRuleType.OI:
-#                 worksheet.write("D1", "Total Score")
-#                 for item in range(contest_problems.count()):
-#                     worksheet.write(self.column_string(5 + item) + "1", f"{contest_problems[item].title}")
-#                 for index, item in enumerate(data):
-#                     worksheet.write_string(index + 1, 0, str(item["user"]["id"]))
-#                     worksheet.write_string(index + 1, 1, item["user"]["username"])
-#                     worksheet.write_string(index + 1, 2, item["user"]["real_name"] or "")
-#                     worksheet.write_string(index + 1, 3, str(item["total_score"]))
-#                     for k, v in item["submission_info"].items():
-#                         worksheet.write_string(index + 1, 4 + problem_ids.index(int(k)), str(v))
-#             else:
-#                 worksheet.write("D1", "AC")
-#                 worksheet.write("E1", "Total Submission")
-#                 worksheet.write("F1", "Total Time")
-#                 for item in range(contest_problems.count()):
-#                     worksheet.write(self.column_string(7 + item) + "1", f"{contest_problems[item].title}")
-
-#                 for index, item in enumerate(data):
-#                     worksheet.write_string(index + 1, 0, str(item["user"]["id"]))
-#                     worksheet.write_string(index + 1, 1, item["user"]["username"])
-#                     worksheet.write_string(index + 1, 2, item["user"]["real_name"] or "")
-#                     worksheet.write_string(index + 1, 3, str(item["accepted_number"]))
-#                     worksheet.write_string(index + 1, 4, str(item["submission_number"]))
-#                     worksheet.write_string(index + 1, 5, str(item["total_time"]))
-#                     for k, v in item["submission_info"].items():
-#                         worksheet.write_string(index + 1, 6 + problem_ids.index(int(k)), str(v["is_ac"]))
-
-#             workbook.close()
-#             f.seek(0)
-#             response = HttpResponse(f.read())
-#             response["Content-Disposition"] = f"attachment; filename=content-{self.contest.id}-rank.xlsx"
-#             response["Content-Type"] = "application/xlsx"
-#             return response
-
-#         page_qs = self.paginate_data(request, qs)
-#         page_qs["results"] = serializer(page_qs["results"], many=True, is_contest_admin=is_contest_admin).data
-#         return self.success(page_qs)

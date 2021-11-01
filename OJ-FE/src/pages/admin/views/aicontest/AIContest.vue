@@ -336,6 +336,7 @@
           end_time: {required: true, message: 'End Time is required', trigger: 'blur'},
           reward_description: {required: true, message: 'Reward Description is required', trigger: 'blur'},
           data_description: {required: true, message: 'Data Description is required', trigger: 'blur'}
+          // rank: {required: false}
         },
         loadingCompile: false,
         mode: '',
@@ -400,7 +401,8 @@
           rule_type: 'ACM',
           hint: '',
           source: '',
-          io_mode: {'io_mode': 'Standard IO', 'input': 'input.txt', 'output': 'output.txt'}
+          io_mode: {'io_mode': 'Standard IO', 'input': 'input.txt', 'output': 'output.txt'},
+          rank: []
         }
         let contestID = this.$route.params.contestId
         if (contestID) {
@@ -596,11 +598,11 @@
             return
           }
         }
-        if (!this.problem.languages.length) {
-          this.error.languages = 'Please choose at least one language for problem'
-          this.$error(this.error.languages)
-          return
-        }
+        // if (!this.problem.languages.length) {
+        //   this.error.languages = 'Please choose at least one language for problem'
+        //   this.$error(this.error.languages)
+        //   return
+        // }
         if (!this.testCaseUploaded) {
           this.error.testCase = 'Test case is not uploaded yet'
           this.$error(this.error.testCase)

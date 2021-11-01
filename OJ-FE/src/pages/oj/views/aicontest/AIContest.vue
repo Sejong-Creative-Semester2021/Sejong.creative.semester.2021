@@ -21,7 +21,6 @@
             </b-card-text>
           </b-card>
           -->
-          
           <b-tabs content-class="mt-3" fill>
             <b-tab title="대회안내">
               <p v-html=problem.description></p>
@@ -31,7 +30,6 @@
                 <b-tab title="일정"><p class="content" v-html=problem.schedule_description></p></b-tab>
               </b-tabs>
             </b-tab>
-
             <b-tab title="데이터">
               <p class="subtitle">{{'설명'}}</p>
               <b-card>
@@ -49,7 +47,15 @@
               </b-card>
             </b-tab>
             <b-tab title="리더보드">
-              <Table :data="dataRank" :columns="columns" :loading="loadingTable" size="large"></Table>
+              <div>
+                <v-data-table
+                  :headers="headers"
+                  :items="showRanks"
+                  :items-per-page="5"
+                  class="elevation-1"
+                ></v-data-table>
+              </div>
+              <!--<Table :data="problem.rank" :columns="columns" size="large"></Table>-->
             </b-tab>
             <b-tab title="제출">
             <p class="subtitle">{{'제출'}}</p>
@@ -58,7 +64,8 @@
                   action="/api/upload_csv"
                   name="file"
                   :data="{id: problem._id}"
-                  :show-file-list="true">
+                  :show-file-list="true"
+                  :on-success="uploadFileSucceeded">
                   <button size="small" type="primary" icon="el-icon-fa-upload">Choose File</button>
                 </upload>
                 <!-- <v-file-input truncate-length="15" @change="uploadFile"></v-file-input> -->
@@ -281,6 +288,8 @@
   </Row>
 </template>
 
+<script src="https://cdn.jsdelivr.net/npm/danfojs@0.1.2/dist/index.min.js"></script>
+
 <script>
   import {mapGetters, mapActions} from 'vuex'
   import {types} from '../../../../store'
@@ -303,10 +312,32 @@
     mixins: [FormMixin],
     data () {
       return {
+        // table 추가 부분
+        headers: [
+          // {
+          //   text: 'rank',
+          //   align: 'start',
+          //   sortable: false,
+          //   value: 'rankDict'
+          // },
+          { text: 'score', value: 'score' },
+          { text: 'name', value: 'username' }
+        ],
+        showRanks: [],
+        // 추가 부분
+        page: 1,
+        limit: 30,
+        total: 0,
         chosenFile: '',
         data: null,
+        rank: null,
+        username: '',
+        profile: {},
+        id: null,
+        y_score: null,
+        // dataRank: [],
+        // showRank: [],
         // 추가 부분
-        dataRank: [],
         columns: [
           {
             align: 'center',
@@ -416,7 +447,6 @@
     mounted () {
       this.$store.commit(types.CHANGE_CONTEST_ITEM_VISIBLE, {menu: false})
       this.init()
-      this.getRankData(1)
     },
     methods: {
       ...mapActions(['changeDomTitle']),
@@ -425,9 +455,15 @@
         this.contestID = this.$route.params.contestID
         this.problemID = this.$route.params.problemID
         let func = this.$route.name === 'aiproblem-details' ? 'getAIProblem' : 'getContestProblem'
+        console.log(func)
         api[func](this.problemID, this.contestID).then(res => {
           this.$Loading.finish()
           let problem = res.data.data
+          console.log(problem)
+          console.log(problem.rank)
+          this.showRanks = problem.rank
+          console.log(this.showRanks)
+          // this.showRank = problem.rank // dataRank 추가
           this.changeDomTitle({title: problem.title})
           api.submissionExists(problem.id).then(res => {
             this.submissionExists = res.data.data
@@ -461,24 +497,73 @@
         // let file = e
         console.log(e)
       },
-      getRankData (page) {
-        let offset = (page - 1) * this.limit
-        let bar = this.$refs.chart
-        bar.showLoading({maskColor: 'rgba(250, 250, 250, 0.8)'})
-        this.loadingTable = true
-        api.getUserRank(offset, this.limit, RULE_TYPE.ACM).then(res => {
-          this.loadingTable = false
-          if (page === 1) {
-            this.changeCharts(res.data.data.results.slice(0, 10))
-          }
-          this.total = res.data.data.total
-          this.dataRank = res.data.data.results
-          bar.hideLoading()
-        }).catch(() => {
-          this.loadingTable = false
-          bar.hideLoading()
+      // 추가 부분
+      uploadFileSucceeded (response) {
+        console.log(response)
+        if (response.error) {
+          this.$error(response.data)
+          return
+        }
+        this.y_score = response.data.y_score
+        console.log('y_score', response.data.y_score)
+        // this.problem.solution_id = response.data.id
+        // 여기서 이름 가져오고 y_score랑 같이 rank에 저장
+        this.getUserName()
+        // 여기서 api 사용해서 editrank사용
+        // problem._id 를 사용하기
+        console.log('before editRank')
+        console.log('problem id', this.problem._id)
+        console.log('rank', this.rank)
+        // api['editRank'](this.problem._id, this.rank)
+        // api.getAIProblem(this.problem._id).then(res => {
+        //   console.log('in editRank')
+        //   console.log(res)
+        // })
+        console.log('after')
+      },
+      // 유저 이름 추가하는 부분
+      getUserName () {
+        this.username = this.$route.query.username
+        // console.log(this.username)
+        api.getUserInfo(this.username).then(res => {
+          this.changeDomTitle({title: res.data.data.user.username})
+          this.profile = res.data.data
+          // console.log('11111')
+          // console.log(this.profile)
+          // console.log('22222')
+          // console.log(this.profile.user.username)
+          this.rank = [{
+            'userid': this.profile.user.id,
+            'username': this.profile.user.username,
+            'score': this.y_score
+          }]
+          console.log('getUserName', this.rank)
+          console.log('editrank - getuser before')
+          api['editRank'](this.problem._id, this.rank)
+          console.log('editrank - getuser after')
+          // this.getSolvedProblems()
+          // let registerTime = time.utcToLocal(this.profile.user.create_time, 'YYYY-MM-D')
+          // console.log('The guy registered at ' + registerTime + '.')
+          // 이름 가져오는 방법
+          // <span v-if="profile.user" class="emphasis">{{profile.user.username}}</span>
         })
       },
+      // getRankData (page) {
+      //   let offset = (page - 1) * this.limit
+      //   let bar = this.$refs.chart
+      //   bar.showLoading({maskColor: 'rgba(250, 250, 250, 0.8)'})
+      //   if (page == 1) {
+      //     this.changeCharts(res.data.data.results.slice(0, 10))
+      //   }
+      //   this.total = res.data.data.total
+      //   this.dataRank = res.data.data.results
+      //   bar.hideLoading()
+      // },
+      // csv 가져오는 함수 추가
+      // load_csv () {
+      //   var predict_csv = new dfd.read_csv('https://khw970421.github.io/covid/Project1/covidcity(changed).csv')
+      //   var solution_csv = new dfd.read_csv('https://khw970421.github.io/covid/Project1/covidcity(changed).csv')
+      // },
       changePie (problemData) {
         // 只显示特定的一些状态
         for (let k in problemData.statistic_info) {
