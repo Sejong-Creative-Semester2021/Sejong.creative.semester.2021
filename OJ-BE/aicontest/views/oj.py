@@ -11,7 +11,7 @@ from utils.shortcuts import rand_str, natural_sort_key
 import os
 import json
 import csv
-# import pandas as pd
+# from ..pandas import pandas as pd
 # import numpy as np
 
 import logging
@@ -270,13 +270,18 @@ class AIRankAPI(APIView):
 
 
         old_rank = problem.rank
+        user_id_set = set()
         logger.info("old_rank={}".format(old_rank))
         logger.info("data['rank'][0]={}".format(data['rank'][0]))
+        for i in old_rank:
+            user_id_set.add(i['userid'])
+        logger.info("user_id_set={}".format(user_id_set))
         if old_rank == None:
             old_rank = [data['rank'][0]]
         # new_rank = [old_rank, data['rank'][0]]
         else:
-            old_rank.append(data['rank'][0])
+            if data['rank'][0]['userid'] not in user_id_set:
+                old_rank.append(data['rank'][0])
         logger.info("old_rank_after_append={}".format(old_rank))
         # logger.info("data={}".format(data))
         # logger.info("data.items()={}".format(data.items()))

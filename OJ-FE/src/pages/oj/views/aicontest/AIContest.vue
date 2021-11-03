@@ -50,10 +50,11 @@
               <div>
                 <v-data-table
                   :headers="headers"
-                  :items="showRanks"
+                  :items="itemsWithIndex"
                   :items-per-page="5"
                   class="elevation-1"
-                ></v-data-table>
+                >
+                </v-data-table>
               </div>
               <!--<Table :data="problem.rank" :columns="columns" size="large"></Table>-->
             </b-tab>
@@ -287,9 +288,7 @@
     -->
   </Row>
 </template>
-
 <script src="https://cdn.jsdelivr.net/npm/danfojs@0.1.2/dist/index.min.js"></script>
-
 <script>
   import {mapGetters, mapActions} from 'vuex'
   import {types} from '../../../../store'
@@ -300,6 +299,9 @@
   import api from '@oj/api'
   import {pie, largePie} from './chartData'
   import utils from '@/utils/utils'
+  // import * as dfd from "danfojs/danfojs/src"
+  // import {DataFrame} from 'danfojs/dist/core/frame'
+  // import {Series} from 'danfojs/dist/core/series'
 
   // 只显示这些状态的图形占用
   const filtedStatus = ['-1', '-2', '0', '1', '2', '3', '4', '8']
@@ -320,11 +322,14 @@
           //   sortable: false,
           //   value: 'rankDict'
           // },
-          { text: 'score', value: 'score' },
-          { text: 'name', value: 'username' }
+          { text: 'rank', value: 'index' },
+          { text: 'score', value: 'score', sortable: false },
+          { text: 'name', value: 'username', sortable: false }
         ],
         showRanks: [],
         // 추가 부분
+        solutionIdGet: null,
+        predictIdGet: null,
         page: 1,
         limit: 30,
         total: 0,
@@ -333,7 +338,6 @@
         rank: null,
         username: '',
         profile: {},
-        id: null,
         y_score: null,
         // dataRank: [],
         // showRank: [],
@@ -460,10 +464,10 @@
           this.$Loading.finish()
           let problem = res.data.data
           console.log(problem)
-          console.log(problem.rank)
+          console.log('problem rank', problem.rank)
           this.showRanks = problem.rank
-          console.log(this.showRanks)
-          // this.showRank = problem.rank // dataRank 추가
+          // this.showRank.append(problem.rank)
+          console.log('show Ranks', this.showRanks)
           this.changeDomTitle({title: problem.title})
           api.submissionExists(problem.id).then(res => {
             this.submissionExists = res.data.data
@@ -506,6 +510,10 @@
         }
         this.y_score = response.data.y_score
         console.log('y_score', response.data.y_score)
+        this.solutionIdGet = response.data.solutionId
+        this.predictIdGet = response.data.predictId
+        console.log('solutionIdGet', this.solutionIdGet)
+        console.log('predictIdGet', this.predictIdGet)
         // this.problem.solution_id = response.data.id
         // 여기서 이름 가져오고 y_score랑 같이 rank에 저장
         this.getUserName()
@@ -541,6 +549,7 @@
           console.log('editrank - getuser before')
           api['editRank'](this.problem._id, this.rank)
           console.log('editrank - getuser after')
+          this.load_csv()
           // this.getSolvedProblems()
           // let registerTime = time.utcToLocal(this.profile.user.create_time, 'YYYY-MM-D')
           // console.log('The guy registered at ' + registerTime + '.')
@@ -560,10 +569,13 @@
       //   bar.hideLoading()
       // },
       // csv 가져오는 함수 추가
-      // load_csv () {
-      //   var predict_csv = new dfd.read_csv('https://khw970421.github.io/covid/Project1/covidcity(changed).csv')
-      //   var solution_csv = new dfd.read_csv('https://khw970421.github.io/covid/Project1/covidcity(changed).csv')
-      // },
+      load_csv () {
+        console.log('load_csv in')
+        // const dfd = require("danfojs")
+        // console.log('dfd', dfd)
+        // var s = new dfd.Series([20,21,22,23])
+        console.log('dfd 실행 완료')
+      },
       changePie (problemData) {
         // 只显示特定的一些状态
         for (let k in problemData.statistic_info) {
@@ -747,6 +759,14 @@
         } else {
           return {name: 'submission-list', query: {problemID: this.problemID}}
         }
+      },
+      // showRanks에 index 추가
+      itemsWithIndex () {
+        return this.showRanks.map(
+          (showRanks, index) => ({
+            ...showRanks,
+            index: index + 1
+          }))
       }
     },
     beforeRouteLeave (to, from, next) {
