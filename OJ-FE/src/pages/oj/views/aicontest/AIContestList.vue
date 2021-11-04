@@ -47,7 +47,7 @@
       <b-card-group columns id="problem-group">
         <b-card v-for="problem in problemList"
                         :key="problem.title"
-                        img-src="https://picsum.photos/1024/480/?image=10"
+                        :img-src='`https://picsum.photos/1024/480/?image=${problem.id}`'
                         img-top
                         shadow
                         style="max-width: 18rem;"

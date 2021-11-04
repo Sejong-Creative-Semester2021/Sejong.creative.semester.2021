@@ -19,6 +19,11 @@ class AIProblemRuleType(Choices):
     OI = "OI"
 
 
+class AIProblemType(Choices):
+    General = "General"
+    Class = "Class"
+
+
 class AIProblemDifficulty(object):
     High = "High"
     Mid = "Mid"
@@ -91,6 +96,7 @@ class AIProblem(models.Model):
     # csv_file = models.FileField(null=True)
     solution_id = models.TextField(null=True)
     data_id = models.TextField(null=True)
+    p_type = models.TextField(null=True)
 
     class Meta:
         db_table = "ai_contest"

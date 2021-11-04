@@ -1,8 +1,17 @@
 <template>
   <div class="aicontest">
-
     <Panel :title="title">
       <el-form ref="form" :model="problem" :rules="rules" label-position="top" label-width="70px">
+        <el-row :gutter="20">
+          <el-col :span="6">
+            <el-form-item :label="$t('m.Type')">
+              <el-radio-group v-model="problem.p_type">
+                <el-radio label="General">General</el-radio>
+                <el-radio label="Class">Class</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+        </el-row>
         <el-row :gutter="20">
           <el-col :span="6">
             <el-form-item prop="_id" :label="$t('m.Display_ID')"
@@ -411,7 +420,8 @@
           rule_type: 'ACM',
           hint: '',
           source: '',
-          io_mode: {'io_mode': 'Standard IO', 'input': 'input.txt', 'output': 'output.txt'}
+          io_mode: {'io_mode': 'Standard IO', 'input': 'input.txt', 'output': 'output.txt'},
+          p_type: ''
         }
         let contestID = this.$route.params.contestId
         if (contestID) {

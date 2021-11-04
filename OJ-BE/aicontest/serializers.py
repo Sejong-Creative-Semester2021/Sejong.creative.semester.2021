@@ -7,7 +7,7 @@ from utils.api import UsernameSerializer, serializers
 from utils.constants import Difficulty
 from utils.serializers import LanguageNameMultiChoiceField, SPJLanguageNameChoiceField, LanguageNameChoiceField
 
-from .models import AIProblem, AIProblemRuleType, AIProblemTag, AIProblemIOMode
+from .models import AIProblem, AIProblemRuleType, AIProblemTag, AIProblemIOMode, AIProblemType
 from .utils import parse_problem_template
 
 class DataFileUploadForm(forms.Form):
@@ -87,6 +87,7 @@ class CreateOrEditProblemSerializer(serializers.Serializer):
     # csv_file = serializers.FileField()
     solution_id = serializers.CharField(max_length=32)
     data_id = serializers.CharField(max_length=32)
+    p_type = serializers.ChoiceField(choices=[AIProblemType.General, AIProblemType.Challenge])
 
 
 class CreateProblemSerializer(CreateOrEditProblemSerializer):
