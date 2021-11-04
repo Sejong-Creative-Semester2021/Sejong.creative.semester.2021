@@ -288,7 +288,7 @@
     -->
   </Row>
 </template>
-<script src="https://cdn.jsdelivr.net/npm/danfojs@0.1.2/dist/index.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/danfojs@0.3.3/lib/bundle.min.js"></script> 
 <script>
   import {mapGetters, mapActions} from 'vuex'
   import {types} from '../../../../store'
@@ -299,9 +299,12 @@
   import api from '@oj/api'
   import {pie, largePie} from './chartData'
   import utils from '@/utils/utils'
-  // import * as dfd from "danfojs/danfojs/src"
+  // import * as dfd from 'danfojs/danfojs/src'
   // import {DataFrame} from 'danfojs/dist/core/frame'
   // import {Series} from 'danfojs/dist/core/series'
+  // import './App.css'
+  // import * as dfd from 'danfojs'
+  // import * as dfd from 'danfojs/danfojs/src/index'
 
   // 只显示这些状态的图形占用
   const filtedStatus = ['-1', '-2', '0', '1', '2', '3', '4', '8']
@@ -324,9 +327,12 @@
           // },
           { text: 'rank', value: 'index' },
           { text: 'score', value: 'score', sortable: false },
-          { text: 'name', value: 'username', sortable: false }
+          { text: 'name', value: 'username', sortable: false },
+          { text: 'submitTime', value: 'submitTime', sortable: false }
         ],
         showRanks: [],
+        today: null,
+        submitTime: null,
         // 추가 부분
         solutionIdGet: null,
         predictIdGet: null,
@@ -529,6 +535,22 @@
         // })
         console.log('after')
       },
+      // 날짜 추가
+      addDay () {
+        this.today = new Date()
+        var year = this.today.getFullYear()
+        var month = ('0' + (this.today.getMonth() + 1)).slice(-2)
+        var day = ('0' + this.today.getDate()).slice(-2)
+        var dateString = year + '-' + month + '-' + day
+        var hours = ('0' + this.today.getHours()).slice(-2)
+        var minutes = ('0' + this.today.getMinutes()).slice(-2)
+        var seconds = ('0' + this.today.getSeconds()).slice(-2)
+        var timeString = hours + ':' + minutes + ':' + seconds
+        console.log('this.today', this.today)
+        console.log('dateString', dateString)
+        console.log('timeString', timeString)
+        this.submitTime = dateString + ' ' + timeString
+      },
       // 유저 이름 추가하는 부분
       getUserName () {
         this.username = this.$route.query.username
@@ -540,10 +562,12 @@
           // console.log(this.profile)
           // console.log('22222')
           // console.log(this.profile.user.username)
+          this.addDay()
           this.rank = [{
             'userid': this.profile.user.id,
             'username': this.profile.user.username,
-            'score': this.y_score
+            'score': this.y_score,
+            'submitTime': this.submitTime
           }]
           console.log('getUserName', this.rank)
           console.log('editrank - getuser before')
@@ -571,7 +595,7 @@
       // csv 가져오는 함수 추가
       load_csv () {
         console.log('load_csv in')
-        // const dfd = require("danfojs")
+        // let dfd = require('danfojs')
         // console.log('dfd', dfd)
         // var s = new dfd.Series([20,21,22,23])
         console.log('dfd 실행 완료')

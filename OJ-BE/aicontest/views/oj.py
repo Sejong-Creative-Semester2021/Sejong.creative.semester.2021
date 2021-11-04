@@ -11,8 +11,8 @@ from utils.shortcuts import rand_str, natural_sort_key
 import os
 import json
 import csv
-# from ..pandas import pandas as pd
-# import numpy as np
+# import pandas as pd
+import numpy as np
 
 import logging
 logger=logging.getLogger(__name__)
@@ -216,9 +216,17 @@ class FileAPI(CSRFExemptAPIView, TestCaseZipProcessor):
         logger.info("os_sol={}".format(os.path.join(settings.SOLUTION_DIR, str(csv.solution_id), "solution.csv")))
         logger.info("os_pre={}".format(os.path.join(settings.PREDICT_DIR, predict_id, "predict.csv")))
 
+        y_true = np.array(np.loadtxt(os.path.join(settings.SOLUTION_DIR, csv.solution_id, "solution.csv"), delimiter=",", dtype=np.float32))
+        y_pred = np.array(np.loadtxt(os.path.join(settings.PREDICT_DIR, predict_id, "predict.csv"), delimiter=",", dtype=np.float32))
+        logger.info("y_true={}".format(str(y_true)))
+        logger.info("y_pred={}".format(str(y_pred)))
+
+        y_score = (y_true == y_pred).mean()
+        logger.info("y_score={}".format(str(y_score)))
+
         # y_true = np.array(pd.read_csv(os.path.join(settings.SOLUTION_DIR, csv.solution_id, "solution.csv")))
         # y_pred = np.array(pd.read_csv(os.path.join(settings.PREDICT_DIR, predict_id, "predict.csv")))
-
+        
         # logger.info("y_true={}".format(y_true))
         # logger.info("y_pred={}".format(y_pred))
 
@@ -226,8 +234,6 @@ class FileAPI(CSRFExemptAPIView, TestCaseZipProcessor):
         # logger.info("y_score={}".format(y_score))
         
         os.remove(tmp_file)
-        # 임시
-        y_score = 10
 
         return self.success({"predictId": predict_id, "solutionId": csv.solution_id, "info": info, "y_score": y_score})
     
@@ -269,20 +275,37 @@ class AIRankAPI(APIView):
         #rank = {'problemID': '211026 test', 'rank': [{'userid': 1, 'username': 'root', 'score': 10}, {'userid': 1, 'username': 'root', 'score': 10}]}
 
 
-        old_rank = problem.rank
-        user_id_set = set()
-        logger.info("old_rank={}".format(old_rank))
-        logger.info("data['rank'][0]={}".format(data['rank'][0]))
-        for i in old_rank:
-            user_id_set.add(i['userid'])
-        logger.info("user_id_set={}".format(user_id_set))
-        if old_rank == None:
-            old_rank = [data['rank'][0]]
+        old_rank_list = problem.rank
+
+        if old_rank_list == None:
+            old_rank_list = []
+
+        same_person_flag = False
+        logger.info("before old_rank_list={}".format(old_rank_list))
+        for index, old_data in enumerate(old_rank_list):
+            if data['rank'][0]['userid'] == old_data['userid']:
+                same_person_flag = True
+                if old_data['score'] < data['rank'][0]['score']:
+                    del old_rank_list[index]
+                    old_rank_list.append(data['rank'][0])
+                    break
+        logger.info("after old_rank_list={}".format(old_rank_list))
+        if not same_person_flag:
+            old_rank_list.append(data['rank'][0])
+        logger.info("after2 old_rank_list={}".format(old_rank_list))
+
+        # logger.info("data['rank'][0]={}".format(data['rank'][0]))
+        # for i in old_rank_list:
+            # user_id_set.add(i['userid'])
+        # logger.info("user_id_set={}".format(user_id_set))
         # new_rank = [old_rank, data['rank'][0]]
-        else:
-            if data['rank'][0]['userid'] not in user_id_set:
-                old_rank.append(data['rank'][0])
-        logger.info("old_rank_after_append={}".format(old_rank))
+        # else:
+        #     if data['rank'][0]['userid'] not in user_id_set:
+        #         old_rank_list.append(data['rank'][0])
+        #     else:
+        #         if data['rank'][0]['score'] < userid - maxscore:
+        #             old_rank_list.append(data['rank'][0])
+        # logger.info("old_rank_list_after_append={}".format(old_rank_list))
         # logger.info("data={}".format(data))
         # logger.info("data.items()={}".format(data.items()))
         # data['rank']['rank_list'] = ['bi','asdf','zxcv']
@@ -291,7 +314,11 @@ class AIRankAPI(APIView):
         #     logger.info("k={}".format(k))
         #     logger.info("v={}".format(v))
             # data['rank']['rank_list'].append(v)
-        setattr(problem, 'rank', old_rank)
+        # old_rank_list.sort(key=lambda x:x['score'], reverse=True)
+        old_rank_list.sort(key=lambda x:(-x['score'], x['submitTime']))
+        logger.info("after sort old_rank_list={}".format(old_rank_list))
+        setattr(problem, 'rank', old_rank_list)
+        # problem['rank'].sort(key = lambda x:x['y_score'])
         problem.save()
         logger.info("problem saved")
         # problem.tags.remove(*problem.tags.all())
