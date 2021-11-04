@@ -87,7 +87,7 @@ class CreateOrEditProblemSerializer(serializers.Serializer):
     # csv_file = serializers.FileField()
     solution_id = serializers.CharField(max_length=32)
     data_id = serializers.CharField(max_length=32)
-    p_type = serializers.ChoiceField(choices=[AIProblemType.General, AIProblemType.Challenge])
+    p_type = serializers.ChoiceField(choices=[AIProblemType.General, AIProblemType.Class])
 
 
 class CreateProblemSerializer(CreateOrEditProblemSerializer):

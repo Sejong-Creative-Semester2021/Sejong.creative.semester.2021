@@ -178,6 +178,36 @@ export default {
       params: params
     })
   },
+  getGeneralAIProblemList (offset, limit, searchParams) {
+    let params = {
+      paging: true,
+      offset,
+      limit
+    }
+    Object.keys(searchParams).forEach((element) => {
+      if (searchParams[element]) {
+        params[element] = searchParams[element]
+      }
+    })
+    return ajax('aicontest_general', 'get', {
+      params: params
+    })
+  },
+  getClassAIProblemList (offset, limit, searchParams) {
+    let params = {
+      paging: true,
+      offset,
+      limit
+    }
+    Object.keys(searchParams).forEach((element) => {
+      if (searchParams[element]) {
+        params[element] = searchParams[element]
+      }
+    })
+    return ajax('aicontest_class', 'get', {
+      params: params
+    })
+  },
   getAIProblem (problemID) {
     return ajax('aicontest', 'get', {
       params: {

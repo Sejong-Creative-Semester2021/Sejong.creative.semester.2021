@@ -116,6 +116,7 @@
           }
         ],
         problemList: [],
+        generalProblemList: [],
         limit: 20,
         total: 0,
         loadings: {
@@ -165,7 +166,7 @@
       getProblemList () {
         let offset = (this.query.page - 1) * this.query.limit
         this.loadings.table = true
-        api.getAIProblemList(offset, this.limit, this.query).then(res => {
+        api.getGeneralAIProblemList(offset, this.limit, this.query).then(res => {
           this.loadings.table = false
           this.total = res.data.data.total
           this.problemList = res.data.data.results

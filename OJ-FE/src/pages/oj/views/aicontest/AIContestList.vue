@@ -5,27 +5,6 @@
       <div slot="title"><b>{{$t('진행중인 대회')}}</b></div>
       <div slot="extra">
         <ul class="filter">
-        <!--
-          <li>
-            <Dropdown @on-click="filterByDifficulty">
-              <span>{{query.difficulty === '' ? this.$i18n.t('m.Difficulty') : this.$i18n.t('m.' + query.difficulty)}}
-                <Icon type="arrow-down-b"></Icon>
-              </span>
-              <Dropdown-menu slot="list">
-                <Dropdown-item name="">{{$t('m.All')}}</Dropdown-item>
-                <Dropdown-item name="Low">{{$t('m.Low')}}</Dropdown-item>
-                <Dropdown-item name="Mid" >{{$t('m.Mid')}}</Dropdown-item>
-                <Dropdown-item name="High">{{$t('m.High')}}</Dropdown-item>
-              </Dropdown-menu>
-            </Dropdown>
-          </li>
-          <li>
-            <i-switch size="large" @on-change="handleTagsVisible">
-              <span slot="open">{{$t('m.Tags')}}</span>
-              <span slot="close">{{$t('m.Tags')}}</span>
-            </i-switch>
-          </li>
-          -->
           <li>
             <Input v-model="query.keyword"
                    @on-enter="filterByKeyword"
@@ -33,19 +12,13 @@
                    placeholder="keyword"
                    icon="ios-search-strong"/>
           </li>
-          <!--
-          <li>
-            <Button type="info" @click="onReset">
-              <Icon type="refresh"></Icon>
-              {{$t('m.Reset')}}
-            </Button>
-          </li>
-          -->
         </ul>
       </div>
       <!-- 추가 부분 -->
-      <b-card-group columns id="problem-group">
-        <b-card v-for="problem in problemList"
+      <b-tabs content-class="mt-3" fill>
+        <b-tab title="일반용" id="contest-content">
+          <b-card-group columns id="problem-group">
+            <b-card v-for="problem in problemList"
                         :key="problem.title"
                         :img-src='`https://picsum.photos/1024/480/?image=${problem.id}`'
                         img-top
@@ -53,49 +26,44 @@
                         style="max-width: 18rem;"
                         class="mb-2"
                         id="problem-card">
-          <b-card-body class="problem-content">
-            <b-card-title class="problem-title" @click="goProblem(problem._id)">{{problem.title}}</b-card-title>
-            <b-card-sub-title class="problem-subtitle">{{problem.created_by.username}}</b-card-sub-title>
-            <b-card-text class="problem-text">
-              <p class="content">{{problem.start_time | localtime}}</p> 
-              <p class="content">~ {{problem.end_time | localtime}}</p> 
-            </b-card-text>
-            <b-button block variant="dark" size="sm" @click="goProblem(problem._id)">JOIN</b-button>
-          </b-card-body>
-        </b-card>
-      </b-card-group>
-      
-      <Table style="width: 100%; font-size: 16px;"
-             :columns="problemTableColumns"
-             :data="problemList"
-             :loading="loadings.table"
-             disabled-hover></Table>
-    </Panel>
-    <Pagination
-      :total="total" :page-size.sync="query.limit" @on-change="pushRouter" @on-page-size-change="pushRouter" :current.sync="query.page" :show-sizer="true"></Pagination>
+              <b-card-body class="problem-content">
+                <b-card-title class="problem-title" @click="goProblem(problem._id)">{{problem.title}}</b-card-title>
+                <b-card-sub-title class="problem-subtitle">{{problem.created_by.username}}</b-card-sub-title>
+                <b-card-text class="problem-text">
+                  <p class="content">{{problem.start_time | localtime}}</p> 
+                  <p class="content">~ {{problem.end_time | localtime}}</p> 
+                </b-card-text>
+                <b-button block variant="dark" size="sm" @click="goProblem(problem._id)">JOIN</b-button>
+              </b-card-body>
+            </b-card>
+          </b-card-group>
+        </b-tab>
 
-    </Col>
-    <!--
-    <Col :span="5">
-    <Panel :padding="10">
-      <div slot="title" class="taglist-title">{{$t('m.Tags')}}</div>
-      <Button v-for="tag in tagList"
-              :key="tag.name"
-              @click="filterByTag(tag.name)"
-              type="ghost"
-              :disabled="query.tag === tag.name"
-              shape="circle"
-              class="tag-btn">{{tag.name}}
-      </Button>
-
-      <Button long id="pick-one" @click="pickone">
-        <Icon type="shuffle"></Icon>
-        {{$t('m.Pick_One')}}
-      </Button>
+        <b-tab title="수업용" id="contest-content">
+          <b-card-group columns id="problem-group">
+            <b-card v-for="problem in classproblemList"
+                        :key="problem.title"
+                        :img-src='`https://picsum.photos/1024/480/?image=${problem.id}`'
+                        img-top
+                        shadow
+                        style="max-width: 18rem;"
+                        class="mb-2"
+                        id="problem-card">
+              <b-card-body class="problem-content">
+                <b-card-title class="problem-title" @click="goProblem(problem._id)">{{problem.title}}</b-card-title>
+                <b-card-sub-title class="problem-subtitle">{{problem.created_by.username}}</b-card-sub-title>
+                <b-card-text class="problem-text">
+                  <p class="content">{{problem.start_time | localtime}}</p> 
+                  <p class="content">~ {{problem.end_time | localtime}}</p> 
+                </b-card-text>
+                <b-button block variant="dark" size="sm" @click="goProblem(problem._id)">JOIN</b-button>
+              </b-card-body>
+            </b-card>
+          </b-card-group>
+        </b-tab>
+      </b-tabs>
     </Panel>
-    <Spin v-if="loadings.tag" fix size="large"></Spin>
     </Col>
-    -->
   </Row>
 </template>
 
@@ -186,6 +154,7 @@
           }
         ],
         problemList: [],
+        classproblemList: [],
         limit: 20,
         total: 0,
         loadings: {
@@ -221,6 +190,7 @@
         //   this.getTagList()
         // }
         this.getProblemList()
+        this.getClassProblemList()
       },
       pushRouter () {
         this.$router.push({
@@ -235,10 +205,25 @@
       getProblemList () {
         let offset = (this.query.page - 1) * this.query.limit
         this.loadings.table = true
-        api.getAIProblemList(offset, this.limit, this.query).then(res => {
+        api.getGeneralAIProblemList(offset, this.limit, this.query).then(res => {
           this.loadings.table = false
           this.total = res.data.data.total
           this.problemList = res.data.data.results
+          if (this.isAuthenticated) {
+            this.addStatusColumn(this.problemTableColumns, res.data.data.results)
+          }
+        }, res => {
+          this.loadings.table = false
+        })
+      },
+      getClassProblemList () {
+        let offset = (this.query.page - 1) * this.query.limit
+        this.loadings.table = true
+        api.getClassAIProblemList(offset, this.limit, this.query).then(res => {
+          this.loadings.table = false
+          this.total = res.data.data.total
+          this.classproblemList = res.data.data.results
+          console.log(this.classproblemList)
           if (this.isAuthenticated) {
             this.addStatusColumn(this.problemTableColumns, res.data.data.results)
           }
