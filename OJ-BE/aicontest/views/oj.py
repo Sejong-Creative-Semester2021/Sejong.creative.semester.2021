@@ -238,7 +238,7 @@ class FileAPI(CSRFExemptAPIView, TestCaseZipProcessor):
         
         os.remove(tmp_file)
 
-        return self.success({"id": predict_id, "info": info})
+        return self.success({"predictId": predict_id, "solutionId": csv.solution_id, "info": info, "y_score": y_score})
 
 
 class DataFileAPI(CSRFExemptAPIView):
@@ -395,7 +395,7 @@ class ProblemClassAPI(APIView):
         data = self.paginate_data(request, problems, ProblemSerializer)
         self._add_problem_status(request, data)
         return self.success(data)
-        return self.success({"predictId": predict_id, "solutionId": csv.solution_id, "info": info, "y_score": y_score})
+        
     
 
 class AIRankAPI(APIView):
