@@ -13,7 +13,6 @@ class AIProblemTag(models.Model):
     class Meta:
         db_table = "ai_contest_tag"
 
-
 class AIProblemRuleType(Choices):
     ACM = "ACM"
     OI = "OI"
@@ -97,6 +96,7 @@ class AIProblem(models.Model):
     solution_id = models.TextField(null=True)
     data_id = models.TextField(null=True)
     p_type = models.TextField(null=True)
+    rank = JSONField(null=True, blank=True) # 여기에 rank 추가
 
     class Meta:
         db_table = "ai_contest"
@@ -110,3 +110,4 @@ class AIProblem(models.Model):
     def add_ac_number(self):
         self.accepted_number = models.F("accepted_number") + 1
         self.save(update_fields=["accepted_number"])
+

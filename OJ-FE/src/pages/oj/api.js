@@ -344,6 +344,22 @@ export default {
     return ajax('admin/contest/acm_helper', 'put', {
       data
     })
+  },
+  // rank 추가 부분
+  editRank (problemID, rank) {
+    console.log('editRank 실행')
+    console.log('rank2', rank)
+    return ajax('rank', 'put', {
+      data: {
+        problemID,
+        rank
+      }
+    })
+  },
+  getRank (problemID) {
+    return ajax('rank', 'get', {
+      problemID
+    })
   }
 }
 

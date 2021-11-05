@@ -14,8 +14,8 @@ from utils.shortcuts import rand_str, natural_sort_key
 import os
 import json
 import csv
-# import pandas as pd test
-# import numpy as np
+# import pandas as pd
+import numpy as np
 
 import logging
 logger=logging.getLogger(__name__)
@@ -81,17 +81,21 @@ class ProblemAPI(APIView):
         
     def get(self, request):
         # 问题详情页
+        logger.info('problem get oj inin')
         problem_id = request.GET.get("problem_id")
+        logger.info('problem_id={}'.format(problem_id))
         if problem_id:
             try:
                 problem = AIProblem.objects.select_related("created_by") \
                     .get(_id=problem_id, contest_id__isnull=True, visible=True)
                 problem_data = ProblemSerializer(problem).data
                 self._add_problem_status(request, problem_data)
+                logger.info('problem={}'.format(problem))
+                logger.info('problem_data={}'.format(problem_data))
                 return self.success(problem_data)
             except AIProblem.DoesNotExist:
                 return self.error("Problem does not exist")
-
+        logger.info('problem get continue')
         limit = request.GET.get("limit")
         if not limit:
             return self.error("Limit is needed")
@@ -215,9 +219,17 @@ class FileAPI(CSRFExemptAPIView, TestCaseZipProcessor):
         logger.info("os_sol={}".format(os.path.join(settings.SOLUTION_DIR, str(csv.solution_id), "solution.csv")))
         logger.info("os_pre={}".format(os.path.join(settings.PREDICT_DIR, predict_id, "predict.csv")))
 
+        y_true = np.array(np.loadtxt(os.path.join(settings.SOLUTION_DIR, csv.solution_id, "solution.csv"), delimiter=",", dtype=np.float32))
+        y_pred = np.array(np.loadtxt(os.path.join(settings.PREDICT_DIR, predict_id, "predict.csv"), delimiter=",", dtype=np.float32))
+        logger.info("y_true={}".format(str(y_true)))
+        logger.info("y_pred={}".format(str(y_pred)))
+
+        y_score = (y_true == y_pred).mean()
+        logger.info("y_score={}".format(str(y_score)))
+
         # y_true = np.array(pd.read_csv(os.path.join(settings.SOLUTION_DIR, csv.solution_id, "solution.csv")))
         # y_pred = np.array(pd.read_csv(os.path.join(settings.PREDICT_DIR, predict_id, "predict.csv")))
-
+        
         # logger.info("y_true={}".format(y_true))
         # logger.info("y_pred={}".format(y_pred))
 
@@ -383,3 +395,115 @@ class ProblemClassAPI(APIView):
         data = self.paginate_data(request, problems, ProblemSerializer)
         self._add_problem_status(request, data)
         return self.success(data)
+        return self.success({"predictId": predict_id, "solutionId": csv.solution_id, "info": info, "y_score": y_score})
+    
+
+class AIRankAPI(APIView):
+    def put(self, request):
+        logger.info("AIRank inside put")
+        # logger.info("request", request)
+        # logger.info('request.data.rank={}'.format(request.data.rank))
+        # logger.info('data={}'.format(data))
+        # logger.info('request.data.pop("rank")={}'.format(data("rank"))) // error - TypeError: 'dict' object is not callable
+        # logger.info('request.data["rank"]={}'.format(data["rank"]))
+        # logger.info("request.data", request.data)
+
+        data = request.data
+        problem_id = data['problemID'] # 우리가 가져온 id - DisplayID
+
+        try:
+            problem = AIProblem.objects.get(_id=problem_id)
+            logger.info('problem={}'.format(problem))
+            # ensure_created_by(problem, request.user)
+        except AIProblem.DoesNotExist:
+            return self.error("Problem does not exist")
+
+        # _id = data["_id"] # Display ID
+        # if not _id:
+        #     return self.error("Display ID is required")
+        # if AIProblem.objects.exclude(id=problem_id).filter(_id=_id, contest_id__isnull=True).exists():
+        #     return self.error("Display ID already exists")
+
+        # error_info = self.common_checks(request)
+        # if error_info:
+        #     return self.error(error_info)
+        # todo check filename and score info
+        # tags = data.pop("tags")
+        # data["languages"] = list(data["languages"])
+
+
+        #rank = {'problemID': '211026 test', 'rank': [{'userid': 1, 'username': 'root', 'score': 10}, {'userid': 1, 'username': 'root', 'score': 10}]}
+
+
+        old_rank_list = problem.rank
+
+        if old_rank_list == None:
+            old_rank_list = []
+
+        same_person_flag = False
+        logger.info("before old_rank_list={}".format(old_rank_list))
+        for index, old_data in enumerate(old_rank_list):
+            if data['rank'][0]['userid'] == old_data['userid']:
+                same_person_flag = True
+                if old_data['score'] < data['rank'][0]['score']:
+                    del old_rank_list[index]
+                    old_rank_list.append(data['rank'][0])
+                    break
+        logger.info("after old_rank_list={}".format(old_rank_list))
+        if not same_person_flag:
+            old_rank_list.append(data['rank'][0])
+        logger.info("after2 old_rank_list={}".format(old_rank_list))
+
+        # logger.info("data['rank'][0]={}".format(data['rank'][0]))
+        # for i in old_rank_list:
+            # user_id_set.add(i['userid'])
+        # logger.info("user_id_set={}".format(user_id_set))
+        # new_rank = [old_rank, data['rank'][0]]
+        # else:
+        #     if data['rank'][0]['userid'] not in user_id_set:
+        #         old_rank_list.append(data['rank'][0])
+        #     else:
+        #         if data['rank'][0]['score'] < userid - maxscore:
+        #             old_rank_list.append(data['rank'][0])
+        # logger.info("old_rank_list_after_append={}".format(old_rank_list))
+        # logger.info("data={}".format(data))
+        # logger.info("data.items()={}".format(data.items()))
+        # data['rank']['rank_list'] = ['bi','asdf','zxcv']
+        # data['rank']['rank_list'] = []
+        # for k, v in data.items():
+        #     logger.info("k={}".format(k))
+        #     logger.info("v={}".format(v))
+            # data['rank']['rank_list'].append(v)
+        # old_rank_list.sort(key=lambda x:x['score'], reverse=True)
+        old_rank_list.sort(key=lambda x:(-x['score'], x['submitTime']))
+        logger.info("after sort old_rank_list={}".format(old_rank_list))
+        setattr(problem, 'rank', old_rank_list)
+        # problem['rank'].sort(key = lambda x:x['y_score'])
+        problem.save()
+        logger.info("problem saved")
+        # problem.tags.remove(*problem.tags.all())
+        # for tag in tags:
+        #     try:
+        #         tag = AIProblemTag.objects.get(name=tag)
+        #     except AIProblemTag.DoesNotExist:
+        #         tag = AIProblemTag.objects.create(name=tag)
+        #     problem.tags.add(tag)
+
+        return self.success()
+    
+    def get(self, request):
+        # data = request.date
+        # problem_id = data['problemID']
+        logger.info("AIRank get")
+        problem_id = request.GET.get("problemID")
+        logger.info("problemID={}".format(problem_id))
+        rank = request.GET.get("rank")
+        logger.info("rank={}".format(rank))
+        problem = AIProblem.objects.get(_id=problem_id)
+        logger.info("problem={}".format(problem))
+        logger.info("problem.rank={}".format(problem.rank))
+        return self.success(problem.rank)
+
+
+    
+
