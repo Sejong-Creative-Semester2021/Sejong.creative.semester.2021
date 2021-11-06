@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <Row type="flex" align="center">
+    <Row align="center">
       <b-carousel
           id="carousel-1"
           v-model="slide"
@@ -8,21 +8,21 @@
           controls
           indicators
           background="#ababab"
-          img-width="1920"
-          img-height="320"
-          style="position: relative"
+          img-width=1920
+          img-height=350
+          style="position: relative;"
           @sliding-start="onSlideStart"
           @sliding-end="onSlideEnd"
       >
           <!-- Slide with blank fluid image to maintain slide aspect ratio -->
-        <b-carousel-slide caption="Blank Image 1" img-blank img-alt="Blank image">
+        <b-carousel-slide img-src="https://i.postimg.cc/rFSwYd77/banner1.jpg" img-alt="Blank image">
           <p>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse eros felis, tincidunt
             a tincidunt eget, convallis vel est. Ut pellentesque ut lacus vel interdum.
           </p>
         </b-carousel-slide>
 
-        <b-carousel-slide caption="Blank Image 2" img-blank img-alt="Blank image">
+        <b-carousel-slide img-src="./banner1.jpg" caption="Blank Image 2" img-blank img-alt="Blank image">
           <p>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse eros felis, tincidunt
             a tincidunt eget, convallis vel est. Ut pellentesque ut lacus vel interdum.

@@ -3,10 +3,10 @@
     <Col id="problem-main" :span=17>
       <!--problem main-->
       <Panel :padding="40" shadow>
-        <!-- <div slot="title">{{problem.title}}</div> -->
+        <div slot="title">{{problem.title}}</div>
         <!-- 추가 부분 -->
         <div id="problem-content">
-          <p class="title">{{problem.title}}</p>
+          <!--<p class="title">{{problem.title}}</p>-->
           <!-- 중간에 이미지 삽입: 사이즈 조절 안돼서 주석 처리함
           <b-card
             overlay
@@ -24,18 +24,18 @@
           <b-tabs content-class="mt-3" fill>
             <b-tab title="대회안내" id="contest-content">
               <p class="subtitle">{{'대회 주요 일정'}}</p>
-              <p class="content" v-html=problem.schedule_description></p>
+              <!-- <p class="content" v-html=problem.schedule_description></p> -->
               <b-tabs content-class="mt-3" fill>
-                <b-tab title="개요"><p class="content" v-html=problem.summary_description></p></b-tab>
-                <b-tab title="규칙"><p class="content" v-html=problem.rule_description></p></b-tab>
-                <b-tab title="일정"><p class="content" v-html=problem.schedule_description></p></b-tab>
+                <b-tab title="개요"><p class="markdown-body content" v-html=problem.contest_description></p></b-tab>
+                <b-tab title="규칙"><p class="markdown-body content" v-html=problem.rule_description></p></b-tab>
+                <b-tab title="일정"><p class="markdown-body content" v-html=problem.schedule_description></p></b-tab>
               </b-tabs>
             </b-tab>
             <b-tab title="데이터">
               <p class="subtitle">{{'설명'}}</p>
               <b-card class="data-card">
                 <b-text>
-                  <p class="content" v-html=problem.data_description></p>
+                  <p class="markdown-body content" v-html=problem.data_description></p>
                 </b-text>
               </b-card>
               <b-button class="download-button" variant="light" name="Download Data" @click="downloadData(problem.id)">다운로드</b-button>
@@ -87,203 +87,8 @@
             </b-tab>
           </b-tabs>
         </div>
-
-      <!--
-        <div id="problem-content" class="markdown-body" v-katex>
-          <p class="title">{{$t('m.Description')}}</p>
-          <p class="content" v-html=problem.description></p>
-          <p class="title">{{$t('m.Input')}} <span v-if="problem.io_mode.io_mode=='File IO'">({{$t('m.FromFile')}}: {{ problem.io_mode.input }})</span></p>
-          <p class="content" v-html=problem.input_description></p>
-
-          <p class="title">{{$t('m.Output')}} <span v-if="problem.io_mode.io_mode=='File IO'">({{$t('m.ToFile')}}: {{ problem.io_mode.output }})</span></p>
-          <p class="content" v-html=problem.output_description></p>
-
-          <div v-for="(sample, index) of problem.samples" :key="index">
-            <div class="flex-container sample">
-              <div class="sample-input">
-                <p class="title">{{$t('m.Sample_Input')}} {{index + 1}}
-                  <a class="copy"
-                     v-clipboard:copy="sample.input"
-                     v-clipboard:success="onCopy"
-                     v-clipboard:error="onCopyError">
-                    <Icon type="clipboard"></Icon>
-                  </a>
-                </p>
-                <pre>{{sample.input}}</pre>
-              </div>
-              <div class="sample-output">
-                <p class="title">{{$t('m.Sample_Output')}} {{index + 1}}</p>
-                <pre>{{sample.output}}</pre>
-              </div>
-            </div>
-          </div>
-
-          <div v-if="problem.testhint">
-            <p class="title">{{$t('testhint')}}</p>
-            <Card dis-hover>
-              <div class="content" v-html=problem.testhint></div>
-            </Card>
-          </div>
-
-          <div v-if="problem.source">
-            <p class="title">{{$t('m.Source')}}</p>
-            <p class="content">{{problem.source}}</p>
-          </div>
-
-        </div>
-        -->
       </Panel>
-      <!--problem main end-->
-      <!--
-      <Card :padding="20" id="submit-code" dis-hover>
-        <CodeMirror :value.sync="code"
-                    :languages="problem.languages"
-                    :language="language"
-                    :theme="theme"
-                    @resetCode="onResetToTemplate"
-                    @changeTheme="onChangeTheme"
-                    @changeLang="onChangeLang"></CodeMirror>
-        <Row type="flex" justify="space-between">
-          <Col :span="10">
-            <div class="status" v-if="statusVisible">
-              <template v-if="!this.contestID || (this.contestID && OIContestRealTimePermission)">
-                <span>{{$t('m.Status')}}</span>
-                <Tag type="dot" :color="submissionStatus.color" @click.native="handleRoute('/status/'+submissionId)">
-                  {{$t('m.' + submissionStatus.text.replace(/ /g, "_"))}}
-                </Tag>
-              </template>
-              <template v-else-if="this.contestID && !OIContestRealTimePermission">
-                <Alert type="success" show-icon>{{$t('m.Submitted_successfully')}}</Alert>
-              </template>
-            </div>
-            <div v-else-if="problem.my_status === 0">
-              <Alert type="success" show-icon>{{$t('m.You_have_solved_the_problem')}}</Alert>
-            </div>
-            <div v-else-if="this.contestID && !OIContestRealTimePermission && submissionExists">
-              <Alert type="success" show-icon>{{$t('m.You_have_submitted_a_solution')}}</Alert>
-            </div>
-            <div v-if="contestEnded">
-              <Alert type="warning" show-icon>{{$t('m.Contest_has_ended')}}</Alert>
-            </div>
-          </Col>
-
-          <Col :span="12">
-            <template v-if="captchaRequired">
-              <div class="captcha-container">
-                <Tooltip v-if="captchaRequired" content="Click to refresh" placement="top">
-                  <img :src="captchaSrc" @click="getCaptchaSrc"/>
-                </Tooltip>
-                <Input v-model="captchaCode" class="captcha-code"/>
-              </div>
-            </template>
-            <Button type="warning" icon="edit" :loading="submitting" @click="submitCode"
-                    :disabled="problemSubmitDisabled || submitted"
-                    class="fl-right">
-              <span v-if="submitting">{{$t('m.Submitting')}}</span>
-              <span v-else>{{$t('m.Submit')}}</span>
-            </Button>
-          </Col>
-        </Row>
-      </Card>
-      -->
     </Col>
-    <!--
-    <div id="right-column">
-      <VerticalMenu @on-click="handleRoute">
-        <template v-if="this.contestID">
-          <VerticalMenu-item :route="{name: 'contest-problem-list', params: {contestID: contestID}}">
-            <Icon type="ios-photos"></Icon>
-            {{$t('m.Problems')}}
-          </VerticalMenu-item>
-
-          <VerticalMenu-item :route="{name: 'contest-announcement-list', params: {contestID: contestID}}">
-            <Icon type="chatbubble-working"></Icon>
-            {{$t('m.Announcements')}}
-          </VerticalMenu-item>
-        </template>
-
-        <VerticalMenu-item v-if="!this.contestID || OIContestRealTimePermission" :route="submissionRoute">
-          <Icon type="navicon-round"></Icon>
-           {{$t('m.Submissions')}}
-        </VerticalMenu-item>
-
-        <template v-if="this.contestID">
-          <VerticalMenu-item v-if="!this.contestID || OIContestRealTimePermission"
-                             :route="{name: 'contest-rank', params: {contestID: contestID}}">
-            <Icon type="stats-bars"></Icon>
-            {{$t('m.Rankings')}}
-          </VerticalMenu-item>
-          <VerticalMenu-item :route="{name: 'contest-details', params: {contestID: contestID}}">
-            <Icon type="home"></Icon>
-            {{$t('m.View_Contest')}}
-          </VerticalMenu-item>
-        </template>
-      </VerticalMenu>
-
-      <Card id="info">
-        <div slot="title" class="header">
-          <Icon type="information-circled"></Icon>
-          <span class="card-title">{{$t('m.Information')}}</span>
-        </div>
-        <ul>
-          <li><p>ID</p>
-            <p>{{problem._id}}</p></li>
-          <li>
-            <p>{{$t('m.Time_Limit')}}</p>
-            <p>{{problem.time_limit}}MS</p></li>
-          <li>
-            <p>{{$t('m.Memory_Limit')}}</p>
-            <p>{{problem.memory_limit}}MB</p></li>
-          <li>
-          <li>
-            <p>{{$t('m.IOMode')}}</p>
-            <p>{{problem.io_mode.io_mode}}</p>
-          </li>
-          <li>
-            <p>{{$t('m.Created')}}</p>
-            <p>{{problem.created_by.username}}</p></li>
-          <li v-if="problem.difficulty">
-            <p>{{$t('m.Level')}}</p>
-            <p>{{$t('m.' + problem.difficulty)}}</p></li>
-          <li v-if="problem.total_score">
-            <p>{{$t('m.Score')}}</p>
-            <p>{{problem.total_score}}</p>
-          </li>
-          <li>
-            <p>{{$t('m.Tags')}}</p>
-            <p>
-              <Poptip trigger="hover" placement="left-end">
-                <a>{{$t('m.Show')}}</a>
-                <div slot="content">
-                  <Tag v-for="tag in problem.tags" :key="tag">{{tag}}</Tag>
-                </div>
-              </Poptip>
-            </p>
-          </li>
-        </ul>
-      </Card>
-
-      <Card id="pieChart" :padding="0" v-if="!this.contestID || OIContestRealTimePermission">
-        <div slot="title">
-          <Icon type="ios-analytics"></Icon>
-          <span class="card-title">{{$t('m.Statistic')}}</span>
-          <Button type="ghost" size="small" id="detail" @click="graphVisible = !graphVisible">Details</Button>
-        </div>
-        <div class="echarts">
-          <ECharts :options="pie"></ECharts>
-        </div>
-      </Card>
-    </div>
-
-    <Modal v-model="graphVisible">
-      <div id="pieChart-detail">
-        <ECharts :options="largePie" :initOptions="largePieInitOpts"></ECharts>
-      </div>
-      <div slot="footer">
-        <Button type="ghost" @click="graphVisible=false">{{$t('m.Close')}}</Button>
-      </div>
-    </Modal>
-    -->
   </Row>
 </template>
 <script src="https://cdn.jsdelivr.net/npm/danfojs@0.3.3/lib/bundle.min.js"></script> 
@@ -889,6 +694,7 @@
       margin-top: 50px;
     }
     p.content {
+      text-align: left;
       margin-bottom: 50px;
     }
   }

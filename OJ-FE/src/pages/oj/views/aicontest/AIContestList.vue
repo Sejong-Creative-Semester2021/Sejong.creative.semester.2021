@@ -17,49 +17,45 @@
       <!-- 추가 부분 -->
       <b-tabs content-class="mt-3" fill>
         <b-tab title="일반용" id="contest-content">
-          <b-card-group columns id="problem-group">
-            <b-card v-for="problem in problemList"
-                        :key="problem.title"
-                        :img-src='`https://picsum.photos/1024/480/?image=${problem.id}`'
-                        img-top
-                        shadow
-                        style="max-width: 18rem;"
-                        class="mb-2"
-                        id="problem-card">
-              <b-card-body class="problem-content">
-                <b-card-title class="problem-title" @click="goProblem(problem._id)">{{problem.title}}</b-card-title>
-                <b-card-sub-title class="problem-subtitle">{{problem.created_by.username}}</b-card-sub-title>
-                <b-card-text class="problem-text">
-                  <p class="content">{{problem.start_time | localtime}}</p> 
-                  <p class="content">~ {{problem.end_time | localtime}}</p> 
-                </b-card-text>
-                <b-button block variant="dark" size="sm" @click="goProblem(problem._id)">JOIN</b-button>
-              </b-card-body>
-            </b-card>
-          </b-card-group>
+          <b-card v-for="problem in problemList"
+                      :key="problem.title"
+                      :img-src='`https://picsum.photos/1024/480/?image=${problem.id}`'
+                      img-left
+                      img-height="200"
+                      img-width="400"
+                      shadow
+                      class="mb-2"
+                      id="problem-card">
+            <b-card-body class="problem-content">
+              <b-card-title class="problem-title" @click="goProblem(problem._id)">{{problem.title}}</b-card-title>
+              <b-card-sub-title class="problem-subtitle">{{problem.created_by.username}}</b-card-sub-title>
+              <b-card-text class="problem-text">
+                <p class="content">{{problem.start_time | localtime('YYYY-M-D HH:mm')}} - {{problem.end_time | localtime('YYYY-M-D HH:mm')}}</p> 
+              </b-card-text>
+              <b-button pill variant="outline-dark" @click="goProblem(problem._id)"><b>더보기</b></b-button>
+            </b-card-body>
+          </b-card>
         </b-tab>
 
         <b-tab title="수업용" id="contest-content">
-          <b-card-group columns id="problem-group">
-            <b-card v-for="problem in classproblemList"
-                        :key="problem.title"
-                        :img-src='`https://picsum.photos/1024/480/?image=${problem.id}`'
-                        img-top
-                        shadow
-                        style="max-width: 18rem;"
-                        class="mb-2"
-                        id="problem-card">
-              <b-card-body class="problem-content">
-                <b-card-title class="problem-title" @click="goProblem(problem._id)">{{problem.title}}</b-card-title>
-                <b-card-sub-title class="problem-subtitle">{{problem.created_by.username}}</b-card-sub-title>
-                <b-card-text class="problem-text">
-                  <p class="content">{{problem.start_time | localtime}}</p> 
-                  <p class="content">~ {{problem.end_time | localtime}}</p> 
-                </b-card-text>
-                <b-button block variant="dark" size="sm" @click="goProblem(problem._id)">JOIN</b-button>
-              </b-card-body>
-            </b-card>
-          </b-card-group>
+          <b-card v-for="problem in classproblemList"
+                      :key="problem.title"
+                      :img-src='`https://picsum.photos/1024/480/?image=${problem.id}`'
+                      img-left
+                      img-height="200"
+                      img-width="400"
+                      shadow
+                      class="mb-2"
+                      id="problem-card">
+            <b-card-body class="problem-content">
+              <b-card-title class="problem-title" @click="goProblem(problem._id)">{{problem.title}}</b-card-title>
+              <b-card-sub-title class="problem-subtitle">{{problem.created_by.username}}</b-card-sub-title>
+              <b-card-text class="problem-text">
+                <p class="content">{{problem.start_time | localtime('YYYY-M-D HH:mm')}} - {{problem.end_time | localtime('YYYY-M-D HH:mm')}}</p> 
+              </b-card-text>
+              <b-button pill variant="outline-dark" @click="goProblem(problem._id)"><b>더보기</b></b-button>
+            </b-card-body>
+          </b-card>
         </b-tab>
       </b-tabs>
     </Panel>
@@ -324,8 +320,6 @@
 
   #problem-group{
     padding: 20px;
-    margin-left: 60px;
-    margin-right: 60px;
 
     .problem-content{
       margin-top: -25px;
@@ -333,7 +327,8 @@
     }
     .problem-title{
       font-size: 18px;
-      font-weight: bold;
+      font-weight: 800;
+      color: #3399ff;
     }
     .problem-subtitle{
       font-size: 16px;
@@ -367,4 +362,3 @@
     }
   }
 </style>
-

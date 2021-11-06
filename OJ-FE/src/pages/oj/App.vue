@@ -75,8 +75,8 @@
 
   @media screen and (max-width: 1200px) {
   .content-app {
-    margin-top: 160px;
-    padding: 0 2%;
+    margin-top: 80px;
+    padding: 0;
   }
 }
 
@@ -84,7 +84,7 @@
   .content-app {
     background-color: transparent;
     margin-top: 80px;
-    padding: 0 2%;
+    padding: 0;
   }
 }
 

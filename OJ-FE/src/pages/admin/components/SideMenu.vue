@@ -10,29 +10,9 @@
       <el-menu-item index="/user">{{$t('m.User')}}</el-menu-item>
       <el-menu-item index="/announcement">{{$t('m.Announcement')}}</el-menu-item>
       <el-menu-item index="/faq">{{$t('m.FAQ')}}</el-menu-item>
-      <el-menu-item index="/conf">{{$t('m.System_Config')}}</el-menu-item>
-      <el-menu-item index="/judge-server">{{$t('m.Judge_Server')}}</el-menu-item>
-      <el-menu-item index="/prune-test-case">{{$t('m.Prune_Test_Case')}}</el-menu-item>
     </el-submenu>
-    <el-submenu index="problem" v-if="hasProblemPermission">
-      <template slot="title"><i class="el-icon-fa-bars"></i>{{$t('m.Problem')}}</template>
-      <el-menu-item index="/problems">{{$t('m.Problem_List')}}</el-menu-item>
-      <el-menu-item index="/problem/create">{{$t('m.Create_Problem')}}</el-menu-item>
-      <el-menu-item index="/problem/batch_ops">{{$t('m.Export_Import_Problem')}}</el-menu-item>
-
-    </el-submenu>
-    <el-submenu index="contest">
-      <template slot="title"><i class="el-icon-fa-trophy"></i>{{$t('m.Contest')}}</template>
-      <el-menu-item index="/contest">{{$t('m.Contest_List')}}</el-menu-item>
-      <el-menu-item index="/contest/create">{{$t('m.Create_Contest')}}</el-menu-item>
-    </el-submenu>
-
-    <el-submenu index="aicontest" v-if="hasProblemPermission">
-      <template slot="title"><i class="el-icon-fa-bars"></i>{{$t('AIContest')}}</template>
-      <el-menu-item index="/aicontest">{{$t('m.Problem_List')}}</el-menu-item>
-      <el-menu-item index="/aicontest/create">{{$t('m.Create_Problem')}}</el-menu-item>
-
-    </el-submenu>
+    <el-menu-item index="/aicontest" v-if="hasProblemPermission">{{$t('AIContest')}}</el-menu-item>
+    <el-menu-item index="/aicontest/create" v-if="hasProblemPermission">{{$t('m.Create_Problem')}}</el-menu-item>
   </el-menu>
 </template>
 

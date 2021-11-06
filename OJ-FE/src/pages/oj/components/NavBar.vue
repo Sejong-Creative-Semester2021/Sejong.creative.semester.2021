@@ -2,35 +2,33 @@
   <div id="header">
     <Menu theme="light" mode="horizontal" @on-select="handleRoute" :active-name="activeMenu" class="oj-menu">
       <div class="logo"><span>{{'OJ'}}</span></div>
-      <Menu-item name="/">
+      <div class="menulist">
+      <Menu-item name="/" class='list'>
         {{$t('m.Home')}}
       </Menu-item>
-      <Menu-item name="/aicontest">
-        {{$t('AI Contest')}}
+      <Menu-item name="/aicontest" class='list'>
+        {{'AI 대회'}}
       </Menu-item>
-      <Submenu name="about">
-        <template slot="title">
-          {{$t('m.About')}}
-        </template>
-        <Menu-item name="/announcement">
-          {{$t('m.Announcement')}}
-        </Menu-item>
-        <Menu-item name="/FAQ">
-          {{$t('m.FAQ')}}
-        </Menu-item>
-      </Submenu>
+      <Menu-item name="/announcement" class='list'>
+        {{'공지사항'}}
+      </Menu-item>
+      <Menu-item name="/FAQ" class='list'>
+        {{$t('m.FAQ')}}
+      </Menu-item>
+      </div>
       <template v-if="!isAuthenticated">
         <div class="btn-menu">
           <Button type="ghost"
                   ref="loginBtn"
                   shape="circle"
-                  @click="handleBtnClick('login')">{{$t('m.Login')}}
+                  @click="handleBtnClick('login')"
+                  style="background-color: #ffcc00; color: #000000">{{$t('m.Login')}}
           </Button>
           <Button v-if="website.allow_register"
                   type="ghost"
                   shape="circle"
                   @click="handleBtnClick('register')"
-                  style="margin-left: 5px;">{{$t('m.Register')}}
+                  style="margin-left: 5px; background-color: #ffcc00; color: #000000">{{$t('m.Register')}}
           </Button>
         </div>
       </template>
@@ -41,7 +39,6 @@
           </Button>
           <Dropdown-menu slot="list">
             <Dropdown-item name="/user-home">{{$t('m.MyHome')}}</Dropdown-item>
-            <Dropdown-item name="/status?myself=1">{{$t('m.MySubmissions')}}</Dropdown-item>
             <Dropdown-item name="/setting/profile">{{$t('m.Settings')}}</Dropdown-item>
             <Dropdown-item v-if="isAdminRole" name="/admin">{{$t('m.Management')}}</Dropdown-item>
             <Dropdown-item divided name="/logout">{{$t('m.Logout')}}</Dropdown-item>
@@ -115,8 +112,33 @@
     z-index: 1000;
     background-color: transparent;
 
+    li:hover {
+      color: white !Important;
+      border-bottom-width: 0px !Important;
+    }
+
+    .ivu-menu-item-selected {
+      color: white !Important;
+      border-bottom-width: 0px !Important;
+    }
+
     .oj-menu {
-      background: transparent;
+      background-color: #000000;
+    }
+
+    .menulist {
+      margin-left: 35%;
+    }
+
+    .sublist {
+      color: #000000;
+    }
+    
+    .list {
+      color:#cac8c8;
+      font-weight: bold;
+      font-size: large;
+      display:table;
     }
 
     .logo {
@@ -125,9 +147,11 @@
       font-size: 20px;
       float: left;
       line-height: 60px;
+      color: #ffffff;
     }
 
     .drop-menu {
+      color: #ffcc00;
       float: right;
       margin-right: 30px;
       position: absolute;
@@ -136,12 +160,17 @@
         font-size: 18px;
       }
     }
+    .dropdown-menu{
+       color: #000000;
+    }
     .btn-menu {
+      color: #ffcc00;
       font-size: 16px;
       float: right;
       margin-right: 10px;
     }
   }
+
 
   .modal {
     &-title {

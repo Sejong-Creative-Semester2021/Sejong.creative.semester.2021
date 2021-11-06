@@ -4,17 +4,17 @@
       {{$t('m.FAQ')}}
     </div>
     <v-expansion-panels focusable>
-      <v-expansion-panel v-for="faq in faqs" :key="faq.question">
+      <v-expansion-panel v-for="faq in orderedFAQ" :key="faq.question">
         <v-expansion-panel-header>
-          {{faq.question}}
+          <span class="header">Q. {{faq.question}} </span>
           <template v-slot:actions>
-            <v-icon right>
-              {{mdiMenuDown}}
+            <v-icon color="primary" class="icon">
+              $expand
             </v-icon>
           </template>
         </v-expansion-panel-header>
-        <v-expansion-panel-content v-html="faq.answer" key="answer" class="content-container">
-          {{faq.answer}}
+        <v-expansion-panel-content>
+          <div v-html="faq.answer.replace('\n', '<br />')" key="answer" class="content-container"></div>
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
@@ -76,6 +76,7 @@
   .header{
     order:0;
     text-align: left;
+    font-size: 20px;
   }
   .size{
     margin-right: 15%;
