@@ -7,8 +7,14 @@
             <el-form-item :label="$t('m.Type')">
               <el-radio-group v-model="problem.p_type">
                 <el-radio label="General">General</el-radio>
-                <el-radio label="Class">Class</el-radio>
+                <el-radio label="Class">Class</el-radio> 
+
               </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <el-col :span="4" v-if="problem.p_type == 'Class'">
+            <el-form-item :label="$t('비밀번호')">
+              <el-input :placeholder="$t('비밀번호')" type="password" v-model="problem.password"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -344,6 +350,7 @@
     },
     data () {
       return {
+        selected: 'Class',
         rules: {
           _id: {required: true, message: 'Display ID is required', trigger: 'blur'},
           title: {required: true, message: 'Title is required', trigger: 'blur'},
@@ -382,7 +389,8 @@
           spj: '',
           languages: '',
           testCase: ''
-        }
+        },
+        password: ''
       }
     },
     mounted () {
@@ -423,7 +431,8 @@
           source: '',
           io_mode: {'io_mode': 'Standard IO', 'input': 'input.txt', 'output': 'output.txt'},
           p_type: '',
-          rank: []
+          rank: [],
+          password: ''
         }
         let contestID = this.$route.params.contestId
         if (contestID) {

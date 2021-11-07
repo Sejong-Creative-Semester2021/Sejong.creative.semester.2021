@@ -93,6 +93,7 @@ class CreateOrEditProblemSerializer(serializers.Serializer):
     data_id = serializers.CharField(max_length=32)
     p_type = serializers.ChoiceField(choices=[AIProblemType.General, AIProblemType.Class])
     rank = serializers.ListField(child=CreateRankSerializer(), allow_empty=True)
+    password = serializers.CharField()
 
 
 class CreateProblemSerializer(CreateOrEditProblemSerializer):

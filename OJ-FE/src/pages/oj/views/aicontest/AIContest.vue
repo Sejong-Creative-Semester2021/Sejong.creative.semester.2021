@@ -2,29 +2,13 @@
   <Row type="flex" :gutter="18" align="center">
     <Col id="problem-main" :span=17>
       <!--problem main-->
+      <!--<img class="problem-img" src="https://i.postimg.cc/rFSwYd77/banner1.jpg">-->
       <Panel :padding="40" shadow>
-        <div slot="title">{{problem.title}}</div>
-        <!-- 추가 부분 -->
+        <div class="problem-title" slot="title">{{problem.title}}</div>
         <div id="problem-content">
-          <!--<p class="title">{{problem.title}}</p>-->
-          <!-- 중간에 이미지 삽입: 사이즈 조절 안돼서 주석 처리함
-          <b-card
-            overlay
-            img-src="https://picsum.photos/1024/480/?image=10"
-            img-alt="Card Image"
-            class="card-img-top"
-            text-variant="white"
-            title="Image Overlay"
-            sub-title="Subtitle">
-            <b-card-text>
-              Some quick example text to build on the card and make up the bulk of the card's content.
-            </b-card-text>
-          </b-card>
-          -->
-          <b-tabs content-class="mt-3" fill>
+          <b-tabs content-class="mt-3 tabs" align="center" pills card>
             <b-tab title="대회안내" id="contest-content">
               <p class="subtitle">{{'대회 주요 일정'}}</p>
-              <!-- <p class="content" v-html=problem.schedule_description></p> -->
               <b-tabs content-class="mt-3" fill>
                 <b-tab title="개요"><p class="markdown-body content" v-html=problem.contest_description></p></b-tab>
                 <b-tab title="규칙"><p class="markdown-body content" v-html=problem.rule_description></p></b-tab>
@@ -32,17 +16,13 @@
               </b-tabs>
             </b-tab>
             <b-tab title="데이터">
+              <b-button class="download-button" variant="light" name="Download Data" @click="downloadData(problem.id)">다운로드</b-button>
               <p class="subtitle">{{'설명'}}</p>
               <b-card class="data-card">
                 <b-text>
                   <p class="markdown-body content" v-html=problem.data_description></p>
                 </b-text>
               </b-card>
-              <b-button class="download-button" variant="light" name="Download Data" @click="downloadData(problem.id)">다운로드</b-button>
-              <p class="subtitle">{{'상세'}}</p>
-                <b-card>
-                  
-                </b-card>
             </b-tab>
             <b-tab title="리더보드">
               <div>
@@ -621,6 +601,13 @@
 </script>
 
 <style lang="less" scoped>
+  .problem-title {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-size: 30px;
+    font-weight: 750;
+  }
+
   .card-title {
     margin-left: 8px;
   }
@@ -652,7 +639,11 @@
   }
 
   #problem-content {
-    margin-top: -50px;
+    margin-top: -40px;
+    .tabs {
+      font-weight: bold;
+      font-size: 16px;
+    }
     .card-img-top{
       width: 40rem;
     }
@@ -690,6 +681,7 @@
 
   #contest-content{
     text-align: center;
+    font-weight: bold;
     .subtitle{
       margin-top: 50px;
     }

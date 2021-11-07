@@ -17,6 +17,7 @@
       <!-- 추가 부분 -->
       <b-tabs content-class="mt-3" fill>
         <b-tab title="일반용" id="contest-content">
+        <div id="problem-group">
           <b-card v-for="problem in problemList"
                       :key="problem.title"
                       :img-src='`https://picsum.photos/1024/480/?image=${problem.id}`'
@@ -24,20 +25,21 @@
                       img-height="200"
                       img-width="400"
                       shadow
-                      class="mb-2"
-                      id="problem-card">
+                      class="mb-2 problem-card">
             <b-card-body class="problem-content">
               <b-card-title class="problem-title" @click="goProblem(problem._id)">{{problem.title}}</b-card-title>
               <b-card-sub-title class="problem-subtitle">{{problem.created_by.username}}</b-card-sub-title>
               <b-card-text class="problem-text">
                 <p class="content">{{problem.start_time | localtime('YYYY-M-D HH:mm')}} - {{problem.end_time | localtime('YYYY-M-D HH:mm')}}</p> 
               </b-card-text>
-              <b-button pill variant="outline-dark" @click="goProblem(problem._id)"><b>더보기</b></b-button>
+              <b-button pill variant="outline-primary" @click="goProblem(problem._id)"><b>더보기</b></b-button>
             </b-card-body>
           </b-card>
+        </div>
         </b-tab>
 
         <b-tab title="수업용" id="contest-content">
+        <div id="problem-group">
           <b-card v-for="problem in classproblemList"
                       :key="problem.title"
                       :img-src='`https://picsum.photos/1024/480/?image=${problem.id}`'
@@ -45,17 +47,18 @@
                       img-height="200"
                       img-width="400"
                       shadow
-                      class="mb-2"
-                      id="problem-card">
+                      class="mb-2 problem-card">
             <b-card-body class="problem-content">
               <b-card-title class="problem-title" @click="goProblem(problem._id)">{{problem.title}}</b-card-title>
               <b-card-sub-title class="problem-subtitle">{{problem.created_by.username}}</b-card-sub-title>
               <b-card-text class="problem-text">
-                <p class="content">{{problem.start_time | localtime('YYYY-M-D HH:mm')}} - {{problem.end_time | localtime('YYYY-M-D HH:mm')}}</p> 
+                <p class="content">{{problem.start_time | localtime('YYYY-M-D HH:mm')}} - {{problem.end_time | localtime('YYYY-M-D HH:mm')}}</p>
               </b-card-text>
-              <b-button pill variant="outline-dark" @click="goProblem(problem._id)"><b>더보기</b></b-button>
+              <b-button pill variant="outline-primary" @click="isModalViewed = true"><b>입장하기</b></b-button>
+              <ModalView v-if="isModalViewed" v-bind:problemID="problem._id" v-bind:problemPassword="problem.password" @close="isModalViewed = false"></ModalView>
             </b-card-body>
           </b-card>
+        </div>
         </b-tab>
       </b-tabs>
     </Panel>
@@ -69,16 +72,19 @@
   import utils from '@/utils/utils'
   import { ProblemMixin } from '@oj/components/mixins'
   import Pagination from '@oj/components/Pagination'
+  import ModalView from '@oj/components/ModalView'
 
   export default {
     name: 'AIContestList',
     mixins: [ProblemMixin],
     components: {
-      Pagination
+      Pagination,
+      ModalView
     },
     data () {
       return {
         // tagList: [],
+        isModalViewed: false,
         problemTableColumns: [
           {
             title: '#',
@@ -321,13 +327,20 @@
   #problem-group{
     padding: 20px;
 
+    .problem-card{
+      border-radius: 20px 20px 20px 20px;
+      margin-bottom: 10px;
+    }
+    img {
+      border-radius: 20px 20px 20px 20px;
+    }
+
     .problem-content{
-      margin-top: -25px;
       margin-bottom: -25px;
     }
     .problem-title{
       font-size: 18px;
-      font-weight: 800;
+      font-weight: bold;
       color: #3399ff;
     }
     .problem-subtitle{
