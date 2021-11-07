@@ -35,7 +35,7 @@ import 'echarts/lib/component/markPoint'
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
-import '@/styles/app.scss'
+// import '@/styles/app.scss'
 import vuetify from '@/plugins/vuetify'
 
 // import Vuetify from '@/plugins/vuetify'

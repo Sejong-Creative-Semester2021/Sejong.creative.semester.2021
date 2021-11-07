@@ -41,6 +41,7 @@ class User(AbstractBaseUser):
     open_api = models.BooleanField(default=False)
     open_api_appkey = models.TextField(null=True)
     is_disabled = models.BooleanField(default=False)
+    join_contest = JSONField(default=list, null=True, blank=True)
 
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = []

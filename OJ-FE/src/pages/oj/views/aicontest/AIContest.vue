@@ -21,9 +21,11 @@
             </b-card-text>
           </b-card>
           -->
+          <v-btn right @click="joinContest">참가</v-btn>
           <b-tabs content-class="mt-3" fill>
-            <b-tab title="대회안내">
-              <p v-html=problem.description></p>
+            <b-tab title="대회안내" id="contest-content">
+              <p class="subtitle">{{'대회 주요 일정'}}</p>
+              <p class="content" v-html=problem.schedule_description></p>
               <b-tabs content-class="mt-3" fill>
                 <b-tab title="개요"><p class="content" v-html=problem.summary_description></p></b-tab>
                 <b-tab title="규칙"><p class="content" v-html=problem.rule_description></p></b-tab>
@@ -32,19 +34,16 @@
             </b-tab>
             <b-tab title="데이터">
               <p class="subtitle">{{'설명'}}</p>
-              <b-card>
+              <b-card class="data-card">
                 <b-text>
-                  This will always be an aspect of
-                  except when the content is too tall.
+                  <p class="content" v-html=problem.data_description></p>
                 </b-text>
               </b-card>
+              <b-button class="download-button" variant="light" name="Download Data" @click="downloadData(problem.id)">다운로드</b-button>
               <p class="subtitle">{{'상세'}}</p>
                 <b-card>
-                  <b-text>
-                    This will always be an aspect of
-                    except when the content is too tall.
-                  </b-text>
-              </b-card>
+                  
+                </b-card>
             </b-tab>
             <b-tab title="리더보드">
               <div>
@@ -66,18 +65,24 @@
                   name="file"
                   :data="{id: problem._id}"
                   :show-file-list="true"
-                  :on-success="uploadFileSucceeded">
+                  :on-success="uploadFileSucceeded"
+                  >
                   <button size="small" type="primary" icon="el-icon-fa-upload">Choose File</button>
                 </upload>
                 <!-- <v-file-input truncate-length="15" @change="uploadFile"></v-file-input> -->
-                <v-file-input
-                  accept=".csv"
-                  label="Click here to select a .csv file"
-                  outlined
-                  @change="selectFile"
-                ></v-file-input>
-                <v-btn right @click="submit()">Read File</v-btn>
-                <p>{{ data }}</p>
+                <!--<form id="app" @submit="checkForm" action="/api/upload_csv" method="post" :on-success="uploadFileSucceeded">-->
+                <form method="post" enctype="multipart/form-data" novalidate>
+                  <!-- <v-file-input
+                    accept=".csv"
+                    label="Click here to select a .csv file"
+                    outlined
+                    @change="selectFile"
+                  ></v-file-input> -->
+                  <v-btn right @click="submit">submit</v-btn>
+                 <!-- <v-btn right @click="submit">submit</v-btn>-->
+                </form>
+                <!--</form>-->
+                <!--<p>{{ data }}</p>-->
                 <!-- <b-form-file
                   v-model="file1"
                   placeholder="Choose a file or drop it here..."
@@ -339,7 +344,7 @@
         page: 1,
         limit: 30,
         total: 0,
-        chosenFile: '',
+        chosenFile: null,
         data: null,
         rank: null,
         username: '',
@@ -496,6 +501,10 @@
           this.$Loading.error()
         })
       },
+      downloadData (problemID) {
+        let url = '/data_csv?problem_id=' + problemID
+        utils.downloadFile(url)
+      },
       // 추가 부분
       importTxt () {
         if (!this.chosenFile) { this.data = 'No File Chosen' }
@@ -507,9 +516,14 @@
         // let file = e
         console.log(e)
       },
+      //
+      checkForm (e) {
+        console.log('checkform')
+      },
       // 추가 부분
       uploadFileSucceeded (response) {
         console.log(response)
+        console.log(response.data)
         if (response.error) {
           this.$error(response.data)
           return
@@ -534,6 +548,11 @@
         //   console.log(res)
         // })
         console.log('after')
+      },
+      submit () {
+        console.log('submit button')
+        api['editRank'](this.problem._id, this.rank)
+        console.log('submit button2')
       },
       // 날짜 추가
       addDay () {
@@ -570,10 +589,6 @@
             'submitTime': this.submitTime
           }]
           console.log('getUserName', this.rank)
-          console.log('editrank - getuser before')
-          api['editRank'](this.problem._id, this.rank)
-          console.log('editrank - getuser after')
-          this.load_csv()
           // this.getSolvedProblems()
           // let registerTime = time.utcToLocal(this.profile.user.create_time, 'YYYY-MM-D')
           // console.log('The guy registered at ' + registerTime + '.')
@@ -592,13 +607,13 @@
       //   this.dataRank = res.data.data.results
       //   bar.hideLoading()
       // },
-      // csv 가져오는 함수 추가
-      load_csv () {
-        console.log('load_csv in')
-        // let dfd = require('danfojs')
-        // console.log('dfd', dfd)
-        // var s = new dfd.Series([20,21,22,23])
-        console.log('dfd 실행 완료')
+      // 참여 함수
+      joinContest () {
+        console.log('joinContest in')
+        this.username = this.$route.query.username
+        console.log('username', this.usename)
+        console.log('this.problem.id', this.problem.id)
+        api.editJoinContest(this.username, this.problem.id)
       },
       changePie (problemData) {
         // 只显示特定的一些状态
@@ -690,6 +705,7 @@
       },
       selectFile (file) {
         this.chosenFile = file
+        console.log(this.chosenFile)
       },
       submitCode () {
         if (this.code.trim() === '') {
@@ -830,8 +846,18 @@
   }
 
   .subtitle{
-    font-size: 20px;
+    font-size: 18px;
     font-weight: bold;
+  }
+  
+  .data-card{
+    margin-top: 15px;
+    margin-bottom: 15px;
+  }
+
+  .download-button{
+    font-weight: bold;
+    float: right;
   }
 
   #problem-content {
@@ -868,6 +894,16 @@
         border-style: solid;
         background: transparent;
       }
+    }
+  }
+
+  #contest-content{
+    text-align: center;
+    .subtitle{
+      margin-top: 50px;
+    }
+    p.content {
+      margin-bottom: 50px;
     }
   }
 

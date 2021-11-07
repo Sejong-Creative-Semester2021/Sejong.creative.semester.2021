@@ -143,11 +143,13 @@ export default {
     console.log('in')
     const formdata = new window.FormData()
     formdata.append('file', file)
-    console.log(formdata)
-    return ajax('aicontest', 'post', {
+    console.log('file', file)
+    console.log('problemID', problemID)
+    console.log('formdata', formdata)
+    return ajax('upload_csv', 'post', {
       data: {
-        formdata,
-        problemID
+        problemID,
+        formdata
       }
     })
   },
@@ -320,6 +322,24 @@ export default {
   getRank (problemID) {
     return ajax('rank', 'get', {
       problemID
+    })
+  },
+  // 참가 버튼 부분
+  editJoinContest (username, problemID) {
+    console.log('editJoinContest in')
+    return ajax('join_contest', 'put', {
+      data: {
+        username,
+        problemID
+      }
+    })
+  },
+  getJoinContest (username, problemID) {
+    return ajax('join_contest', 'get', {
+      data: {
+        username,
+        problemID
+      }
     })
   }
 }

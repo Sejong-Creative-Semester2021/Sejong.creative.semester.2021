@@ -26,7 +26,8 @@ from ..serializers import (ApplyResetPasswordSerializer, ResetPasswordSerializer
 from ..serializers import (TwoFactorAuthCodeSerializer, UserProfileSerializer,
                            EditUserProfileSerializer, ImageUploadForm)
 from ..tasks import send_email_async
-
+import logging
+logger=logging.getLogger(__name__)
 
 class UserProfileAPI(APIView):
     @method_decorator(ensure_csrf_cookie)
@@ -434,3 +435,37 @@ class SSOAPI(CSRFExemptAPIView):
         except User.DoesNotExist:
             return self.error("User does not exist")
         return self.success({"username": user.username, "avatar": user.userprofile.avatar, "admin_type": user.admin_type})
+
+class JoinContestAPI(APIView):
+    def get(self, request):
+        logger.info("get joincontest inin")
+        # username input -> problem_id list output
+        data = request.data
+        logger.info("data={}".format(data))
+        user_name = data['username']
+        logger.info("user_name={}".format(user_name))
+        user = User.objects.get(username = user_name)
+        logger.info("user={}".format(user))
+        return self.success(user.join_contest)
+        
+    def put(self, request):
+        logger.info("post joincontest inin")
+        # contest id 가져와야함
+        data = request.data
+        logger.info("data={}".format(data))
+        problem_id = data['problemID']
+        logger.info("problem_id={}".format(problem_id))
+        user_name = data['username']
+        logger.info("user_name={}".format(user_name))
+        user = User.objects.get(username = user_name)
+        logger.info("user={}".format(user))
+        new_join_contest = user.join_contest
+        logger.info("before new_join_contest={}".format(new_join_contest))
+        if problem_id not in new_join_contest:
+            new_join_contest.append(problem_id)
+        else:
+            logger.info("already in new_join_contest={}".format(new_join_contest))
+        logger.info("after new_join_contest={}".format(new_join_contest))
+        setattr(user, 'join_contest', new_join_contest)
+        user.save()
+        return self.success()
