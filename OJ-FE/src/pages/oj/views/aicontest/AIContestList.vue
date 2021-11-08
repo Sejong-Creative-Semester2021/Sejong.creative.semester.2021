@@ -20,7 +20,7 @@
         <div id="problem-group">
           <b-card v-for="problem in problemList"
                       :key="problem.title"
-                      :img-src='`https://picsum.photos/1024/480/?image=${problem.id}`'
+                      :img-src='`../../../../../static/img/${problem.id}.jpg`'
                       img-left
                       img-height="200"
                       img-width="400"
@@ -42,7 +42,7 @@
         <div id="problem-group">
           <b-card v-for="problem in classproblemList"
                       :key="problem.title"
-                      :img-src='`https://picsum.photos/1024/480/?image=${problem.id}`'
+                      :img-src='`../../../../../static/img/${problem.id}.jpg`'
                       img-left
                       img-height="200"
                       img-width="400"

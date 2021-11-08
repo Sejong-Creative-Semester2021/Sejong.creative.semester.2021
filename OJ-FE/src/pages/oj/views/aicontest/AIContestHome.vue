@@ -3,11 +3,11 @@
     <Col :span=14>
     <Panel shadow>
       <div slot="title"><b>{{$t('진행중인 대회')}}</b></div>
-      <b-card-group columns id="problem-group">
+      <b-card-group deck id="problem-group">
         <div v-for="problem in problemList" :key="problem.title" >
-          <b-card :img-src='`https://picsum.photos/1024/480/?image=${problem.id}`'
+          <b-card :img-src='`../../../../../static/img/${problem.id}.jpg`'
                   img-top
-                  style="min-width: 10rem; max-width: 18rem; border-radius: 20px; box-shadow: 0 4px 5px rgba(0, 0, 0, 0.1);"
+                  style="min-width: 10rem; max-width: 20rem; border-radius: 20px; box-shadow: 0 4px 5px rgba(0, 0, 0, 0.1);"
                   class="mb-1"
                   id="problem-card"
                   @click="goProblem(problem._id)">
