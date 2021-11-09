@@ -94,6 +94,7 @@ class CreateOrEditProblemSerializer(serializers.Serializer):
     p_type = serializers.ChoiceField(choices=[AIProblemType.General, AIProblemType.Class])
     rank = serializers.ListField(child=CreateRankSerializer(), allow_empty=True)
     password = serializers.CharField(allow_blank=True, allow_null=True)
+    join_contest = serializers.ListField(child=serializers.CharField(max_length=32))
 
 
 class CreateProblemSerializer(CreateOrEditProblemSerializer):
@@ -232,7 +233,7 @@ class ExportProblemSerializer(serializers.ModelSerializer):
                   "rule_description", "schedule_description",
                   "start_time", "end_time", "reward_description", "data_description",
                   "test_case_score", "hint", "memory_limit", "samples",
-                  "template", "spj", "rule_type", "source", "template", "solution_id", "rank")
+                  "template", "spj", "rule_type", "source", "template", "solution_id", "rank", "join_contest")
 
 
 class AddContestProblemSerializer(serializers.Serializer):

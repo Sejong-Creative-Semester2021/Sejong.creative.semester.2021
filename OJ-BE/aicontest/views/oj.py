@@ -475,6 +475,40 @@ class AIRankAPI(APIView):
         logger.info("problem.rank={}".format(problem.rank))
         return self.success(problem.rank)
 
-
-    
-
+class AIJoinAPI(APIView):
+    def get(self, request):
+        logger.info("get AIJoinAPI inin")
+        problem_id = request.GET.get("problemID")
+        # username input -> problem_id list output
+        # data = request.data
+        logger.info("problem_id={}".format(problem_id))
+        # problem_id = data['problemID'] # 우리가 가져온 id - DisplayID
+        # logger.info("data={}".format(data))
+        problem = AIProblem.objects.get(_id=problem_id)
+        # user_name = data['username']
+        # logger.info("user_name={}".format(user_name))
+        # user = User.objects.get(username = user_name)
+        # logger.info("user={}".format(user))
+        return self.success(problem.join_contest)
+        
+    def put(self, request):
+        logger.info("post AIJoinAPI inin")
+        # contest id 가져와야함
+        data = request.data
+        logger.info("data={}".format(data))
+        problem_id = data['problemID']
+        logger.info("problem_id={}".format(problem_id))
+        user_name = data['username']
+        logger.info("user_name={}".format(user_name))
+        # user = User.objects.get(username = user_name)
+        problem = AIProblem.objects.get(_id=problem_id)
+        new_join_contest = problem.join_contest
+        logger.info("before new_join_contest={}".format(new_join_contest))
+        if user_name not in new_join_contest:
+            new_join_contest.append(user_name)
+        else:
+            logger.info("already in new_join_contest={}".format(new_join_contest))
+        logger.info("after new_join_contest={}".format(new_join_contest))
+        setattr(problem, 'join_contest', new_join_contest)
+        problem.save()
+        return self.success(problem.join_contest)

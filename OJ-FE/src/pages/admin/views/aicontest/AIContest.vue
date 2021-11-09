@@ -345,7 +345,8 @@
           io_mode: {'io_mode': 'Standard IO', 'input': 'input.txt', 'output': 'output.txt'},
           p_type: '',
           rank: [],
-          password: ''
+          password: '',
+          join_contest: []
         }
         let contestID = this.$route.params.contestId
         if (contestID) {

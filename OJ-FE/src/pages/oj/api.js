@@ -360,6 +360,25 @@ export default {
     return ajax('rank', 'get', {
       problemID
     })
+  },
+  // join 추가 부분
+  editJoinContest (username, problemID) {
+    console.log('editJoinContest in')
+    return ajax('join_contest', 'put', {
+      data: {
+        username,
+        problemID
+      }
+    })
+  },
+  getJoinContest (problemID) {
+    console.log('getJoinContest inin')
+    console.log(problemID)
+    return ajax('join_contest', 'get', {
+      data: {
+        problemID
+      }
+    })
   }
 }
 
