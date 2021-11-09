@@ -75,8 +75,8 @@
             <icon-btn name="Edit" icon="edit" @click.native="goEdit(scope.row.id)"></icon-btn>
             <icon-btn v-if="contestId" name="Make Public" icon="clone"
                       @click.native="makeContestProblemPublic(scope.row.id)"></icon-btn>
-            <icon-btn icon="download" name="Download TestCase"
-                      @click.native="downloadTestCase(scope.row.id)"></icon-btn>
+            <!-- <icon-btn icon="download" name="Download TestCase"
+                      @click.native="downloadTestCase(scope.row.id)"></icon-btn> -->
             <icon-btn icon="trash" name="Delete Problem"
                       @click.native="deleteProblem(scope.row.id)"></icon-btn>
           </div>

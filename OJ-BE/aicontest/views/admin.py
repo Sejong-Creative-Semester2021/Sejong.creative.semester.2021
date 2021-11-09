@@ -177,25 +177,6 @@ class CompileSPJAPI(APIView):
 class ProblemBase(APIView):
     def common_checks(self, request):
         data = request.data
-        if data["spj"]:
-            if not data["spj_language"] or not data["spj_code"]:
-                return "Invalid spj"
-            if not data["spj_compile_ok"]:
-                return "SPJ code must be compiled successfully"
-            data["spj_version"] = hashlib.md5(
-                (data["spj_language"] + ":" + data["spj_code"]).encode("utf-8")).hexdigest()
-        else:
-            data["spj_language"] = None
-            data["spj_code"] = None
-        if data["rule_type"] == AIProblemRuleType.OI:
-            total_score = 0
-            for item in data["test_case_score"]:
-                if item["score"] <= 0:
-                    return "Invalid score"
-                else:
-                    total_score += item["score"]
-            data["total_score"] = total_score
-        data["languages"] = list(data["languages"])
 
 
 class ProblemAPI(ProblemBase):
@@ -232,7 +213,7 @@ class ProblemAPI(ProblemBase):
     @problem_permission_required
     def get(self, request):
         problem_id = request.GET.get("id")
-        rule_type = request.GET.get("rule_type")
+        # rule_type = request.GET.get("rule_type")
         user = request.user
         if problem_id:
             try:
@@ -243,15 +224,15 @@ class ProblemAPI(ProblemBase):
                 return self.error("Problem does not exist")
 
         problems = AIProblem.objects.filter(contest_id__isnull=True).order_by("-create_time")
-        if rule_type:
-            if rule_type not in AIProblemRuleType.choices():
-                return self.error("Invalid rule_type")
-            else:
-                problems = problems.filter(rule_type=rule_type)
+        # if rule_type:
+        #     if rule_type not in AIProblemRuleType.choices():
+        #         return self.error("Invalid rule_type")
+        #     else:
+        #         problems = problems.filter(rule_type=rule_type)
 
         keyword = request.GET.get("keyword", "").strip()
         if keyword:
-            problems = problems.filter(Q(title__icontains=keyword) | Q(_id__icontains=keyword))
+            problems = problems.filter(Q(title__icontains=keyword))
         if not user.can_mgmt_all_problem():
             problems = problems.filter(created_by=user)
         return self.success(self.paginate_data(request, problems, ProblemAdminSerializer))
@@ -279,7 +260,7 @@ class ProblemAPI(ProblemBase):
             return self.error(error_info)
         # todo check filename and score info
         tags = data.pop("tags")
-        data["languages"] = list(data["languages"])
+        # data["languages"] = list(data["languages"])
 
         for k, v in data.items():
             setattr(problem, k, v)

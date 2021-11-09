@@ -69,25 +69,25 @@ class CreateOrEditProblemSerializer(serializers.Serializer):
     end_time = serializers.DateTimeField()
     reward_description = serializers.CharField()
     data_description = serializers.CharField()
-    samples = serializers.ListField(child=CreateSampleSerializer(), allow_empty=False)
-    test_case_id = serializers.CharField(max_length=32)
-    test_case_score = serializers.ListField(child=CreateTestCaseScoreSerializer(), allow_empty=True)
+    # samples = serializers.ListField(child=CreateSampleSerializer(), allow_empty=False)
+    # test_case_id = serializers.CharField(max_length=32)
+    # test_case_score = serializers.ListField(child=CreateTestCaseScoreSerializer(), allow_empty=True)
     # time_limit = serializers.IntegerField(min_value=1, max_value=1000 * 60)
-    memory_limit = serializers.IntegerField(min_value=1, max_value=1024)
-    languages = LanguageNameMultiChoiceField()
-    template = serializers.DictField(child=serializers.CharField(min_length=1))
-    rule_type = serializers.ChoiceField(choices=[AIProblemRuleType.ACM, AIProblemRuleType.OI])
-    io_mode = ProblemIOModeSerializer()
-    spj = serializers.BooleanField()
-    spj_language = SPJLanguageNameChoiceField(allow_blank=True, allow_null=True)
-    spj_code = serializers.CharField(allow_blank=True, allow_null=True)
-    spj_compile_ok = serializers.BooleanField(default=False)
+    # memory_limit = serializers.IntegerField(min_value=1, max_value=1024)
+    # languages = LanguageNameMultiChoiceField()
+    # template = serializers.DictField(child=serializers.CharField(min_length=1))
+    # rule_type = serializers.ChoiceField(choices=[AIProblemRuleType.ACM, AIProblemRuleType.OI])
+    # io_mode = ProblemIOModeSerializer()
+    # spj = serializers.BooleanField()
+    # spj_language = SPJLanguageNameChoiceField(allow_blank=True, allow_null=True)
+    # spj_code = serializers.CharField(allow_blank=True, allow_null=True)
+    # spj_compile_ok = serializers.BooleanField(default=False)
     visible = serializers.BooleanField()
-    difficulty = serializers.ChoiceField(choices=Difficulty.choices())
+    # difficulty = serializers.ChoiceField(choices=Difficulty.choices())
     tags = serializers.ListField(child=serializers.CharField(max_length=32), allow_empty=False)
-    hint = serializers.CharField(allow_blank=True, allow_null=True)
-    source = serializers.CharField(max_length=256, allow_blank=True, allow_null=True)
-    share_submission = serializers.BooleanField()
+    # hint = serializers.CharField(allow_blank=True, allow_null=True)
+    # source = serializers.CharField(max_length=256, allow_blank=True, allow_null=True)
+    # share_submission = serializers.BooleanField()
     # csv_file = serializers.FileField()
     solution_id = serializers.CharField(max_length=32)
     data_id = serializers.CharField(max_length=32)
@@ -142,12 +142,11 @@ class ProblemAdminSerializer(BaseProblemSerializer):
 
 
 class ProblemSerializer(BaseProblemSerializer):
-    template = serializers.SerializerMethodField("get_public_template")
+    # template = serializers.SerializerMethodField("get_public_template")
 
     class Meta:
         model = AIProblem
-        exclude = ("test_case_score", "test_case_id", "visible", "is_public",
-                   "spj_code", "spj_version", "spj_compile_ok")
+        exclude = ("visible", )
 
 
 class ProblemSafeSerializer(BaseProblemSerializer):
@@ -155,9 +154,7 @@ class ProblemSafeSerializer(BaseProblemSerializer):
 
     class Meta:
         model = AIProblem
-        exclude = ("test_case_score", "test_case_id", "visible", "is_public",
-                   "spj_code", "spj_version", "spj_compile_ok",
-                   "difficulty", "submission_number", "accepted_number", "statistic_info")
+        exclude = ("visible","submission_number", "accepted_number")
 
 
 class ContestProblemMakePublicSerializer(serializers.Serializer):

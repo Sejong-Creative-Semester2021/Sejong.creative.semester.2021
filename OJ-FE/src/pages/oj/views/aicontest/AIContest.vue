@@ -253,34 +253,39 @@
           this.$Loading.finish()
           let problem = res.data.data
           console.log(problem)
+          console.log(problem.id)
           console.log('problem rank', problem.rank)
           this.showRanks = problem.rank
           // this.showRank.append(problem.rank)
           console.log('show Ranks', this.showRanks)
           this.changeDomTitle({title: problem.title})
-          api.submissionExists(problem.id).then(res => {
-            this.submissionExists = res.data.data
-          })
-          problem.languages = problem.languages.sort()
+          console.log('10')
+          // api.submissionExists(problem.id).then(res => {
+          //   this.submissionExists = res.data.data
+          // })
+          // problem.languages = problem.languages.sort()
           this.problem = problem
-          this.changePie(problem)
+          // this.changePie(problem)
 
           // 在beforeRouteEnter中修改了, 说明本地有code，无需加载template
           if (this.code !== '') {
             return
           }
-          // try to load problem template
-          this.language = this.problem.languages[0]
-          let template = this.problem.template
-          if (template && template[this.language]) {
-            this.code = template[this.language]
-          }
+          console.log('1')
+          // // try to load problem template
+          // this.language = this.problem.languages[0]
+          // let template = this.problem.template
+          // if (template && template[this.language]) {
+          //   this.code = template[this.language]
+          // }
+          console.log('2')
         }, () => {
           this.$Loading.error()
         })
       },
       downloadData (problemID) {
         let url = '/data_csv?problem_id=' + problemID
+        console.log(problemID)
         utils.downloadFile(url)
       },
       // 추가 부분

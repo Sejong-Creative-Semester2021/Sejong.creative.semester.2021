@@ -4,10 +4,10 @@
       <el-form ref="form" :model="problem" :rules="rules" label-position="top" label-width="70px">
         <el-row :gutter="20">
           <el-col :span="6">
-            <el-form-item :label="$t('m.Type')">
+            <el-form-item :label="'유형'">
               <el-radio-group v-model="problem.p_type">
-                <el-radio label="General">General</el-radio>
-                <el-radio label="Class">Class</el-radio> 
+                <el-radio label="General">일반</el-radio>
+                <el-radio label="Class">수업</el-radio> 
 
               </el-radio-group>
             </el-form-item>
@@ -20,20 +20,20 @@
         </el-row>
         <el-row :gutter="20">
           <el-col :span="6">
-            <el-form-item prop="_id" :label="$t('m.Display_ID')"
+            <el-form-item prop="_id" :label="'문제 ID'"
                           :required="this.routeName === 'create-contest-problem' || this.routeName === 'edit-contest-problem'">
-              <el-input :placeholder="$t('m.Display_ID')" v-model="problem._id"></el-input>
+              <el-input :placeholder="'문제 ID'" v-model="problem._id"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="18">
-            <el-form-item prop="title" :label="$t('m.Title')" required>
-              <el-input :placeholder="$t('m.Title')" v-model="problem.title"></el-input>
+          <el-col :span="10">
+            <el-form-item prop="title" :label="'문제 제목'" required>
+              <el-input :placeholder="'문제 제목'" v-model="problem.title"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="20">
           <el-col :span="24">
-            <el-form-item prop="contest_description" :label="'Contest Description'" required>
+            <el-form-item prop="contest_description" :label="'개요'" required>
               <Simditor v-model="problem.contest_description"></Simditor>
             </el-form-item>
           </el-col>
@@ -45,84 +45,42 @@
             </el-form-item>
           </el-col> -->
           <el-col :span="24">
-            <el-form-item prop="rule_description" :label="'Rule'" required>
+            <el-form-item prop="rule_description" :label="'규칙'" required>
               <Simditor v-model="problem.rule_description"></Simditor>
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item prop="schedule_description" :label="'Schedule'" required>
+            <el-form-item prop="schedule_description" :label="'일정'" required>
               <Simditor v-model="problem.schedule_description"></Simditor>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item :label="'Contest_Start_Time'" required>
+            <el-form-item :label="'시작 날짜'" required>
               <el-date-picker
                 v-model="problem.start_time"
                 type="datetime"
-                :placeholder="'Contest_Start_Time'">
+                :placeholder="'시작 날짜'">
               </el-date-picker>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item :label="'Contest_End_Time'" required>
+            <el-form-item :label="'마감 날짜'" required>
               <el-date-picker
                 v-model="problem.end_time"
                 type="datetime"
-                :placeholder="'Contest_End_Time'">
+                :placeholder="'마감 날짜'">
               </el-date-picker>
             </el-form-item>
           </el-col>
           <!-- reward -->
           <el-col :span="24">
-            <el-form-item prop="reward_description" :label="$t('Reward Description')" required>
+            <el-form-item prop="reward_description" :label="'상금'" required>
               <Simditor v-model="problem.reward_description"></Simditor>
             </el-form-item>
           </el-col>
         </el-row>
-        <!--
         <el-row :gutter="20">
-          <el-col :span="8">
-            <el-form-item :label="$t('m.Time_Limit') + ' (ms)' " required>
-              <el-input type="Number" :placeholder="$t('m.Time_Limit')" v-model="problem.time_limit"></el-input>
-            </el-form-item>
-          </el-col>
-          
-          <el-col :span="8">
-            <el-form-item :label="$t('m.Memory_limit') + ' (MB)' " required>
-              <el-input type="Number" :placeholder="$t('m.Memory_limit')" v-model="problem.memory_limit"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item :label="$t('m.Difficulty')">
-              <el-select class="difficulty-select" size="small" :placeholder="$t('m.Difficulty')" v-model="problem.difficulty">
-                <el-option :label="$t('m.Low')" value="Low"></el-option>
-                <el-option :label="$t('m.Mid')" value="Mid"></el-option>
-                <el-option :label="$t('m.High')" value="High"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        -->
-        <el-row :gutter="20">
-          <!-- <el-col :span="4">
-            <el-form-item :label="$t('m.Visible')">
-              <el-switch
-                v-model="problem.visible"
-                active-text=""
-                inactive-text="">
-              </el-switch>
-            </el-form-item>
-          </el-col>
-          <el-col :span="4">
-            <el-form-item :label="$t('m.ShareSubmission')">
-              <el-switch
-                v-model="problem.share_submission"
-                active-text=""
-                inactive-text="">
-              </el-switch>
-            </el-form-item>
-          </el-col> -->
-          <el-col :span="6">
+          <!-- <el-col :span="5">
             <el-form-item :label="$t('m.TestCase')" :error="error.testcase">
               <el-upload
                 action="/api/admin/test_case"
@@ -134,29 +92,29 @@
                 <el-button size="small" type="primary" icon="el-icon-fa-upload">Choose File</el-button>
               </el-upload>
             </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item :label="$t('CSV File')">
+          </el-col> -->
+          <el-col :span="5">
+            <el-form-item :label="'정답 파일'">
               <el-upload
                 action="/api/admin/upload_csv"
                 name="file"
                 :on-success="uploadFileSucceeded">
-                <el-button size="small" type="primary" icon="el-icon-fa-upload">Choose File</el-button>
+                <el-button size="small" type="primary" icon="el-icon-fa-upload">파일 선택</el-button>
               </el-upload>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
-            <el-form-item :label="$t('Data')">
+          <el-col :span="5">
+            <el-form-item :label="'데이터 파일'">
               <el-upload
                 action="/api/admin/data_csv"
                 name="file"
                 :on-success="uploadDataSucceeded">
-                <el-button size="small" type="primary" icon="el-icon-fa-upload">Choose File</el-button>
+                <el-button size="small" type="primary" icon="el-icon-fa-upload">파일 선택</el-button>
               </el-upload>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
-            <el-form-item :label="$t('m.Tag')" :error="error.tags" required>
+          <el-col :span="5">
+            <el-form-item :label="'태그'" :error="error.tags" required>
               <span class="tags">
                 <el-tag
                   v-for="tag in problem.tags"
@@ -180,19 +138,9 @@
               </el-autocomplete>
               <el-button class="button-new-tag" v-else size="small" @click="inputVisible = true">+ {{$t('m.New_Tag')}}</el-button>
             </el-form-item>
-          </el-col>          
-          <!-- <el-col :span="8">
-            <el-form-item :label="$t('m.Languages')" :error="error.languages" required>
-              <el-checkbox-group v-model="problem.languages">
-                <el-tooltip class="spj-radio" v-for="lang in allLanguage.languages" :key="'spj'+lang.name" effect="dark"
-                            :content="lang.description" placement="top-start">
-                  <el-checkbox :label="lang.name"></el-checkbox>
-                </el-tooltip>
-              </el-checkbox-group>
-            </el-form-item>
-          </el-col> -->
+          </el-col> 
         </el-row>        
-        <div>
+        <!-- <div>
           <el-form-item v-for="(sample, index) in problem.samples" :key="'sample'+index">
             <Accordion :title="'Sample' + (index + 1)">
               <el-button type="warning" size="small" icon="el-icon-delete" slot="header" @click="deleteSample(index)">
@@ -222,53 +170,18 @@
               </el-row>
             </Accordion>
           </el-form-item>
-        </div>
+        </div> -->
         <!-- <div class="add-sample-btn">
           <button type="button" class="add-samples" @click="addSample()"><i class="el-icon-plus"></i>{{$t('m.Add_Sample')}}
           </button>
         </div> -->
-        <el-form-item prop="data_description" :label="$t('Data Description')" required>
+        <el-form-item prop="data_description" :label="'데이터 설명'" required>
           <Simditor v-model="problem.data_description"></Simditor>
         </el-form-item>
-        <el-form-item style="margin-top: 20px" :label="$t('Hint')">
+        <!-- <el-form-item style="margin-top: 20px" :label="$t('Hint')">
           <Simditor v-model="problem.hint" placeholder=""></Simditor>
-        </el-form-item>
-        <!-- <el-form-item :label="$t('m.Code_Template')">
-          <el-row>
-            <el-col :span="24" v-for="(v, k) in template" :key="'template'+k">
-              <el-form-item>
-                <el-checkbox v-model="v.checked">{{ k }}</el-checkbox>
-                <div v-if="v.checked">
-                  <code-mirror v-model="v.code" :mode="v.mode"></code-mirror>
-                </div>
-              </el-form-item>
-            </el-col>
-          </el-row>
         </el-form-item> -->
-        <!-- <el-form-item :label="$t('m.Special_Judge')" :error="error.spj">
-          <el-col :span="24">
-            <el-checkbox v-model="problem.spj" @click.native.prevent="switchSpj()">{{$t('m.Use_Special_Judge')}}</el-checkbox>
-          </el-col>
-        </el-form-item> -->
-        <!-- <el-form-item v-if="problem.spj">
-          <Accordion :title="$t('m.Special_Judge_Code')">
-            <template slot="header">
-              <span>{{$t('m.SPJ_language')}}</span>
-              <el-radio-group v-model="problem.spj_language">
-                <el-tooltip class="spj-radio" v-for="lang in allLanguage.spj_languages" :key="lang.name" effect="dark"
-                            :content="lang.description" placement="top-start">
-                  <el-radio :label="lang.name">{{ lang.name }}</el-radio>
-                </el-tooltip>
-              </el-radio-group>
-              <el-button type="primary" size="small" icon="el-icon-fa-random" @click="compileSPJ"
-                         :loading="loadingCompile">
-                {{$t('m.Compile')}}
-              </el-button>
-            </template>
-            <code-mirror v-model="problem.spj_code" :mode="spjMode"></code-mirror>
-          </Accordion>
-        </el-form-item> -->
-        <el-row :gutter="20">
+        <!-- <el-row :gutter="20">
           <el-col :span="4">
             <el-form-item :label="$t('m.Type')">
               <el-radio-group v-model="problem.rule_type" :disabled="disableRuleType">
@@ -326,10 +239,10 @@
             </el-table>
           </el-col>
         </el-row>
-        
-        <el-form-item :label="$t('m.Source')">
+         -->
+        <!-- <el-form-item :label="$t('m.Source')">
           <el-input :placeholder="$t('m.Source')" v-model="problem.source"></el-input>
-        </el-form-item>
+        </el-form-item> -->
         <save @click.native="submit()">Save</save>
       </el-form>
     </Panel>
@@ -450,14 +363,16 @@
         if (this.mode === 'edit') {
           this.title = this.$i18n.t('Edit AIProblem')
           let funcName = {'edit-aiproblem': 'getAIProblem', 'edit-contest-problem': 'getContestProblem'}[this.routeName]
+          console.log('mode', this.mode)
           api[funcName](this.$route.params.problemId).then(problemRes => {
             let data = problemRes.data.data
-            if (!data.spj_code) {
-              data.spj_code = ''
-            }
-            data.spj_language = data.spj_language || 'C'
+            console.log('data', data)
+            // if (!data.spj_code) {
+            //   data.spj_code = ''
+            // }
+            // data.spj_language = data.spj_language || 'C'
             this.problem = data
-            this.testCaseUploaded = true
+            // this.testCaseUploaded = true
           })
         } else {
           this.title = this.$i18n.t('Add AIProblem')
@@ -610,63 +525,63 @@
         })
       },
       submit () {
-        if (!this.problem.samples.length) {
-          this.$error('Sample is required')
-          return
-        }
-        for (let sample of this.problem.samples) {
-          if (!sample.input || !sample.output) {
-            this.$error('Sample input and output is required')
-            return
-          }
-        }
+        // if (!this.problem.samples.length) {
+        //   this.$error('Sample is required')
+        //   return
+        // }
+        // for (let sample of this.problem.samples) {
+        //   if (!sample.input || !sample.output) {
+        //     this.$error('Sample input and output is required')
+        //     return
+        //   }
+        // }
         if (!this.problem.tags.length) {
           this.error.tags = 'Please add at least one tag'
           this.$error(this.error.tags)
           return
         }
-        if (this.problem.spj) {
-          if (!this.problem.spj_code) {
-            this.error.spj = 'Spj code is required'
-            this.$error(this.error.spj)
-          } else if (!this.problem.spj_compile_ok) {
-            this.error.spj = 'SPJ code has not been successfully compiled'
-          }
-          if (this.error.spj) {
-            this.$error(this.error.spj)
-            return
-          }
-        }
+        // if (this.problem.spj) {
+        //   if (!this.problem.spj_code) {
+        //     this.error.spj = 'Spj code is required'
+        //     this.$error(this.error.spj)
+        //   } else if (!this.problem.spj_compile_ok) {
+        //     this.error.spj = 'SPJ code has not been successfully compiled'
+        //   }
+        //   if (this.error.spj) {
+        //     this.$error(this.error.spj)
+        //     return
+        //   }
+        // }
         // if (!this.problem.languages.length) {
         //   this.error.languages = 'Please choose at least one language for problem'
         //   this.$error(this.error.languages)
         //   return
         // }
-        if (!this.testCaseUploaded) {
-          this.error.testCase = 'Test case is not uploaded yet'
-          this.$error(this.error.testCase)
-          return
-        }
-        if (this.problem.rule_type === 'OI') {
-          for (let item of this.problem.test_case_score) {
-            try {
-              if (parseInt(item.score) <= 0) {
-                this.$error('Invalid test case score')
-                return
-              }
-            } catch (e) {
-              this.$error('Test case score must be an integer')
-              return
-            }
-          }
-        }
-        this.problem.languages = this.problem.languages.sort()
-        this.problem.template = {}
-        for (let k in this.template) {
-          if (this.template[k].checked) {
-            this.problem.template[k] = this.template[k].code
-          }
-        }
+        // if (!this.testCaseUploaded) {
+        //   this.error.testCase = 'Test case is not uploaded yet'
+        //   this.$error(this.error.testCase)
+        //   return
+        // }
+        // if (this.problem.rule_type === 'OI') {
+        //   for (let item of this.problem.test_case_score) {
+        //     try {
+        //       if (parseInt(item.score) <= 0) {
+        //         this.$error('Invalid test case score')
+        //         return
+        //       }
+        //     } catch (e) {
+        //       this.$error('Test case score must be an integer')
+        //       return
+        //     }
+        //   }
+        // }
+        // this.problem.languages = this.problem.languages.sort()
+        // this.problem.template = {}
+        // for (let k in this.template) {
+        //   if (this.template[k].checked) {
+        //     this.problem.template[k] = this.template[k].code
+        //   }
+        // }
         let funcName = {
           'create-aiproblem': 'createAIProblem',
           'edit-aiproblem': 'editAIProblem',

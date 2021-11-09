@@ -43,7 +43,7 @@ class AIProblem(models.Model):
     _id = models.TextField(db_index=True)
     contest = models.ForeignKey(Contest, null=True, on_delete=models.CASCADE)
     # for contest problem
-    is_public = models.BooleanField(default=False)
+    # is_public = models.BooleanField(default=False)
     title = models.TextField()
     # HTML
     contest_description = RichTextField()
@@ -55,13 +55,13 @@ class AIProblem(models.Model):
     reward_description = RichTextField(null=True)
     data_description = RichTextField(null=True)
     # [{input: "test", output: "123"}, {input: "test123", output: "456"}]
-    samples = JSONField()
-    test_case_id = models.TextField()
+    # samples = JSONField()
+    # test_case_id = models.TextField()
     # [{"input_name": "1.in", "output_name": "1.out", "score": 0}]
-    test_case_score = JSONField()
-    hint = RichTextField(null=True)
-    languages = JSONField()
-    template = JSONField()
+    # test_case_score = JSONField()
+    # hint = RichTextField(null=True)
+    # languages = JSONField()
+    # template = JSONField()
     create_time = models.DateTimeField(auto_now_add=True)
     # we can not use auto_now here
     last_update_time = models.DateTimeField(null=True)
@@ -69,27 +69,27 @@ class AIProblem(models.Model):
     # ms
     # time_limit = models.IntegerField()
     # MB
-    memory_limit = models.IntegerField()
+    # memory_limit = models.IntegerField()
     # io mode
-    io_mode = JSONField(default=_default_io_mode)
+    # io_mode = JSONField(default=_default_io_mode)
     # special judge related
-    spj = models.BooleanField(default=False)
-    spj_language = models.TextField(null=True)
-    spj_code = models.TextField(null=True)
-    spj_version = models.TextField(null=True)
-    spj_compile_ok = models.BooleanField(default=False)
-    rule_type = models.TextField()
+    # spj = models.BooleanField(default=False)
+    # spj_language = models.TextField(null=True)
+    # spj_code = models.TextField(null=True)
+    # spj_version = models.TextField(null=True)
+    # spj_compile_ok = models.BooleanField(default=False)
+    # rule_type = models.TextField()
     visible = models.BooleanField(default=True)
-    difficulty = models.TextField()
+    # difficulty = models.TextField()
     tags = models.ManyToManyField(AIProblemTag)
-    source = models.TextField(null=True)
-    # for OI mode
-    total_score = models.IntegerField(default=0)
+    # source = models.TextField(null=True)
+    # # for OI mode
+    # total_score = models.IntegerField(default=0)
     submission_number = models.BigIntegerField(default=0)
     accepted_number = models.BigIntegerField(default=0)
     # {JudgeStatus.ACCEPTED: 3, JudgeStaus.WRONG_ANSWER: 11}, the number means count
-    statistic_info = JSONField(default=dict)
-    share_submission = models.BooleanField(default=False)
+    # statistic_info = JSONField(default=dict)
+    # share_submission = models.BooleanField(default=False)
     # # 추가 부분
     # y_score = models.FloatField(default=False)
     # csv_file = models.FileField(null=True)
