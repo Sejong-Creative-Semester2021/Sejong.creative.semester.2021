@@ -64,7 +64,14 @@ export default {
     })
   },
   updateProfile (profile) {
+    // console.log('updateprofile inininin')
     return ajax('profile', 'put', {
+      data: profile
+    })
+  },
+  updateProfileJoinContest (profile) {
+    console.log('updateProfileJoinContest inininin')
+    return ajax('profile_join_contest', 'put', {
       data: profile
     })
   },

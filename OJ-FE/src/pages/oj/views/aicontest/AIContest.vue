@@ -135,6 +135,7 @@
         y_score: null,
         alreadyJoined: false,
         join_contest: [],
+        user_join_contest: [],
         // dataRank: [],
         // showRank: [],
         // 추가 부분
@@ -297,6 +298,7 @@
         }).then(res => {
           api.getUserInfo(this.username).then(res => {
             this.profile = res.data.data
+            console.log('this.profile', this.profile)
             this.username = this.profile.user.username
           }).then(res => {
             console.log('this.username', this.username)
@@ -410,6 +412,16 @@
       join () {
         api.editJoinContest(this.username, this.problem._id)
         this.alreadyJoined = true
+        api.getUserInfo(this.username).then(res => {
+          this.profile = res.data.data
+          // console.log('this.profile', this.profile)
+          // this.user_join_contest
+          this.profile.user_join_contest.push(this.problem._id)
+          console.log('this.profile.user_join_contest', this.profile.user_join_contest)
+          api.updateProfileJoinContest(this.profile).then(res => {
+            console.log('updateProfileJoinContest out')
+          })
+        })
       },
       submit () {
         console.log('submit button')

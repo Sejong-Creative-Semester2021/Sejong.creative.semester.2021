@@ -15,7 +15,7 @@ import os
 import json
 import csv
 # import pandas as pd
-# import numpy as np
+import numpy as np
 
 import logging
 logger=logging.getLogger(__name__)
@@ -211,9 +211,15 @@ class FileAPI(CSRFExemptAPIView, TestCaseZipProcessor):
         logger.info("solution_id={}".format(csv.solution_id))
         logger.info("os_sol={}".format(os.path.join(settings.SOLUTION_DIR, str(csv.solution_id), "solution.csv")))
         logger.info("os_pre={}".format(os.path.join(settings.PREDICT_DIR, predict_id, "predict.csv")))
-
-        # y_true = np.array(np.loadtxt(os.path.join(settings.SOLUTION_DIR, csv.solution_id, "solution.csv"), delimiter=",", dtype=np.float32))
-        # y_pred = np.array(np.loadtxt(os.path.join(settings.PREDICT_DIR, predict_id, "predict.csv"), delimiter=",", dtype=np.float32))
+        """ csv format. both solution.csv, predict.csv
+        index,col_name
+        0,4
+        1,65
+        2,13
+        3,346
+        """
+        y_true = np.array(np.loadtxt(os.path.join(settings.SOLUTION_DIR, csv.solution_id, "solution.csv"), delimiter=",", dtype=np.float32, skiprows=1, usecols = (1,)))
+        y_pred = np.array(np.loadtxt(os.path.join(settings.PREDICT_DIR, predict_id, "predict.csv"), delimiter=",", dtype=np.float32, skiprows=1, usecols = (1,)))
         logger.info("y_true={}".format(str(y_true)))
         logger.info("y_pred={}".format(str(y_pred)))
 
@@ -223,9 +229,6 @@ class FileAPI(CSRFExemptAPIView, TestCaseZipProcessor):
         # y_true = np.array(pd.read_csv(os.path.join(settings.SOLUTION_DIR, csv.solution_id, "solution.csv")))
         # y_pred = np.array(pd.read_csv(os.path.join(settings.PREDICT_DIR, predict_id, "predict.csv")))
         
-        # logger.info("y_true={}".format(y_true))
-        # logger.info("y_pred={}".format(y_pred))
-
         # y_score = (y_true.astype(bool) == y_pred.astype(bool)).mean()
         # logger.info("y_score={}".format(y_score))
         
@@ -500,7 +503,7 @@ class AIJoinAPI(APIView):
         logger.info("problem_id={}".format(problem_id))
         user_name = data['username']
         logger.info("user_name={}".format(user_name))
-        # user = User.objects.get(username = user_name)
+        # profile = UserProfile.objects.get(username = user_name)
         problem = AIProblem.objects.get(_id=problem_id)
         new_join_contest = problem.join_contest
         logger.info("before new_join_contest={}".format(new_join_contest))
