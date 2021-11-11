@@ -15,24 +15,37 @@
         </ul>
       </div>
       <!-- 추가 부분 -->
-      <b-tabs content-class="mt-3" fill>
+      <b-tabs content-class="block mt-3" fill>
         <b-tab title="일반용" id="contest-content">
         <div id="problem-group">
           <b-card v-for="problem in problemList"
                       :key="problem.title"
                       :img-src='`../../../../../static/img/${problem.id}.jpg`'
                       img-left
-                      img-height="200"
-                      img-width="400"
+                      img-height="100"
+                      img-width="200"
                       shadow
-                      class="mb-2 problem-card">
+                      class="mb-3 problem-card">
             <b-card-body class="problem-content">
               <b-card-title class="problem-title" @click="goProblem(problem._id)">{{problem.title}}</b-card-title>
               <b-card-sub-title class="problem-subtitle">{{problem.created_by.username}}</b-card-sub-title>
               <b-card-text class="problem-text">
-                <p class="content">{{problem.start_time | localtime('YYYY-M-D HH:mm')}} - {{problem.end_time | localtime('YYYY-M-D HH:mm')}}</p> 
+                <p class="content" style="font-size: 16px; float: right; margin-top: -40px;">{{problem.start_time | localtime('YYYY-M-D')}} - {{problem.end_time | localtime('YYYY-M-D')}}</p> 
+                <span v-for="tag in tagList" :key="tag.name">
+                  <Button v-if="tag.id === problem.id"
+                          :key="tag.name"
+                          @click="filterByTag(tag.name)"
+                          type="ghost"
+                          size="small"
+                          :disabled="query.tag === tag.name"
+                          shape="circle"
+                          class="tag-btn"
+                          style="margin-top: 3px;">{{tag.name}}
+                  </Button>
+                </span>
+                <span style="font-size: 20px; float: right; margin-top:-8px; font-weight:bold;">D-{{getDuration(problem.start_time, problem.end_time)}}</span>
               </b-card-text>
-              <b-button pill variant="outline-primary" @click="goProblem(problem._id)"><b>더보기</b></b-button>
+              <!--<b-button pill variant="outline-primary" @click="goProblem(problem._id)" size="sm" style="float: right; margin-top: -60px;"><b>더보기</b></b-button>-->
             </b-card-body>
           </b-card>
         </div>
@@ -44,17 +57,17 @@
                       :key="problem.title"
                       :img-src='`../../../../../static/img/${problem.id}.jpg`'
                       img-left
-                      img-height="200"
-                      img-width="400"
+                      img-height="100"
+                      img-width="200"
                       shadow
-                      class="mb-2 problem-card">
+                      class="mb-3 problem-card">
             <b-card-body class="problem-content">
               <b-card-title class="problem-title" @click="goProblem(problem._id)">{{problem.title}}</b-card-title>
               <b-card-sub-title class="problem-subtitle">{{problem.created_by.username}}</b-card-sub-title>
               <b-card-text class="problem-text">
-                <p class="content">{{problem.start_time | localtime('YYYY-M-D HH:mm')}} - {{problem.end_time | localtime('YYYY-M-D HH:mm')}}</p>
+                <p class="content" style="font-size: 16px; float: right; margin-top: -40px;">{{problem.start_time | localtime('YYYY-M-D')}} - {{problem.end_time | localtime('YYYY-M-D')}}</p>
               </b-card-text>
-              <b-button pill variant="outline-primary" @click="isModalViewed = true"><b>입장하기</b></b-button>
+              <b-button pill variant="outline-primary" @click="isModalViewed = true" size="sm" style="float: right; margin-top: -25px;"><b>입장하기</b></b-button>
               <ModalView v-if="isModalViewed" v-bind:problemID="problem._id" v-bind:problemPassword="problem.password" @close="isModalViewed = false"></ModalView>
             </b-card-body>
           </b-card>
@@ -73,6 +86,7 @@
   import { ProblemMixin } from '@oj/components/mixins'
   import Pagination from '@oj/components/Pagination'
   import ModalView from '@oj/components/ModalView'
+  import time from '@/utils/time'
 
   export default {
     name: 'AIContestList',
@@ -83,7 +97,7 @@
     },
     data () {
       return {
-        // tagList: [],
+        tagList: [],
         isModalViewed: false,
         problemTableColumns: [
           {
@@ -160,14 +174,14 @@
         limit: 20,
         total: 0,
         loadings: {
-          table: true
-          // tag: true
+          table: true,
+          tag: true
         },
         routeName: '',
         query: {
           keyword: '',
           difficulty: '',
-          // tag: '',
+          tag: '',
           page: 1,
           limit: 10
         }
@@ -182,15 +196,15 @@
         let query = this.$route.query
         this.query.difficulty = query.difficulty || ''
         this.query.keyword = query.keyword || ''
-        // this.query.tag = query.tag || ''
+        this.query.tag = query.tag || ''
         this.query.page = parseInt(query.page) || 1
         if (this.query.page < 1) {
           this.query.page = 1
         }
         this.query.limit = parseInt(query.limit) || 10
-        // if (!simulate) {
-        //   this.getTagList()
-        // }
+        if (!simulate) {
+          this.getTagList()
+        }
         this.getProblemList()
         this.getClassProblemList()
       },
@@ -201,6 +215,10 @@
         })
       },
       // 추가 부분
+      getDuration (startTime, endTime) {
+        console.log(time.duration(startTime, endTime))
+        return time.duration(startTime, endTime)
+      },
       goProblem (problemID) {
         this.$router.push({name: 'aiproblem-details', params: {problemID: problemID}})
       },
@@ -225,7 +243,6 @@
           this.loadings.table = false
           this.total = res.data.data.total
           this.classproblemList = res.data.data.results
-          console.log(this.classproblemList)
           if (this.isAuthenticated) {
             this.addStatusColumn(this.problemTableColumns, res.data.data.results)
           }
@@ -233,19 +250,19 @@
           this.loadings.table = false
         })
       },
-      // getTagList () {
-      //   api.getAIProblemTagList().then(res => {
-      //     this.tagList = res.data.data
-      //     this.loadings.tag = false
-      //   }, res => {
-      //     this.loadings.tag = false
-      //   })
-      // },
-      // filterByTag (tagName) {
-      //   this.query.tag = tagName
-      //   this.query.page = 1
-      //   this.pushRouter()
-      // },
+      getTagList () {
+        api.getAIProblemTagList().then(res => {
+          this.tagList = res.data.data
+          this.loadings.tag = false
+        }, res => {
+          this.loadings.tag = false
+        })
+      },
+      filterByTag (tagName) {
+        this.query.tag = tagName
+        this.query.page = 1
+        this.pushRouter()
+      },
       filterByDifficulty (difficulty) {
         this.query.difficulty = difficulty
         this.query.page = 1
@@ -255,28 +272,28 @@
         this.query.page = 1
         this.pushRouter()
       },
-      // handleTagsVisible (value) {
-      //   if (value) {
-      //     this.problemTableColumns.push(
-      //       {
-      //         title: this.$i18n.t('m.Tags'),
-      //         align: 'center',
-      //         render: (h, params) => {
-      //           let tags = []
-      //           params.row.tags.forEach(tag => {
-      //             tags.push(h('Tag', {}, tag))
-      //           })
-      //           return h('div', {
-      //             style: {
-      //               margin: '8px 0'
-      //             }
-      //           }, tags)
-      //         }
-      //       })
-      //   } else {
-      //     this.problemTableColumns.splice(this.problemTableColumns.length - 1, 1)
-      //   }
-      // },
+      handleTagsVisible (value) {
+        if (value) {
+          this.problemTableColumns.push(
+            {
+              title: this.$i18n.t('m.Tags'),
+              align: 'center',
+              render: (h, params) => {
+                let tags = []
+                params.row.tags.forEach(tag => {
+                  tags.push(h('Tag', {}, tag))
+                })
+                return h('div', {
+                  style: {
+                    margin: '8px 0'
+                  }
+                }, tags)
+              }
+            })
+        } else {
+          this.problemTableColumns.splice(this.problemTableColumns.length - 1, 1)
+        }
+      },
       onReset () {
         this.$router.push({name: 'aiproblem-list'})
       },
@@ -325,18 +342,17 @@
   }
 
   #problem-group{
-    padding: 20px;
 
     .problem-card{
       border-radius: 20px 20px 20px 20px;
-      margin-bottom: 10px;
+      max-height: 100px;
     }
     img {
       border-radius: 20px 20px 20px 20px;
     }
 
     .problem-content{
-      margin-bottom: -25px;
+      margin-top: -25px;
     }
     .problem-title{
       font-size: 18px;

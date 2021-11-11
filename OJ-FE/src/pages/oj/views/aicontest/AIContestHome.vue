@@ -7,8 +7,8 @@
         <div v-for="problem in problemList" :key="problem.title" >
           <b-card :img-src='`../../../../../static/img/${problem.id}.jpg`'
                   img-top
-                  style="min-width: 10rem; max-width: 20rem; border-radius: 20px; box-shadow: 0 4px 5px rgba(0, 0, 0, 0.1);"
-                  class="mb-1"
+                  style="min-width: 18rem; max-width: 18rem; border-radius: 20px; box-shadow: 0 4px 5px rgba(0, 0, 0, 0.1);"
+                  class="mb-3"
                   id="problem-card"
                   @click="goProblem(problem._id)">
             <b-card-body class="problem-content">

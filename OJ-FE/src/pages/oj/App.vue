@@ -73,7 +73,7 @@
   }
 
 
-  @media screen and (max-width: 1200px) {
+@media screen and (max-width: 1200px) {
   .content-app {
     margin-top: 80px;
     padding: 0;
