@@ -1,6 +1,6 @@
 <template>
   <div class="announcement view">
-    <Panel :title="$t('m.General_Announcement')">
+    <Panel :title="'공지사항'">
       <div class="list">
         <el-table
           v-loading="loading"
@@ -15,30 +15,30 @@
           </el-table-column>
           <el-table-column
             prop="title"
-            label="Title">
+            label="제목">
           </el-table-column>
           <el-table-column
             prop="create_time"
-            label="CreateTime">
+            label="작성일">
             <template slot-scope="scope">
               {{ scope.row.create_time | localtime }}
             </template>
           </el-table-column>
           <el-table-column
             prop="last_update_time"
-            label="LastUpdateTime">
+            label="마지막 수정일">
             <template slot-scope="scope">
               {{scope.row.last_update_time | localtime }}
             </template>
           </el-table-column>
           <el-table-column
             prop="created_by.username"
-            label="Author">
+            label="작성자">
           </el-table-column>
           <el-table-column
             width="100"
             prop="vimportant"
-            label="Important">
+            label="중요">
             <template slot-scope="scope">
               <el-switch v-model="scope.row.important"
                          active-text=""
@@ -50,7 +50,7 @@
           <el-table-column
             width="100"
             prop="visible"
-            label="Visible">
+            label="공개">
             <template slot-scope="scope">
               <el-switch v-model="scope.row.visible"
                          active-text=""
@@ -61,16 +61,16 @@
           </el-table-column>
           <el-table-column
             fixed="right"
-            label="Option"
+            label="옵션"
             width="200">
             <div slot-scope="scope">
-              <icon-btn name="Edit" icon="edit" @click.native="openAnnouncementDialog(scope.row.id)"></icon-btn>
-              <icon-btn name="Delete" icon="trash" @click.native="deleteAnnouncement(scope.row.id)"></icon-btn>
+              <icon-btn name="수정" icon="edit" @click.native="openAnnouncementDialog(scope.row.id)"></icon-btn>
+              <icon-btn name="삭제" icon="trash" @click.native="deleteAnnouncement(scope.row.id)"></icon-btn>
             </div>
           </el-table-column>
         </el-table>
         <div class="panel-options">
-          <el-button type="primary" size="small" @click="openAnnouncementDialog(null)" icon="el-icon-plus">Create</el-button>
+          <el-button type="primary" size="small" @click="openAnnouncementDialog(null)" icon="el-icon-plus">공지 등록</el-button>
           <el-pagination
             v-if="!contestID"
             class="page"
@@ -86,17 +86,17 @@
     <el-dialog :title="announcementDialogTitle" :visible.sync="showEditAnnouncementDialog"
                @open="onOpenEditDialog" :close-on-click-modal="false">
       <el-form label-position="top">
-        <el-form-item :label="$t('m.Announcement_Title')" required>
+        <el-form-item :label="'제목'" required>
           <el-input
             v-model="announcement.title"
-            :placeholder="$t('m.Announcement_Title')" class="title-input">
+            :placeholder="'제목'" class="title-input">
           </el-input>
         </el-form-item>
-        <el-form-item :label="$t('m.Announcement_Content')" required>
+        <el-form-item :label="'내용'" required>
           <Simditor v-model="announcement.content"></Simditor>
         </el-form-item>
         <div class="visible-box">
-          <span>{{$t('m.Announcement_visible')}}</span>
+          <span>공개</span>
           <el-switch
             v-model="announcement.visible"
             active-text=""
@@ -104,7 +104,7 @@
           </el-switch>
         </div>
         <div class="visible-box">
-          <span>{{$t('m.Announcement_important')}}</span>
+          <span>중요</span>
           <el-switch
             v-model="announcement.important"
             active-text=""
@@ -255,7 +255,7 @@
         this.showEditAnnouncementDialog = true
         if (id !== null) {
           this.currentAnnouncementId = id
-          this.announcementDialogTitle = 'Edit Announcement'
+          this.announcementDialogTitle = '공지사항 수정'
           this.announcementList.find(item => {
             if (item.id === this.currentAnnouncementId) {
               this.announcement.title = item.title
@@ -266,7 +266,7 @@
             }
           })
         } else {
-          this.announcementDialogTitle = 'Create Announcement'
+          this.announcementDialogTitle = '공지사항 생성'
           this.announcement.title = ''
           this.announcement.visible = true
           this.announcement.important = false

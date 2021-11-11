@@ -9,7 +9,7 @@
             <Input v-model="query.keyword"
                    @on-enter="filterByKeyword"
                    @on-click="filterByKeyword"
-                   placeholder="keyword"
+                   placeholder="검색"
                    icon="ios-search-strong"/>
           </li>
         </ul>
@@ -211,6 +211,8 @@
           this.loadings.table = false
           this.total = res.data.data.total
           this.problemList = res.data.data.results
+          this.problemList = this.problemList.reverse()
+          console.log(this.problemList)
           if (this.isAuthenticated) {
             this.addStatusColumn(this.problemTableColumns, res.data.data.results)
           }
@@ -225,6 +227,7 @@
           this.loadings.table = false
           this.total = res.data.data.total
           this.classproblemList = res.data.data.results
+          this.classproblemList = this.classproblemList.reverse()
           console.log(this.classproblemList)
           if (this.isAuthenticated) {
             this.addStatusColumn(this.problemTableColumns, res.data.data.results)

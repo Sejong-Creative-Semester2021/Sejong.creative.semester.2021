@@ -362,7 +362,7 @@
         this.allLanguage = allLanguage
         // get problem after getting languages list to avoid find undefined value in `watch problem.languages`
         if (this.mode === 'edit') {
-          this.title = this.$i18n.t('Edit AIProblem')
+          this.title = '문제 수정'
           let funcName = {'edit-aiproblem': 'getAIProblem', 'edit-contest-problem': 'getContestProblem'}[this.routeName]
           console.log('mode', this.mode)
           api[funcName](this.$route.params.problemId).then(problemRes => {
@@ -376,7 +376,7 @@
             // this.testCaseUploaded = true
           })
         } else {
-          this.title = this.$i18n.t('Add AIProblem')
+          this.title = '문제 등록'
           for (let item of allLanguage.languages) {
             this.problem.languages.push(item.name)
           }

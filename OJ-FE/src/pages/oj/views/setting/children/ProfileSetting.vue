@@ -62,31 +62,31 @@
       </div>
     </Modal>
 
-    <div class="section-title">{{$t('m.Profile_Setting')}}</div>
+    <div class="section-title">프로필 정보</div>
     <Form ref="formProfile" :model="formProfile">
       <Row type="flex" :gutter="30" justify="space-around">
         <Col :span="11">
-          <FormItem label="Real Name">
+          <FormItem label="이름">
             <Input v-model="formProfile.real_name"/>
           </FormItem>
-          <Form-item label="School">
+          <!-- <Form-item label="School">
             <Input v-model="formProfile.school"/>
-          </Form-item>
-          <Form-item label="Major">
+          </Form-item> -->
+          <Form-item label="학과">
             <Input v-model="formProfile.major"/>
           </Form-item>
-          <FormItem label="Language">
+          <!-- <FormItem label="Language">
             <Select v-model="formProfile.language">
               <Option v-for="lang in languages" :key="lang.value" :value="lang.value">{{lang.label}}</Option>
             </Select>
-          </FormItem>
+          </FormItem> -->
           <Form-item>
-            <Button type="primary" @click="updateProfile" :loading="loadingSaveBtn">Save All</Button>
+            <Button type="primary" @click="updateProfile" :loading="loadingSaveBtn">저장</Button>
           </Form-item>
         </Col>
 
         <Col :span="11">
-          <Form-item label="Mood">
+          <!-- <Form-item label="Mood">
             <Input v-model="formProfile.mood"/>
           </Form-item>
           <Form-item label="Blog">
@@ -94,7 +94,7 @@
           </Form-item>
           <Form-item label="Github">
             <Input v-model="formProfile.github"/>
-          </Form-item>
+          </Form-item> -->
         </Col>
       </Row>
     </Form>

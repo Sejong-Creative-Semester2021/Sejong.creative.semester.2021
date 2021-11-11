@@ -15,7 +15,7 @@
              v-model="query.keyword"
              @on-enter="filterByKeyword"
              @on-click="filterByKeyword"
-             placeholder="keyword"
+             placeholder="검색"
              icon="ios-search-strong"/>
     </div>
     
@@ -25,9 +25,9 @@
         <ul class="announcements-container" key="list">
           <li class="bar">
             <div class="flex-container">
-              <div class="id">number</div>
-              <div class="title2">Title</div>
-              <div class="date">Create Time</div>
+              <div class="id">#</div>
+              <div class="title2">제목</div>
+              <div class="date">작성일</div>
             </div>
           </li>
           <template v-for="announcement in announcements">
@@ -208,7 +208,7 @@
     computed: {
       title () {
         if (this.listVisible) {
-          return this.isContest ? this.$i18n.t('m.Contest_Announcements') : this.$i18n.t('m.Announcements')
+          return this.isContest ? this.$i18n.t('m.Contest_Announcements') : '공지사항'
         } else {
           return this.announcement.title
         }

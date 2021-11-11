@@ -15,30 +15,30 @@
           </el-table-column>
           <el-table-column
             prop="question"
-            label="Question">
+            label="질문">
           </el-table-column>
           <el-table-column
             prop="create_time"
-            label="CreateTime">
+            label="작성일">
             <template slot-scope="scope">
               {{ scope.row.create_time | localtime }}
             </template>
           </el-table-column>
           <el-table-column
             prop="last_update_time"
-            label="LastUpdateTime">
+            label="마지막 수정일">
             <template slot-scope="scope">
               {{scope.row.last_update_time | localtime }}
             </template>
           </el-table-column>
           <el-table-column
             prop="created_by.username"
-            label="Author">
+            label="작성자">
           </el-table-column>
           <el-table-column
             width="100"
             prop="visible"
-            label="Visible">
+            label="공개">
             <template slot-scope="scope">
               <el-switch v-model="scope.row.visible"
                          active-text=""
@@ -49,16 +49,16 @@
           </el-table-column>
           <el-table-column
             fixed="right"
-            label="Option"
+            label="옵션"
             width="200">
             <div slot-scope="scope">
-              <icon-btn name="Edit" icon="edit" @click.native="openFAQDialog(scope.row.id)"></icon-btn>
-              <icon-btn name="Delete" icon="trash" @click.native="deleteFAQ(scope.row.id)"></icon-btn>
+              <icon-btn name="수정" icon="edit" @click.native="openFAQDialog(scope.row.id)"></icon-btn>
+              <icon-btn name="삭제" icon="trash" @click.native="deleteFAQ(scope.row.id)"></icon-btn>
             </div>
           </el-table-column>
         </el-table>
         <div class="panel-options">
-          <el-button type="primary" size="small" @click="openFAQDialog(null)" icon="el-icon-plus">Create</el-button>
+          <el-button type="primary" size="small" @click="openFAQDialog(null)" icon="el-icon-plus">FAQ 등록</el-button>
           <el-pagination
             class="page"
             layout="prev, pager, next"
@@ -74,19 +74,19 @@
                @open="onOpenEditDialog" :close-on-click-modal="false">
       <el-form label-position="top">
 
-        <el-form-item :label="$t('m.FAQ_Question')" required>
+        <el-form-item :label="'질문'" required>
           <el-input
             v-model="faq.question"
-            :placeholder="$t('m.FAQ_Question')" class="title-input">
+            :placeholder="'질문'" class="title-input">
           </el-input>
         </el-form-item>
 
-        <el-form-item :label="$t('m.FAQ_Answer')" required>
+        <el-form-item :label="'답변'" required>
           <Simditor v-model="faq.answer"></Simditor>
         </el-form-item>
 
         <div class="visible-box">
-          <span>{{$t('m.FAQ_visible')}}</span>
+          <span>공개</span>
           <el-switch
             v-model="faq.visible"
             active-text=""
@@ -131,7 +131,7 @@
           answer: ''
         },
         // 对话框标题
-        faqDialogTitle: 'Edit FAQ',
+        faqDialogTitle: 'FAQ 수정',
         // 是否显示loading
         loading: true,
         // 当前页码
@@ -215,7 +215,7 @@
         this.showEditFAQDialog = true
         if (id !== null) {
           this.currentFAQId = id
-          this.faqDialogTitle = 'Edit FAQ'
+          this.faqDialogTitle = 'FAQ 수정'
           this.faqList.find(item => {
             if (item.id === this.currentFAQId) {
               this.faq.question = item.question
@@ -225,7 +225,7 @@
             }
           })
         } else {
-          this.faqDialogTitle = 'Create FAQ'
+          this.faqDialogTitle = 'FAQ 생성'
           this.faq.question = ''
           this.faq.visible = true
           this.faq.answer = ''

@@ -200,6 +200,13 @@ export default {
       params: params
     })
   },
+  getUserGeneralAIProblemList (problemID) {
+    return ajax('aicontest_general', 'get', {
+      params: {
+        problem_id: problemID
+      }
+    })
+  },
   getClassAIProblemList (offset, limit, searchParams) {
     let params = {
       paging: true,
@@ -213,6 +220,13 @@ export default {
     })
     return ajax('aicontest_class', 'get', {
       params: params
+    })
+  },
+  getUserClassAIProblemList (problemID) {
+    return ajax('aicontest_class', 'get', {
+      params: {
+        problem_id: problemID
+      }
     })
   },
   getAIProblem (problemID) {

@@ -17,8 +17,9 @@
           <div class="middle">
             <div slot="title" style="font-size: 25px;"><b>참여중인 대회</b></div>
             <b-tabs content-class="mt-3" fill>
-              <div id="problem-group">
-                <b-card v-for="problem in problemlist"
+        <b-tab title="일반용" id="contest-content">
+        <div id="problem-group">
+          <b-card v-for="problem in problemlist"
                       :key="problem.title"
                       :img-src='`../../../../../static/img/${problem.id}.jpg`'
                       img-left
@@ -26,16 +27,41 @@
                       img-width="400"
                       shadow
                       class="mb-2 problem-card">
-                  <b-card-body class="problem-content">
-                    <b-card-title class="problem-title" @click="goProblem(problem._id)">{{problem.title}}</b-card-title>
-                    <b-card-text class="problem-text">
-                      <p class="content">{{problem.start_time | localtime('YYYY-M-D HH:mm')}} - {{problem.end_time | localtime('YYYY-M-D HH:mm')}}</p> 
-                    </b-card-text>
-                    <b-button pill variant="outline-primary" @click="goProblem(problem._id)"><b>더보기</b></b-button>
-                  </b-card-body>
-                </b-card>
-              </div>
-            </b-tabs>
+            <b-card-body class="problem-content">
+              <b-card-title class="problem-title" @click="goProblem(problem._id)">{{problem.title}}</b-card-title>
+              <b-card-sub-title class="problem-subtitle">{{problem.created_by.username}}</b-card-sub-title>
+              <b-card-text class="problem-text">
+                <p class="content">{{problem.start_time | localtime('YYYY-M-D HH:mm')}} - {{problem.end_time | localtime('YYYY-M-D HH:mm')}}</p> 
+              </b-card-text>
+              <b-button pill variant="outline-primary" @click="goProblem(problem._id)"><b>더보기</b></b-button>
+            </b-card-body>
+          </b-card>
+        </div>
+        </b-tab>
+
+        <b-tab title="수업용" id="contest-content">
+        <div id="problem-group">
+          <b-card v-for="problem in classproblemList"
+                      :key="problem.title"
+                      :img-src='`../../../../../static/img/${problem.id}.jpg`'
+                      img-left
+                      img-height="200"
+                      img-width="400"
+                      shadow
+                      class="mb-2 problem-card">
+            <b-card-body class="problem-content">
+              <b-card-title class="problem-title" @click="goProblem(problem._id)">{{problem.title}}</b-card-title>
+              <b-card-sub-title class="problem-subtitle">{{problem.created_by.username}}</b-card-sub-title>
+              <b-card-text class="problem-text">
+                <p class="content">{{problem.start_time | localtime('YYYY-M-D HH:mm')}} - {{problem.end_time | localtime('YYYY-M-D HH:mm')}}</p>
+              </b-card-text>
+              <b-button pill variant="outline-primary" @click="isModalViewed = true"><b>입장하기</b></b-button>
+              <ModalView v-if="isModalViewed" v-bind:problemID="problem._id" v-bind:problemPassword="problem.password" @close="isModalViewed = false"></ModalView>
+            </b-card-body>
+          </b-card>
+        </div>
+        </b-tab>
+      </b-tabs>
             <!--<p class="emphasis">{{profile.user_join_contest}}</p>-->
           </div>
           <!--<div class="left">
@@ -94,7 +120,8 @@
         username: '',
         profile: {},
         problems: [],
-        problemlist: []
+        problemlist: [],
+        classproblemList: []
       }
     },
     mounted () {
@@ -112,8 +139,9 @@
           console.log('The guy registered at ' + registerTime + '.')
         }).then(res => {
           console.log('hihiasd')
-          this.createProblemList()
-          console.log('init this.problemlist', this.problemlist)
+          // this.createProblemList()
+          this.getProblemList()
+          this.getClassProblemList()
         })
       },
       getSolvedProblems () {
@@ -140,22 +168,51 @@
           this.init()
         })
       },
-      createProblemList () {
-        // console.log('createProblemList in')
+      getProblemList () {
         for (var i in this.profile.user_join_contest) {
-          console.log('this.profile.user_join_contest', this.profile.user_join_contest)
+          console.log('general this.profile.user_join_contest', this.profile.user_join_contest)
           console.log('i', i)
-          api.getAIProblem(this.profile.user_join_contest[i]).then(res => {
-            // console.log('res.data.data', res.data.data)
-            this.problemlist.push(res.data.data)
-            // console.log('반복')
-            // console.log('AAAAAthis.problemlist', this.problemlist)
+          api.getUserGeneralAIProblemList(this.profile.user_join_contest[i]).then(res => {
+            console.log('res.data.data', res.data.data)
+            if (res.data.data.total) {
+              this.problemlist.push(res.data.data.results[0])
+              console.log('res.data.data.results[0]', res.data.data.results[0])
+            }
           })
+          // this.problemlist = this.problemlist.reverse()
         }
-        console.log('ABNCDthis.problemlist', this.problemlist)
-        // console.log('createProblemList out')
+        console.log(this.problemlist)
+      },
+      getClassProblemList () {
+        for (var i in this.profile.user_join_contest) {
+          console.log('class this.profile.user_join_contest', this.profile.user_join_contest)
+          api.getUserClassAIProblemList(this.profile.user_join_contest[i]).then(res => {
+            if (res.data.data.total) {
+              this.classproblemList.push(res.data.data.results[0])
+              console.log('class res.data.data.results[0]', res.data.data.results[0])
+            }
+          })
+          console.log('classProblemList', this.classProblemList)
+        }
+        // this.classproblemList = this.classproblemList.reverse()
       }
+      // createProblemList () {
+      //   // console.log('createProblemList in')
+      //   for (var i in this.profile.user_join_contest) {
+      //     console.log('this.profile.user_join_contest', this.profile.user_join_contest)
+      //     console.log('i', i)
+      //     api.getAIProblem(this.profile.user_join_contest[i]).then(res => {
+      //       // console.log('res.data.data', res.data.data)
+      //       this.problemlist.push(res.data.data)
+      //       // console.log('반복')
+      //       // console.log('AAAAAthis.problemlist', this.problemlist)
+      //     })
+      //   }
+      //   console.log('ABNCDthis.problemlist', this.problemlist)
+      //   // console.log('createProblemList out')
+      // }
     },
+
     computed: {
       refreshVisible () {
         if (!this.username) return true

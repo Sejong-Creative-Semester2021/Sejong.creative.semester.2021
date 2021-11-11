@@ -11,7 +11,7 @@
           </div>
         </div>
         <div id="problem-content">
-          <b-tabs content-class="mt-3 tabs" align="center" pills card>
+          <b-tabs content-class="mt-3 tabs" align="center" pills card fill>
             <b-tab title="대회안내" id="contest-content">
               <p class="subtitle">{{'대회 주요 일정'}}</p>
               <b-tabs content-class="mt-3" fill>
@@ -426,6 +426,7 @@
       submit () {
         console.log('submit button')
         api['editRank'](this.problem._id, this.rank)
+        this.$router.go()
         console.log('submit button2')
       },
       changePie (problemData) {

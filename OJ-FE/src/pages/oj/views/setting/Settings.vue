@@ -11,15 +11,15 @@
                   <a @click.stop="goRoute({name: 'profile-setting'})">
                     <div class="mask-content">
                       <Icon type="camera" size="30"></Icon>
-                      <p class="text">change avatar</p>
+                      <p class="text">프로필 사진 바꾸기</p>
                     </div>
                   </a>
                 </div>
               </div>
             </div>
 
-            <Menu-item name="/setting/profile">{{$t('m.Profile')}}</Menu-item>
-            <Menu-item name="/setting/account">{{$t('m.Account')}}</Menu-item>
+            <Menu-item name="/setting/profile">프로필</Menu-item>
+            <Menu-item name="/setting/account">비밀번호/이메일 재설정</Menu-item>
             <Menu-item name="/setting/security">{{$t('m.Security')}}</Menu-item>
           </Menu>
         </div>

@@ -15,7 +15,7 @@ import os
 import json
 import csv
 # import pandas as pd
-import numpy as np
+# import numpy as np
 
 import logging
 logger=logging.getLogger(__name__)
@@ -218,13 +218,13 @@ class FileAPI(CSRFExemptAPIView, TestCaseZipProcessor):
         2,13
         3,346
         """
-        y_true = np.array(np.loadtxt(os.path.join(settings.SOLUTION_DIR, csv.solution_id, "solution.csv"), delimiter=",", dtype=np.float32, skiprows=1, usecols = (1,)))
-        y_pred = np.array(np.loadtxt(os.path.join(settings.PREDICT_DIR, predict_id, "predict.csv"), delimiter=",", dtype=np.float32, skiprows=1, usecols = (1,)))
-        logger.info("y_true={}".format(str(y_true)))
-        logger.info("y_pred={}".format(str(y_pred)))
+        # y_true = np.array(np.loadtxt(os.path.join(settings.SOLUTION_DIR, csv.solution_id, "solution.csv"), delimiter=",", dtype=np.float32, skiprows=1, usecols = (1,)))
+        # y_pred = np.array(np.loadtxt(os.path.join(settings.PREDICT_DIR, predict_id, "predict.csv"), delimiter=",", dtype=np.float32, skiprows=1, usecols = (1,)))
+        # logger.info("y_true={}".format(str(y_true)))
+        # logger.info("y_pred={}".format(str(y_pred)))
 
-        y_score = (y_true == y_pred).mean()
-        logger.info("y_score={}".format(str(y_score)))
+        # y_score = (y_true == y_pred).mean()
+        # logger.info("y_score={}".format(str(y_score)))
 
         # y_true = np.array(pd.read_csv(os.path.join(settings.SOLUTION_DIR, csv.solution_id, "solution.csv")))
         # y_pred = np.array(pd.read_csv(os.path.join(settings.PREDICT_DIR, predict_id, "predict.csv")))
@@ -293,18 +293,13 @@ class ProblemGeneralAPI(APIView):
     def get(self, request):
         # 问题详情页
         problem_id = request.GET.get("problem_id")
+        logger.info("g_problem_id={}".format(problem_id))
         if problem_id:
-            try:
-                problem = AIProblem.objects.select_related("created_by") \
-                    .get(_id=problem_id, contest_id__isnull=True, visible=True)
-                problem_data = ProblemSerializer(problem).data
-                self._add_problem_status(request, problem_data)
-                return self.success(problem_data)
-            except AIProblem.DoesNotExist:
-                return self.error("Problem does not exist")
-
-        problems = AIProblem.objects.select_related("created_by").filter(contest_id__isnull=True, visible=True, p_type='General')
-
+            problems = AIProblem.objects.select_related("created_by") \
+                    .filter(_id=problem_id, contest_id__isnull=True, visible=True, p_type='General')
+        else:
+            problems = AIProblem.objects.select_related("created_by").filter(contest_id__isnull=True, visible=True, p_type='General')
+        logger.info("g_problems={}".format(problems))
         # 按照标签筛选
         tag_text = request.GET.get("tag")
         if tag_text:
@@ -317,6 +312,7 @@ class ProblemGeneralAPI(APIView):
 
         # 根据profile 为做过的题目添加标记
         data = self.paginate_data(request, problems, ProblemSerializer)
+        logger.info("g_data={}".format(data))
         self._add_problem_status(request, data)
         return self.success(data)
 
@@ -336,20 +332,15 @@ class ProblemClassAPI(APIView):
         # 问题详情页
         problem_id = request.GET.get("problem_id")
         if problem_id:
-            try:
-                problem = AIProblem.objects.select_related("created_by") \
-                    .get(_id=problem_id, contest_id__isnull=True, visible=True)
-                problem_data = ProblemSerializer(problem).data
-                self._add_problem_status(request, problem_data)
-                return self.success(problem_data)
-            except AIProblem.DoesNotExist:
-                return self.error("Problem does not exist")
-
+            problems = AIProblem.objects.select_related("created_by") \
+                    .filter(_id=problem_id, contest_id__isnull=True, visible=True, p_type='Class')
+        
         # limit = request.GET.get("limit")
         # if not limit:
         #     return self.error("Limit is needed")
 
-        problems = AIProblem.objects.select_related("created_by").filter(contest_id__isnull=True, visible=True, p_type='Class')
+        else:
+            problems = AIProblem.objects.select_related("created_by").filter(contest_id__isnull=True, visible=True, p_type='Class')
 
         # 按照标签筛选
         tag_text = request.GET.get("tag")
