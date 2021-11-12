@@ -59,7 +59,7 @@
         <info-card color="#409EFF" icon="el-icon-fa-trophy" message="Recent Contests" class="info-item"
                    :value="infoData.recent_contest_count"></info-card>
       </div>
-      <panel style="margin-top: 5px">
+      <!-- <panel style="margin-top: 5px">
         <span slot="title" v-loading="loadingReleases">Release Notes
         <el-popover placement="right" trigger="hover">
           <i slot="reference" class="el-icon-fa-question-circle import-user-icon"></i>
@@ -87,7 +87,7 @@
             </div>
           </el-collapse-item>
         </el-collapse>
-      </panel>
+      </panel> -->
     </el-col>
   </el-row>
 </template>

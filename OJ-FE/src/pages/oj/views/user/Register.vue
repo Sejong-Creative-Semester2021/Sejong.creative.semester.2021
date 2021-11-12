@@ -2,34 +2,34 @@
 <div>
     <Form ref="formRegister" :model="formRegister" :rules="ruleRegister">
       <FormItem prop="username">
-        <Input type="text" v-model="formRegister.username" :placeholder="$t('m.RegisterUsername')" size="large" @on-enter="handleRegister">
+        <Input type="text" v-model="formRegister.username" :placeholder="'ID'" size="large" @on-enter="handleRegister">
         <Icon type="ios-person-outline" slot="prepend"></Icon>
         </Input>
       </FormItem>
       <FormItem prop="email">
-        <Input v-model="formRegister.email" :placeholder="$t('m.Email_Address')" size="large" @on-enter="handleRegister">
+        <Input v-model="formRegister.email" :placeholder="'이메일'" size="large" @on-enter="handleRegister">
         <Icon type="ios-email-outline" slot="prepend"></Icon>
         </Input>
       </FormItem>
       <FormItem prop="password">
-        <Input type="password" v-model="formRegister.password" :placeholder="$t('m.RegisterPassword')" size="large" @on-enter="handleRegister">
+        <Input type="password" v-model="formRegister.password" :placeholder="'비밀번호'" size="large" @on-enter="handleRegister">
         <Icon type="ios-locked-outline" slot="prepend"></Icon>
         </Input>
       </FormItem>
       <FormItem prop="passwordAgain">
-        <Input type="password" v-model="formRegister.passwordAgain" :placeholder="$t('m.Password_Again')" size="large" @on-enter="handleRegister">
+        <Input type="password" v-model="formRegister.passwordAgain" :placeholder="'비밀번호 확인'" size="large" @on-enter="handleRegister">
         <Icon type="ios-locked-outline" slot="prepend"></Icon>
         </Input>
       </FormItem>
       <FormItem prop="captcha" style="margin-bottom:10px">
         <div class="oj-captcha">
           <div class="oj-captcha-code">
-            <Input v-model="formRegister.captcha" :placeholder="$t('m.Captcha')" size="large" @on-enter="handleRegister">
+            <Input v-model="formRegister.captcha" :placeholder="'보안문자'" size="large" @on-enter="handleRegister">
             <Icon type="ios-lightbulb-outline" slot="prepend"></Icon>
             </Input>
           </div>
           <div class="oj-captcha-img">
-            <Tooltip content="Click to refresh" placement="top">
+            <Tooltip content="새로고침" placement="top">
               <img :src="captchaSrc" @click="getCaptchaSrc"/>
             </Tooltip>
           </div>
@@ -42,13 +42,13 @@
         @click="handleRegister"
         class="btn" long
         :loading="btnRegisterLoading">
-        {{$t('m.UserRegister')}}
+        가입하기
       </Button>
       <Button
         type="ghost"
         @click="switchMode('login')"
         class="btn" long>
-        {{$t('m.Already_Registed')}}
+        로그인으로 되돌아가기
       </Button>
     </div>
   </div>

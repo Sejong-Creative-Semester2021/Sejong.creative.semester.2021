@@ -13,9 +13,58 @@
           {{profile.mood}}
         </p>
         <hr id="split"/>
-
         <div class="flex-container">
-          <div class="left">
+          <div class="middle">
+            <div slot="title" style="font-size: 25px;"><b>참여중인 대회</b></div>
+            <b-tabs content-class="mt-3" fill>
+        <b-tab title="일반용" id="contest-content">
+        <div id="problem-group">
+          <b-card v-for="problem in problemlist"
+                      :key="problem.title"
+                      :img-src='`../../../../../static/img/${problem.id}.jpg`'
+                      img-left
+                      img-height="200"
+                      img-width="400"
+                      shadow
+                      class="mb-2 problem-card">
+            <b-card-body class="problem-content">
+              <b-card-title class="problem-title" @click="goProblem(problem._id)">{{problem.title}}</b-card-title>
+              <b-card-sub-title class="problem-subtitle">{{problem.created_by.username}}</b-card-sub-title>
+              <b-card-text class="problem-text">
+                <p class="content">{{problem.start_time | localtime('YYYY-M-D HH:mm')}} - {{problem.end_time | localtime('YYYY-M-D HH:mm')}}</p> 
+              </b-card-text>
+              <b-button pill variant="outline-primary" @click="goProblem(problem._id)"><b>더보기</b></b-button>
+            </b-card-body>
+          </b-card>
+        </div>
+        </b-tab>
+
+        <b-tab title="수업용" id="contest-content">
+        <div id="problem-group">
+          <b-card v-for="problem in classproblemList"
+                      :key="problem.title"
+                      :img-src='`../../../../../static/img/${problem.id}.jpg`'
+                      img-left
+                      img-height="200"
+                      img-width="400"
+                      shadow
+                      class="mb-2 problem-card">
+            <b-card-body class="problem-content">
+              <b-card-title class="problem-title" @click="goProblem(problem._id)">{{problem.title}}</b-card-title>
+              <b-card-sub-title class="problem-subtitle">{{problem.created_by.username}}</b-card-sub-title>
+              <b-card-text class="problem-text">
+                <p class="content">{{problem.start_time | localtime('YYYY-M-D HH:mm')}} - {{problem.end_time | localtime('YYYY-M-D HH:mm')}}</p>
+              </b-card-text>
+              <b-button pill variant="outline-primary" @click="isModalViewed = true"><b>입장하기</b></b-button>
+              <ModalView v-if="isModalViewed" v-bind:problemID="problem._id" v-bind:problemPassword="problem.password" @close="isModalViewed = false"></ModalView>
+            </b-card-body>
+          </b-card>
+        </div>
+        </b-tab>
+      </b-tabs>
+            <!--<p class="emphasis">{{profile.user_join_contest}}</p>-->
+          </div>
+          <!--<div class="left">
             <p>{{$t('m.UserHomeSolved')}}</p>
             <p class="emphasis">{{profile.accepted_number}}</p>
           </div>
@@ -26,9 +75,9 @@
           <div class="right">
             <p>{{$t('m.UserHomeScore')}}</p>
             <p class="emphasis">{{profile.total_score}}</p>
-          </div>
+          </div>-->
         </div>
-        <div id="problems">
+        <!--<div id="problems">
           <div v-if="problems.length">{{$t('m.List_Solved_Problems')}}
             <Poptip v-if="refreshVisible" trigger="hover" placement="right-start">
               <Icon type="ios-help-outline"></Icon>
@@ -44,7 +93,7 @@
               <Button type="ghost" @click="goProblem(problemID)">{{problemID}}</Button>
             </div>
           </div>
-        </div>
+        </div>-->
         <div id="icons">
           <a :href="profile.github">
             <Icon type="social-github-outline" size="30"></Icon>
@@ -70,7 +119,9 @@
       return {
         username: '',
         profile: {},
-        problems: []
+        problems: [],
+        problemlist: [],
+        classproblemList: []
       }
     },
     mounted () {
@@ -86,6 +137,11 @@
           this.getSolvedProblems()
           let registerTime = time.utcToLocal(this.profile.user.create_time, 'YYYY-MM-D')
           console.log('The guy registered at ' + registerTime + '.')
+        }).then(res => {
+          console.log('hihiasd')
+          // this.createProblemList()
+          this.getProblemList()
+          this.getClassProblemList()
         })
       },
       getSolvedProblems () {
@@ -104,15 +160,59 @@
         this.problems = ACProblems
       },
       goProblem (problemID) {
-        this.$router.push({name: 'problem-details', params: {problemID: problemID}})
+        this.$router.push({name: 'aiproblem-details', params: {problemID: problemID}})
       },
       freshProblemDisplayID () {
         api.freshDisplayID().then(res => {
           this.$success('Update successfully')
           this.init()
         })
+      },
+      getProblemList () {
+        for (var i in this.profile.user_join_contest) {
+          console.log('general this.profile.user_join_contest', this.profile.user_join_contest)
+          console.log('i', i)
+          api.getUserGeneralAIProblemList(this.profile.user_join_contest[i]).then(res => {
+            console.log('res.data.data', res.data.data)
+            if (res.data.data.total) {
+              this.problemlist.push(res.data.data.results[0])
+              console.log('res.data.data.results[0]', res.data.data.results[0])
+            }
+          })
+          // this.problemlist = this.problemlist.reverse()
+        }
+        console.log(this.problemlist)
+      },
+      getClassProblemList () {
+        for (var i in this.profile.user_join_contest) {
+          console.log('class this.profile.user_join_contest', this.profile.user_join_contest)
+          api.getUserClassAIProblemList(this.profile.user_join_contest[i]).then(res => {
+            if (res.data.data.total) {
+              this.classproblemList.push(res.data.data.results[0])
+              console.log('class res.data.data.results[0]', res.data.data.results[0])
+            }
+          })
+          console.log('classProblemList', this.classProblemList)
+        }
+        // this.classproblemList = this.classproblemList.reverse()
       }
+      // createProblemList () {
+      //   // console.log('createProblemList in')
+      //   for (var i in this.profile.user_join_contest) {
+      //     console.log('this.profile.user_join_contest', this.profile.user_join_contest)
+      //     console.log('i', i)
+      //     api.getAIProblem(this.profile.user_join_contest[i]).then(res => {
+      //       // console.log('res.data.data', res.data.data)
+      //       this.problemlist.push(res.data.data)
+      //       // console.log('반복')
+      //       // console.log('AAAAAthis.problemlist', this.problemlist)
+      //     })
+      //   }
+      //   console.log('ABNCDthis.problemlist', this.problemlist)
+      //   // console.log('createProblemList out')
+      // }
     },
+
     computed: {
       refreshVisible () {
         if (!this.username) return true
@@ -169,8 +269,8 @@
       }
       .middle {
         flex: 1 1;
-        border-left: 1px solid #999;
-        border-right: 1px solid #999;
+        // border-left: 1px solid #999;
+        // border-right: 1px solid #999;
       }
       .right {
         flex: 1 1;
@@ -196,6 +296,74 @@
       transform: translate(-50%);
       .icon {
         padding-left: 20px;
+      }
+    }
+  }
+  .taglist-title {
+    margin-left: -10px;
+    margin-bottom: -10px;
+  }
+
+  .tag-btn {
+    margin-right: 5px;
+    margin-bottom: 10px;
+  }
+
+  #pick-one {
+    margin-top: 10px;
+  }
+  
+  #card-deck{
+    display: flex;
+  }
+
+  #problem-group{
+    padding: 20px;
+
+    .problem-card{
+      border-radius: 20px 20px 20px 20px;
+      margin-bottom: 10px;
+    }
+    img {
+      border-radius: 20px 20px 20px 20px;
+    }
+
+    .problem-content{
+      margin-bottom: -25px;
+    }
+    .problem-title{
+      font-size: 18px;
+      font-weight: bold;
+      color: #3399ff;
+    }
+    .problem-subtitle{
+      font-size: 16px;
+    }
+    .problem-text{
+      font-weight: 600;
+      color: #686868;
+    }
+  }
+
+  
+  #list {
+    margin-bottom: 10px;
+    margin-top: 20px;
+    ul {
+      margin-top: 20px;
+      margin-bottom: 20px;
+      list-style-type: none;
+      li {
+        margin-bottom: 1px;
+        p {
+          display: inline-block;
+        }
+        p:first-child {
+          width: 50px;
+        }
+        p:last-child {
+          float: right;
+        }
       }
     }
   }

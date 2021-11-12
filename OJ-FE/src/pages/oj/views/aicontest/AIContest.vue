@@ -4,9 +4,14 @@
       <!--problem main-->
       <!--<img class="problem-img" src="https://i.postimg.cc/rFSwYd77/banner1.jpg">-->
       <Panel :padding="40" shadow>
-        <div class="problem-title" slot="title">{{problem.title}}</div>
+        <div style="padding:40px 0px 40px 0px">
+          <div class="problem-title" slot="title" style="display:inline-block">{{problem.title}}</div>
+          <div style="display:inline-block; float: right; margin-top: 30px; margin-bottom: 20px;">
+            <b-button variant="primary" @click="join" :disabled="alreadyJoined == true">참여</b-button>
+          </div>
+        </div>
         <div id="problem-content">
-          <b-tabs content-class="mt-3 tabs" align="center" pills card>
+          <b-tabs content-class="mt-3 tabs" align="center" pills card fill>
             <b-tab title="대회안내" id="contest-content">
               <p class="subtitle">{{'대회 주요 일정'}}</p>
               <b-tabs content-class="mt-3" fill>
@@ -16,7 +21,7 @@
               </b-tabs>
             </b-tab>
             <b-tab title="데이터">
-              <b-button class="download-button" variant="light" name="Download Data" @click="downloadData(problem.id)">다운로드</b-button>
+              <b-button class="download-button" variant="light" name="Download Data" @click="downloadData(problem.id)" :disabled="alreadyJoined == false">다운로드</b-button>
               <p class="subtitle">{{'설명'}}</p>
               <b-card class="data-card">
                 <b-text>
@@ -48,13 +53,13 @@
                   <button size="small" type="primary" icon="el-icon-fa-upload">Choose File</button>
                 </upload>
                 <!-- <v-file-input truncate-length="15" @change="uploadFile"></v-file-input> -->
-                <v-file-input
+                <!--<v-file-input
                   accept=".csv"
                   label="Click here to select a .csv file"
                   outlined
                   @change="selectFile"
-                ></v-file-input>
-                <v-btn right @click="submit()">Read File</v-btn>
+                ></v-file-input>-->
+                <v-btn right @click="submit" :disabled="alreadyJoined == false">제출</v-btn>
                 <p>{{ data }}</p>
                 <!-- <b-form-file
                   v-model="file1"
@@ -128,6 +133,9 @@
         username: '',
         profile: {},
         y_score: null,
+        alreadyJoined: false,
+        join_contest: [],
+        user_join_contest: [],
         // dataRank: [],
         // showRank: [],
         // 추가 부분
@@ -245,8 +253,12 @@
       ...mapActions(['changeDomTitle']),
       init () {
         this.$Loading.start()
+        this.$router.push(this.route)
         this.contestID = this.$route.params.contestID
+        console.log('this.$route', this.$route)
         this.problemID = this.$route.params.problemID
+        console.log('this.$route.params', this.$route.params)
+        this.username = this.$route.params.username
         let func = this.$route.name === 'aiproblem-details' ? 'getAIProblem' : 'getContestProblem'
         console.log(func)
         api[func](this.problemID, this.contestID).then(res => {
@@ -255,6 +267,9 @@
           console.log(problem)
           console.log(problem.id)
           console.log('problem rank', problem.rank)
+          console.log('problem join_contest', problem.join_contest)
+          this.join_contest = problem.join_contest
+          console.log('this.join_contest', this.join_contest)
           this.showRanks = problem.rank
           // this.showRank.append(problem.rank)
           console.log('show Ranks', this.showRanks)
@@ -266,7 +281,6 @@
           // problem.languages = problem.languages.sort()
           this.problem = problem
           // this.changePie(problem)
-
           // 在beforeRouteEnter中修改了, 说明本地有code，无需加载template
           if (this.code !== '') {
             return
@@ -281,6 +295,17 @@
           console.log('2')
         }, () => {
           this.$Loading.error()
+        }).then(res => {
+          api.getUserInfo(this.username).then(res => {
+            this.profile = res.data.data
+            console.log('this.profile', this.profile)
+            this.username = this.profile.user.username
+          }).then(res => {
+            console.log('this.username', this.username)
+            console.log('before this.alreadyJoined', this.alreadyJoined)
+            this.alreadyJoined = this.join_contest.includes(this.username)
+            console.log('after this.alreadyJoined', this.alreadyJoined)
+          })
         })
       },
       downloadData (problemID) {
@@ -302,6 +327,7 @@
       // 추가 부분
       uploadFileSucceeded (response) {
         console.log(response)
+        console.log(response.data)
         if (response.error) {
           this.$error(response.data)
           return
@@ -345,8 +371,6 @@
       },
       // 유저 이름 추가하는 부분
       getUserName () {
-        this.username = this.$route.query.username
-        // console.log(this.username)
         api.getUserInfo(this.username).then(res => {
           this.changeDomTitle({title: res.data.data.user.username})
           this.profile = res.data.data
@@ -363,9 +387,9 @@
           }]
           console.log('getUserName', this.rank)
           console.log('editrank - getuser before')
-          api['editRank'](this.problem._id, this.rank)
+          // api['editRank'](this.problem._id, this.rank)
           console.log('editrank - getuser after')
-          this.load_csv()
+          // this.load_csv()
           // this.getSolvedProblems()
           // let registerTime = time.utcToLocal(this.profile.user.create_time, 'YYYY-MM-D')
           // console.log('The guy registered at ' + registerTime + '.')
@@ -384,13 +408,26 @@
       //   this.dataRank = res.data.data.results
       //   bar.hideLoading()
       // },
-      // csv 가져오는 함수 추가
-      load_csv () {
-        console.log('load_csv in')
-        // let dfd = require('danfojs')
-        // console.log('dfd', dfd)
-        // var s = new dfd.Series([20,21,22,23])
-        console.log('dfd 실행 완료')
+      // join 가져오는 함수 추가
+      join () {
+        api.editJoinContest(this.username, this.problem._id)
+        this.alreadyJoined = true
+        api.getUserInfo(this.username).then(res => {
+          this.profile = res.data.data
+          // console.log('this.profile', this.profile)
+          // this.user_join_contest
+          this.profile.user_join_contest.push(this.problem._id)
+          console.log('this.profile.user_join_contest', this.profile.user_join_contest)
+          api.updateProfileJoinContest(this.profile).then(res => {
+            console.log('updateProfileJoinContest out')
+          })
+        })
+      },
+      submit () {
+        console.log('submit button')
+        api['editRank'](this.problem._id, this.rank)
+        this.$router.go()
+        console.log('submit button2')
       },
       changePie (problemData) {
         // 只显示特定的一些状态
@@ -429,7 +466,9 @@
         this.largePie.series[0].data = largePieData
       },
       handleRoute (route) {
+        console.log('asdfasdfasdfasdfasdfadfsdfsd', route)
         this.$router.push(route)
+        console.log('asdfasdfasdfasdfasdfadfsdfsd', route)
       },
       onChangeLang (newLang) {
         if (this.problem.template[newLang]) {

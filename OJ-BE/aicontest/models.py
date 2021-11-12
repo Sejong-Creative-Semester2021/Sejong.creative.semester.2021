@@ -98,6 +98,7 @@ class AIProblem(models.Model):
     p_type = models.TextField(null=True)
     rank = JSONField(null=True, blank=True) # 여기에 rank 추가
     password = models.CharField(max_length=20, null=True, blank=True)
+    join_contest = JSONField(default=list, null=True, blank=True)
 
     class Meta:
         db_table = "ai_contest"

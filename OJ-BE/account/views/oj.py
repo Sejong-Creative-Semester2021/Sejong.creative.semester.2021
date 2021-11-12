@@ -27,10 +27,13 @@ from ..serializers import (TwoFactorAuthCodeSerializer, UserProfileSerializer,
                            EditUserProfileSerializer, ImageUploadForm)
 from ..tasks import send_email_async
 
+import logging
+logger=logging.getLogger(__name__)
 
 class UserProfileAPI(APIView):
     @method_decorator(ensure_csrf_cookie)
     def get(self, request, **kwargs):
+        logger.info("UserProfile get inin")
         """
         判断是否登录， 若登录返回用户信息
         """
@@ -53,6 +56,7 @@ class UserProfileAPI(APIView):
     @validate_serializer(EditUserProfileSerializer)
     @login_required
     def put(self, request):
+        logger.info("UserProfile put inin")
         data = request.data
         user_profile = request.user.userprofile
         for k, v in data.items():
@@ -60,6 +64,28 @@ class UserProfileAPI(APIView):
         user_profile.save()
         return self.success(UserProfileSerializer(user_profile, show_real_name=True).data)
 
+class UserProfileJoinContestAPI(APIView):
+    @login_required
+    def put(self, request):
+        logger.info("UserProfileJoinContestAPI put inin")
+        logger.info("request={}".format(request))
+        data = request.data
+        logger.info("data={}".format(data))
+        data_user_join_contest = data['user_join_contest']
+        logger.info("data_user_join_contest={}".format(data_user_join_contest))
+        user_profile = request.user.userprofile
+        logger.info("user_profile={}".format(user_profile))
+        # user_profile.user_join_contest = data_user_join_contest
+        # for k, v in data_user_join_contest.items():
+        # logger.info("k={}".format(k))
+        # logger.info("v={}".format(v))
+        setattr(user_profile, "user_join_contest", data_user_join_contest)
+        logger.info("user_profile={}".format(user_profile))
+        logger.info("success")
+        logger.info("before save")
+        user_profile.save()
+        logger.info("after save")
+        return self.success(UserProfileSerializer(user_profile, show_real_name=True).data)
 
 class AvatarUploadAPI(APIView):
     request_parsers = ()

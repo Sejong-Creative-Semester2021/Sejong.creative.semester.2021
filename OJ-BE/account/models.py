@@ -100,6 +100,8 @@ class UserProfile(models.Model):
     # for OI
     total_score = models.BigIntegerField(default=0)
     submission_number = models.IntegerField(default=0)
+    # join_contest 추가
+    user_join_contest = JSONField(default=list)
 
     def add_accepted_problem_number(self):
         self.accepted_number = models.F("accepted_number") + 1

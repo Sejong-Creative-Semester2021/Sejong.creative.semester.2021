@@ -64,7 +64,14 @@ export default {
     })
   },
   updateProfile (profile) {
+    // console.log('updateprofile inininin')
     return ajax('profile', 'put', {
+      data: profile
+    })
+  },
+  updateProfileJoinContest (profile) {
+    console.log('updateProfileJoinContest inininin')
+    return ajax('profile_join_contest', 'put', {
       data: profile
     })
   },
@@ -193,6 +200,13 @@ export default {
       params: params
     })
   },
+  getUserGeneralAIProblemList (problemID) {
+    return ajax('aicontest_general', 'get', {
+      params: {
+        problem_id: problemID
+      }
+    })
+  },
   getClassAIProblemList (offset, limit, searchParams) {
     let params = {
       paging: true,
@@ -206,6 +220,13 @@ export default {
     })
     return ajax('aicontest_class', 'get', {
       params: params
+    })
+  },
+  getUserClassAIProblemList (problemID) {
+    return ajax('aicontest_class', 'get', {
+      params: {
+        problem_id: problemID
+      }
     })
   },
   getAIProblem (problemID) {
@@ -359,6 +380,25 @@ export default {
   getRank (problemID) {
     return ajax('rank', 'get', {
       problemID
+    })
+  },
+  // join 추가 부분
+  editJoinContest (username, problemID) {
+    console.log('editJoinContest in')
+    return ajax('join_contest', 'put', {
+      data: {
+        username,
+        problemID
+      }
+    })
+  },
+  getJoinContest (problemID) {
+    console.log('getJoinContest inin')
+    console.log(problemID)
+    return ajax('join_contest', 'get', {
+      data: {
+        problemID
+      }
     })
   }
 }

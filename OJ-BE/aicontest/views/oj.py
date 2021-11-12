@@ -26,7 +26,7 @@ class ProblemTagAPI(APIView):
         keyword = request.GET.get("keyword")
         if keyword:
             qs = AIProblemTag.objects.filter(name__icontains=keyword)
-        tags = qs.annotate(problem_count=Count("problem")).filter(problem_count__gt=0)
+        tags = qs.annotate(problem_count=Count("aiproblem")).filter(problem_count__gt=0)
         return self.success(TagSerializer(tags, many=True).data)
 
 
@@ -211,21 +211,24 @@ class FileAPI(CSRFExemptAPIView, TestCaseZipProcessor):
         logger.info("solution_id={}".format(csv.solution_id))
         logger.info("os_sol={}".format(os.path.join(settings.SOLUTION_DIR, str(csv.solution_id), "solution.csv")))
         logger.info("os_pre={}".format(os.path.join(settings.PREDICT_DIR, predict_id, "predict.csv")))
+        """ csv format. both solution.csv, predict.csv
+        index,col_name
+        0,4
+        1,65
+        2,13
+        3,346
+        """
+        # y_true = np.array(np.loadtxt(os.path.join(settings.SOLUTION_DIR, csv.solution_id, "solution.csv"), delimiter=",", dtype=np.float32, skiprows=1, usecols = (1,)))
+        # y_pred = np.array(np.loadtxt(os.path.join(settings.PREDICT_DIR, predict_id, "predict.csv"), delimiter=",", dtype=np.float32, skiprows=1, usecols = (1,)))
+        # logger.info("y_true={}".format(str(y_true)))
+        # logger.info("y_pred={}".format(str(y_pred)))
 
-        # y_true = np.array(np.loadtxt(os.path.join(settings.SOLUTION_DIR, csv.solution_id, "solution.csv"), delimiter=",", dtype=np.float32))
-        # y_pred = np.array(np.loadtxt(os.path.join(settings.PREDICT_DIR, predict_id, "predict.csv"), delimiter=",", dtype=np.float32))
-        logger.info("y_true={}".format(str(y_true)))
-        logger.info("y_pred={}".format(str(y_pred)))
-
-        y_score = (y_true == y_pred).mean()
-        logger.info("y_score={}".format(str(y_score)))
+        # y_score = (y_true == y_pred).mean()
+        # logger.info("y_score={}".format(str(y_score)))
 
         # y_true = np.array(pd.read_csv(os.path.join(settings.SOLUTION_DIR, csv.solution_id, "solution.csv")))
         # y_pred = np.array(pd.read_csv(os.path.join(settings.PREDICT_DIR, predict_id, "predict.csv")))
         
-        # logger.info("y_true={}".format(y_true))
-        # logger.info("y_pred={}".format(y_pred))
-
         # y_score = (y_true.astype(bool) == y_pred.astype(bool)).mean()
         # logger.info("y_score={}".format(y_score))
         
@@ -290,18 +293,13 @@ class ProblemGeneralAPI(APIView):
     def get(self, request):
         # 问题详情页
         problem_id = request.GET.get("problem_id")
+        logger.info("g_problem_id={}".format(problem_id))
         if problem_id:
-            try:
-                problem = AIProblem.objects.select_related("created_by") \
-                    .get(_id=problem_id, contest_id__isnull=True, visible=True)
-                problem_data = ProblemSerializer(problem).data
-                self._add_problem_status(request, problem_data)
-                return self.success(problem_data)
-            except AIProblem.DoesNotExist:
-                return self.error("Problem does not exist")
-
-        problems = AIProblem.objects.select_related("created_by").filter(contest_id__isnull=True, visible=True, p_type='General')
-
+            problems = AIProblem.objects.select_related("created_by") \
+                    .filter(_id=problem_id, contest_id__isnull=True, visible=True, p_type='General')
+        else:
+            problems = AIProblem.objects.select_related("created_by").filter(contest_id__isnull=True, visible=True, p_type='General')
+        logger.info("g_problems={}".format(problems))
         # 按照标签筛选
         tag_text = request.GET.get("tag")
         if tag_text:
@@ -314,6 +312,7 @@ class ProblemGeneralAPI(APIView):
 
         # 根据profile 为做过的题目添加标记
         data = self.paginate_data(request, problems, ProblemSerializer)
+        logger.info("g_data={}".format(data))
         self._add_problem_status(request, data)
         return self.success(data)
 
@@ -333,20 +332,15 @@ class ProblemClassAPI(APIView):
         # 问题详情页
         problem_id = request.GET.get("problem_id")
         if problem_id:
-            try:
-                problem = AIProblem.objects.select_related("created_by") \
-                    .get(_id=problem_id, contest_id__isnull=True, visible=True)
-                problem_data = ProblemSerializer(problem).data
-                self._add_problem_status(request, problem_data)
-                return self.success(problem_data)
-            except AIProblem.DoesNotExist:
-                return self.error("Problem does not exist")
-
+            problems = AIProblem.objects.select_related("created_by") \
+                    .filter(_id=problem_id, contest_id__isnull=True, visible=True, p_type='Class')
+        
         # limit = request.GET.get("limit")
         # if not limit:
         #     return self.error("Limit is needed")
 
-        problems = AIProblem.objects.select_related("created_by").filter(contest_id__isnull=True, visible=True, p_type='Class')
+        else:
+            problems = AIProblem.objects.select_related("created_by").filter(contest_id__isnull=True, visible=True, p_type='Class')
 
         # 按照标签筛选
         tag_text = request.GET.get("tag")
@@ -475,6 +469,40 @@ class AIRankAPI(APIView):
         logger.info("problem.rank={}".format(problem.rank))
         return self.success(problem.rank)
 
-
-    
-
+class AIJoinAPI(APIView):
+    def get(self, request):
+        logger.info("get AIJoinAPI inin")
+        problem_id = request.GET.get("problemID")
+        # username input -> problem_id list output
+        # data = request.data
+        logger.info("problem_id={}".format(problem_id))
+        # problem_id = data['problemID'] # 우리가 가져온 id - DisplayID
+        # logger.info("data={}".format(data))
+        problem = AIProblem.objects.get(_id=problem_id)
+        # user_name = data['username']
+        # logger.info("user_name={}".format(user_name))
+        # user = User.objects.get(username = user_name)
+        # logger.info("user={}".format(user))
+        return self.success(problem.join_contest)
+        
+    def put(self, request):
+        logger.info("post AIJoinAPI inin")
+        # contest id 가져와야함
+        data = request.data
+        logger.info("data={}".format(data))
+        problem_id = data['problemID']
+        logger.info("problem_id={}".format(problem_id))
+        user_name = data['username']
+        logger.info("user_name={}".format(user_name))
+        # profile = UserProfile.objects.get(username = user_name)
+        problem = AIProblem.objects.get(_id=problem_id)
+        new_join_contest = problem.join_contest
+        logger.info("before new_join_contest={}".format(new_join_contest))
+        if user_name not in new_join_contest:
+            new_join_contest.append(user_name)
+        else:
+            logger.info("already in new_join_contest={}".format(new_join_contest))
+        logger.info("after new_join_contest={}".format(new_join_contest))
+        setattr(problem, 'join_contest', new_join_contest)
+        problem.save()
+        return self.success(problem.join_contest)

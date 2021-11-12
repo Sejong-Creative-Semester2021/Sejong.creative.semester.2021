@@ -1,6 +1,6 @@
 <template>
   <div class="view">
-    <Panel :title="$t('m.User_User') ">
+    <Panel :title="'사용자'">
       <div slot="header">
         <el-row :gutter="20">
           <el-col :span="8">
@@ -10,7 +10,7 @@
             </el-button>
           </el-col>
           <el-col :span="selectedUsers.length ? 16: 24">
-            <el-input v-model="keyword" prefix-icon="el-icon-search" placeholder="Keywords"></el-input>
+            <el-input v-model="keyword" prefix-icon="el-icon-search" placeholder="검색"></el-input>
           </el-col>
         </el-row>
       </div>
@@ -25,15 +25,15 @@
 
         <el-table-column prop="id" label="ID"></el-table-column>
 
-        <el-table-column prop="username" label="Username"></el-table-column>
+        <el-table-column prop="username" label="사용자 이름"></el-table-column>
 
-        <el-table-column prop="create_time" label="Create Time">
+        <el-table-column prop="create_time" label="가입날짜">
           <template slot-scope="scope">
             {{scope.row.create_time | localtime }}
           </template>
         </el-table-column>
 
-        <el-table-column prop="last_login" label="Last Login">
+        <el-table-column prop="last_login" label="마지막 로그인날짜">
           <template slot-scope="scope">
             {{scope.row.last_login | localtime }}
           </template>
@@ -41,18 +41,18 @@
 
         <el-table-column prop="real_name" label="Real Name"></el-table-column>
 
-        <el-table-column prop="email" label="Email"></el-table-column>
+        <el-table-column prop="email" label="이메일"></el-table-column>
 
-        <el-table-column prop="admin_type" label="User Type">
+        <el-table-column prop="admin_type" label="사용자 유형">
           <template slot-scope="scope">
             {{ scope.row.admin_type }}
           </template>
         </el-table-column>
 
-        <el-table-column fixed="right" label="Option" width="200">
+        <el-table-column fixed="right" label="옵션" width="200">
           <template slot-scope="{row}">
-            <icon-btn name="Edit" icon="edit" @click.native="openUserDialog(row.id)"></icon-btn>
-            <icon-btn name="Delete" icon="trash" @click.native="deleteUsers([row.id])"></icon-btn>
+            <icon-btn name="수정" icon="edit" @click.native="openUserDialog(row.id)"></icon-btn>
+            <icon-btn name="삭제" icon="trash" @click.native="deleteUsers([row.id])"></icon-btn>
           </template>
         </el-table-column>
       </el-table>
@@ -67,7 +67,7 @@
       </div>
     </Panel>
 
-    <Panel>
+    <!-- <Panel>
       <span slot="title">{{$t('m.Import_User')}}
         <el-popover placement="right" trigger="hover">
           <p>Only support csv file without headers, check the <a
@@ -166,13 +166,13 @@
           </span>
         </el-form-item>
       </el-form>
-    </Panel>
+    </Panel> -->
     <!--对话框-->
-    <el-dialog :title="$t('m.User_Info')" :visible.sync="showUserDialog" :close-on-click-modal="false">
+    <el-dialog :title="'사용자 정보'" :visible.sync="showUserDialog" :close-on-click-modal="false">
       <el-form :model="user" label-width="120px" label-position="left">
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item :label="$t('m.User_Username')" required>
+            <el-form-item :label="'사용자 이름'" required>
               <el-input v-model="user.username"></el-input>
             </el-form-item>
           </el-col>
@@ -182,30 +182,30 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item :label="$t('m.User_Email')" required>
+            <el-form-item :label="'사용자 이메일'" required>
               <el-input v-model="user.email"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item :label="$t('m.User_New_Password')">
+            <el-form-item :label="'새 패스워드'">
               <el-input v-model="user.password"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item :label="$t('m.User_Type')">
+            <el-form-item :label="'유형'">
               <el-select v-model="user.admin_type">
-                <el-option label="Regular User" value="Regular User"></el-option>
-                <el-option label="Admin" value="Admin"></el-option>
-                <el-option label="Super Admin" value="Super Admin"></el-option>
+                <el-option label="학생" value="Regular User">></el-option>
+                <el-option label="교수님" value="Admin"></el-option>
+                <el-option label="관리자" value="Super Admin"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item :label="$t('m.Problem_Permission')">
-              <el-select v-model="user.problem_permission" :disabled="user.admin_type!=='Admin'">
-                <el-option label="None" value="None"></el-option>
-                <el-option label="Own" value="Own"></el-option>
-                <el-option label="All" value="All"></el-option>
+            <el-form-item :label="'문제 접근권한'">
+              <el-select v-model="user.problem_permission">
+                <el-option label="없음" value="None"></el-option>
+                <el-option label="개인" value="Own"></el-option>
+                <el-option label="모두" value="All"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -406,6 +406,8 @@
           this.user.problem_permission = 'All'
         } else if (this.user.admin_type === 'Regular User') {
           this.user.problem_permission = 'None'
+        } else {
+          this.user.problem_permission = 'Own'
         }
       },
       'uploadUsersCurrentPage' (page) {

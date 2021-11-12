@@ -2,14 +2,14 @@
   <Row type="flex" :gutter="18" align="center">
     <Col :span=15>
     <Panel shadow>
-      <div slot="title"><b>{{$t('진행중인 대회')}}</b></div>
+      <div slot="title" style="font-size: 20px;"><b>{{$t('진행중인 대회')}}</b></div>
       <div slot="extra">
         <ul class="filter">
           <li>
             <Input v-model="query.keyword"
                    @on-enter="filterByKeyword"
                    @on-click="filterByKeyword"
-                   placeholder="keyword"
+                   placeholder="검색"
                    icon="ios-search-strong"/>
           </li>
         </ul>
@@ -31,16 +31,13 @@
               <b-card-sub-title class="problem-subtitle">{{problem.created_by.username}}</b-card-sub-title>
               <b-card-text class="problem-text">
                 <p class="content" style="font-size: 16px; float: right; margin-top: -40px;">{{problem.start_time | localtime('YYYY-M-D')}} - {{problem.end_time | localtime('YYYY-M-D')}}</p> 
-                <span v-for="tag in tagList" :key="tag.name">
-                  <Button v-if="tag.id === problem.id"
-                          :key="tag.name"
-                          @click="filterByTag(tag.name)"
+                <span v-for="tag in problem.tags" :key="tag.name">
+                  <Button @click="filterByTag(tag)"
                           type="ghost"
                           size="small"
-                          :disabled="query.tag === tag.name"
                           shape="circle"
                           class="tag-btn"
-                          style="margin-top: 3px;">{{tag.name}}
+                          style="margin-top: 3px;">{{tag}}
                   </Button>
                 </span>
                 <span style="font-size: 20px; float: right; margin-top:-8px; font-weight:bold;">D-{{getDuration(problem.start_time, problem.end_time)}}</span>
@@ -97,7 +94,7 @@
     },
     data () {
       return {
-        tagList: [],
+        // tagList: [],
         isModalViewed: false,
         problemTableColumns: [
           {
@@ -202,9 +199,9 @@
           this.query.page = 1
         }
         this.query.limit = parseInt(query.limit) || 10
-        if (!simulate) {
-          this.getTagList()
-        }
+        // if (!simulate) {
+        //   this.getTagList()
+        // }
         this.getProblemList()
         this.getClassProblemList()
       },
@@ -216,8 +213,9 @@
       },
       // 추가 부분
       getDuration (startTime, endTime) {
-        console.log(time.duration(startTime, endTime))
-        return time.duration(startTime, endTime)
+        var duration = time.duration(startTime, endTime)
+        var day = duration.replace(/days|hours/, '')
+        return day
       },
       goProblem (problemID) {
         this.$router.push({name: 'aiproblem-details', params: {problemID: problemID}})
@@ -229,6 +227,7 @@
           this.loadings.table = false
           this.total = res.data.data.total
           this.problemList = res.data.data.results
+          this.problemList = this.problemList.reverse()
           if (this.isAuthenticated) {
             this.addStatusColumn(this.problemTableColumns, res.data.data.results)
           }
@@ -243,6 +242,7 @@
           this.loadings.table = false
           this.total = res.data.data.total
           this.classproblemList = res.data.data.results
+          this.classproblemList = this.classproblemList.reverse()
           if (this.isAuthenticated) {
             this.addStatusColumn(this.problemTableColumns, res.data.data.results)
           }
@@ -250,14 +250,14 @@
           this.loadings.table = false
         })
       },
-      getTagList () {
-        api.getAIProblemTagList().then(res => {
-          this.tagList = res.data.data
-          this.loadings.tag = false
-        }, res => {
-          this.loadings.tag = false
-        })
-      },
+      // getTagList () {
+      //   api.getAIProblemTagList().then(res => {
+      //     this.tagList = res.data.data
+      //     this.loadings.tag = false
+      //   }, res => {
+      //     this.loadings.tag = false
+      //   })
+      // },
       filterByTag (tagName) {
         this.query.tag = tagName
         this.query.page = 1

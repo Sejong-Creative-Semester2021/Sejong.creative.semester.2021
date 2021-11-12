@@ -3,7 +3,7 @@ from django.conf.urls import url
 from ..views.oj import (ApplyResetPasswordAPI, ResetPasswordAPI,
                         UserChangePasswordAPI, UserRegisterAPI, UserChangeEmailAPI,
                         UserLoginAPI, UserLogoutAPI, UsernameOrEmailCheck,
-                        AvatarUploadAPI, TwoFactorAuthAPI, UserProfileAPI,
+                        AvatarUploadAPI, TwoFactorAuthAPI, UserProfileAPI, UserProfileJoinContestAPI,
                         UserRankAPI, CheckTFARequiredAPI, SessionManagementAPI,
                         ProfileProblemDisplayIDRefreshAPI, OpenAPIAppkeyAPI, SSOAPI)
 
@@ -20,6 +20,7 @@ urlpatterns = [
     url(r"^captcha/?$", CaptchaAPIView.as_view(), name="show_captcha"),
     url(r"^check_username_or_email", UsernameOrEmailCheck.as_view(), name="check_username_or_email"),
     url(r"^profile/?$", UserProfileAPI.as_view(), name="user_profile_api"),
+    url(r"^profile_join_contest/?$", UserProfileJoinContestAPI.as_view(), name="user_profile_join_contest_api"),
     url(r"^profile/fresh_display_id", ProfileProblemDisplayIDRefreshAPI.as_view(), name="display_id_fresh"),
     url(r"^upload_avatar/?$", AvatarUploadAPI.as_view(), name="avatar_upload_api"),
     url(r"^tfa_required/?$", CheckTFARequiredAPI.as_view(), name="tfa_required_check"),
