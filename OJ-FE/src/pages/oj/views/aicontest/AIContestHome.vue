@@ -161,7 +161,7 @@
       },
       // 추가 부분
       goProblem (problemID) {
-        this.$router.push({name: 'aiproblem-details', params: {problemID: problemID}})
+        this.$router.push({name: 'aiproblem-general-details', params: {problemID: problemID}})
       },
       getProblemList () {
         let offset = (this.query.page - 1) * this.query.limit

@@ -15,9 +15,9 @@
         </ul>
       </div>
       <!-- 추가 부분 -->
-      <b-tabs content-class="block mt-3" fill >
-        <b-tab title="일반용" id="contest-content" href="/">
-        <div id="problem-group">
+      <b-tabs content-class="block mt-3" fill>
+        <b-tab title="일반용" id="contest-content" @click="goRouter()">
+        <!-- <div id="problem-group">
           <b-card v-for="problem in problemList"
                       :key="problem.title"
                       :img-src='`../../../../../static/img/${problem.id}.jpg`'
@@ -42,14 +42,14 @@
                 </span>
                 <span style="font-size: 20px; float: right; margin-top:-8px; font-weight:bold;">D-{{getDuration(problem.start_time, problem.end_time)}}</span>
               </b-card-text>
-              <!--<b-button pill variant="outline-primary" @click="goProblem(problem._id)" size="sm" style="float: right; margin-top: -60px;"><b>더보기</b></b-button>-->
+              <b-button pill variant="outline-primary" @click="goProblem(problem._id)" size="sm" style="float: right; margin-top: -60px;"><b>더보기</b></b-button>
             </b-card-body>
           </b-card>
-        </div>
+        </div> -->
         </b-tab>
 
-        <b-tab title="수업용" id="contest-content" @click="goRouter()">
-        <!-- <div id="problem-group">
+        <b-tab title="수업용" active id="contest-content">
+        <div id="problem-group">
           <b-card v-for="problem in classproblemList"
                       :key="problem.title"
                       :img-src='`../../../../../static/img/${problem.id}.jpg`'
@@ -68,7 +68,7 @@
               <ModalView v-if="isModalViewed" v-bind:problemID="problem._id" v-bind:problemPassword="problem.password" @close="isModalViewed = false"></ModalView>
             </b-card-body>
           </b-card>
-        </div> -->
+        </div>
         </b-tab>
       </b-tabs>
     </Panel>
@@ -96,7 +96,6 @@
       return {
         // tagList: [],
         isModalViewed: false,
-        url: this.$route.path + '/class',
         problemTableColumns: [
           {
             title: '#',
@@ -208,17 +207,23 @@
         this.getProblemList()
         this.getClassProblemList()
       },
-      // 추가 부분
+      pushRouter () {
+        this.$router.push({
+          name: 'aiproblem-list',
+          query: utils.filterEmptyValue(this.query)
+        })
+      },
+     // 추가 부분
+      goRouter () {
+        this.$router.push({name: 'aiproblem-list'})
+      },
       getDuration (startTime, endTime) {
         var duration = time.duration(startTime, endTime)
         var day = duration.replace(/days|hours/, '')
         return day
       },
       goProblem (problemID) {
-        this.$router.push({name: 'aiproblem-general-details', params: {problemID: problemID}})
-      },
-      goRouter () {
-        this.$router.push({name: 'aiproblem-list-class'})
+        this.$router.push({name: 'aiproblem-class-details', params: {problemID: problemID}})
       },
       getProblemList () {
         let offset = (this.query.page - 1) * this.query.limit

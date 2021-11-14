@@ -6,7 +6,7 @@
       <Menu-item name="/" class='list'>
         {{$t('m.Home')}}
       </Menu-item>
-      <Menu-item name="/aicontest" class='list'>
+      <Menu-item name="/aicontest_general" class='list'>
         {{'AI 대회'}}
       </Menu-item>
       <Menu-item name="/announcement" class='list'>

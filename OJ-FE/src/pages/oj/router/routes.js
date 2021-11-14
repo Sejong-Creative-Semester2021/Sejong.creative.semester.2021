@@ -16,7 +16,8 @@ import {
   SubmissionList,
   UserHome,
   AIContest,
-  AIContestList
+  AIContestList,
+  AIContestClassList
 } from '../views'
 
 import * as Contest from '@oj/views/contest'
@@ -73,13 +74,37 @@ export default [
   },
   {
     name: 'aiproblem-list',
-    path: '/aicontest',
+    path: '/aicontest_general',
     meta: {title: 'AIProblem List'},
-    component: AIContestList
+    component: AIContestList,
+    children: [
+      {
+        path: '',
+        name: 'general',
+        component: AIContestList
+      },
+      {
+        path: 'class',
+        name: 'class',
+        component: AIContestClassList
+      }
+    ]
   },
   {
-    name: 'aiproblem-details',
-    path: '/aicontest/:problemID',
+    name: 'aiproblem-list-class',
+    path: '/aicontest_class',
+    meta: {title: 'AIProblem Class'},
+    component: AIContestClassList
+  },
+  {
+    name: 'aiproblem-general-details',
+    path: '/aicontest_general/:problemID',
+    meta: {title: 'AIProblem Details'},
+    component: AIContest
+  },
+  {
+    name: 'aiproblem-class-details',
+    path: '/aicontest_class/:problemID',
     meta: {title: 'AIProblem Details'},
     component: AIContest
   },

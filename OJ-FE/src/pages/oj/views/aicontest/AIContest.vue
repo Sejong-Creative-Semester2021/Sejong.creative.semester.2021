@@ -12,7 +12,7 @@
         </div>
         <div id="problem-content">
           <b-tabs content-class="mt-3 tabs" align="center" pills card fill>
-            <b-tab title="대회안내" id="contest-content">
+            <b-tab title="대회안내" id="contest-content" active>
               <p class="subtitle">{{'대회 주요 일정'}}</p>
               <b-tabs content-class="mt-3" fill>
                 <b-tab title="개요"><p class="markdown-body content" v-html=problem.contest_description></p></b-tab>
@@ -42,16 +42,25 @@
               <!--<Table :data="problem.rank" :columns="columns" size="large"></Table>-->
             </b-tab>
             <b-tab title="제출">
-            <p class="subtitle">{{'제출'}}</p>
               <b-card>
-                <upload
+                <div style="text-align: center">
+                <p style="font-weight: bold; font-size: 20px; margin:15px">나의 제출</p>
+                <p>부정 행위 등 규정 위반에 연관된 사용자들은 <span style="font-style: italic; color: red">모두 탈락 </span>되니 유의하시기 바랍니다.</p>
+                </div>
+                <Upload
                   action="/api/upload_csv"
+                  class="mini-container"
+                  type="drag"
                   name="file"
                   :data="{id: problem._id}"
                   :show-file-list="true"
-                  :on-success="uploadFileSucceeded">
-                  <button size="small" type="primary" icon="el-icon-fa-upload">Choose File</button>
-                </upload>
+                  :on-success="uploadFileSucceeded"
+                  style="margin: 3px">
+                  <div style="padding: 30px 0">
+                    <Icon type="ios-cloud-upload" size="52" style="color: #3399ff; margin: 3px"></Icon>
+                    <p>한 개의 파일(csv)만 가능합니다.</p>
+                  </div>
+                </Upload>
                 <!-- <v-file-input truncate-length="15" @change="uploadFile"></v-file-input> -->
                 <!--<v-file-input
                   accept=".csv"
@@ -59,8 +68,8 @@
                   outlined
                   @change="selectFile"
                 ></v-file-input>-->
-                <v-btn right @click="submit" :disabled="alreadyJoined == false">제출</v-btn>
-                <p>{{ data }}</p>
+                <v-btn right @click="submit" :disabled="alreadyJoined == false" style="float: right">제출</v-btn>
+                <!-- <p style="background-color: rgb(216, 213, 213)">{{ data }}</p> -->
                 <!-- <b-form-file
                   v-model="file1"
                   placeholder="Choose a file or drop it here..."
@@ -259,7 +268,7 @@
         this.problemID = this.$route.params.problemID
         console.log('this.$route.params', this.$route.params)
         this.username = this.$route.params.username
-        let func = this.$route.name === 'aiproblem-details' ? 'getAIProblem' : 'getContestProblem'
+        let func = 'getAIProblem'
         console.log(func)
         api[func](this.problemID, this.contestID).then(res => {
           this.$Loading.finish()
@@ -651,6 +660,7 @@
 </script>
 
 <style lang="less" scoped>
+
   .problem-title {
     margin-top: 20px;
     margin-bottom: 20px;
