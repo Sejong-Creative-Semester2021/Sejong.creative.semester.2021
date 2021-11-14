@@ -15,7 +15,8 @@ import os
 import json
 import csv
 # import pandas as pd
-# import numpy as np
+import numpy as np
+# import sklearn
 
 import logging
 logger=logging.getLogger(__name__)
@@ -218,21 +219,30 @@ class FileAPI(CSRFExemptAPIView, TestCaseZipProcessor):
         2,13
         3,346
         """
-        # y_true = np.array(np.loadtxt(os.path.join(settings.SOLUTION_DIR, csv.solution_id, "solution.csv"), delimiter=",", dtype=np.float32, skiprows=1, usecols = (1,)))
-        # y_pred = np.array(np.loadtxt(os.path.join(settings.PREDICT_DIR, predict_id, "predict.csv"), delimiter=",", dtype=np.float32, skiprows=1, usecols = (1,)))
-        # logger.info("y_true={}".format(str(y_true)))
-        # logger.info("y_pred={}".format(str(y_pred)))
-
-        # y_score = (y_true == y_pred).mean()
-        # logger.info("y_score={}".format(str(y_score)))
-
-        # y_true = np.array(pd.read_csv(os.path.join(settings.SOLUTION_DIR, csv.solution_id, "solution.csv")))
-        # y_pred = np.array(pd.read_csv(os.path.join(settings.PREDICT_DIR, predict_id, "predict.csv")))
+        y_true = np.array(np.loadtxt(os.path.join(settings.SOLUTION_DIR, csv.solution_id, "solution.csv"), delimiter=",", dtype=np.float32, skiprows=1, usecols = (1,)))
+        y_pred = np.array(np.loadtxt(os.path.join(settings.PREDICT_DIR, predict_id, "predict.csv"), delimiter=",", dtype=np.float32, skiprows=1, usecols = (1,)))
+        logger.info("y_true={}".format(str(y_true)))
+        logger.info("y_pred={}".format(str(y_pred)))
         
-        # y_score = (y_true.astype(bool) == y_pred.astype(bool)).mean()
-        # logger.info("y_score={}".format(y_score))
-        
+        eval_type = csv.eval_type
+        logger.info("eval_type={}".format(eval_type))
+        if eval_type == 'mse':
+            logger.info("if mse in")
+            y_score = np.square(np.subtract(y_true, y_pred)).mean()
+            logger.info("y_score={}".format(str(y_score)))
+        if eval_type == 'acc':
+            logger.info("if acc in")
+            y_score = (y_true == y_pred).mean()
+            logger.info("y_score={}".format(str(y_score)))
+
+        if eval_type == 'chu ga':
+            pass
+
         os.remove(tmp_file)
+
+        y_score = float(y_score)
+        
+        logger.info("float change - y_score={}".format(y_score))
 
         return self.success({"predictId": predict_id, "solutionId": csv.solution_id, "info": info, "y_score": y_score})
 

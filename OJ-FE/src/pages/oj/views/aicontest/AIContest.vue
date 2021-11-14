@@ -268,9 +268,13 @@
           console.log(problem.id)
           console.log('problem rank', problem.rank)
           console.log('problem join_contest', problem.join_contest)
-          this.join_contest = problem.join_contest
+          // this.join_contest = problem.join_contest
           console.log('this.join_contest', this.join_contest)
           this.showRanks = problem.rank
+          for (let v in this.showRanks) {
+            this.showRanks[v]['score'] = this.showRanks[v]['score'].toFixed(4)
+            console.log('this.showRanks[v][score]', this.showRanks[v]['score'])
+          }
           // this.showRank.append(problem.rank)
           console.log('show Ranks', this.showRanks)
           this.changeDomTitle({title: problem.title})
@@ -300,11 +304,13 @@
             this.profile = res.data.data
             console.log('this.profile', this.profile)
             this.username = this.profile.user.username
+            this.join_contest = this.profile.user_join_contest
           }).then(res => {
-            console.log('this.username', this.username)
-            console.log('before this.alreadyJoined', this.alreadyJoined)
-            this.alreadyJoined = this.join_contest.includes(this.username)
-            console.log('after this.alreadyJoined', this.alreadyJoined)
+            // console.log('this.username', this.username)
+            // console.log('before this.alreadyJoined', this.alreadyJoined)
+            console.log(this.problem._id)
+            this.alreadyJoined = this.join_contest.includes(this.problem._id)
+            // console.log('after this.alreadyJoined', this.alreadyJoined)
           })
         })
       },

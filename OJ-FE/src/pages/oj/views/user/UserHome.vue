@@ -170,18 +170,18 @@
       },
       getProblemList () {
         for (var i in this.profile.user_join_contest) {
-          console.log('general this.profile.user_join_contest', this.profile.user_join_contest)
-          console.log('i', i)
+          // console.log('general this.profile.user_join_contest', this.profile.user_join_contest)
+          // console.log('i', i)
           api.getUserGeneralAIProblemList(this.profile.user_join_contest[i]).then(res => {
-            console.log('res.data.data', res.data.data)
+            // console.log('res.data.data', res.data.data)
             if (res.data.data.total) {
               this.problemlist.push(res.data.data.results[0])
-              console.log('res.data.data.results[0]', res.data.data.results[0])
+              // console.log('res.data.data.results[0]', res.data.data.results[0])
             }
           })
           // this.problemlist = this.problemlist.reverse()
         }
-        console.log(this.problemlist)
+        // console.log(this.problemlist)
       },
       getClassProblemList () {
         for (var i in this.profile.user_join_contest) {
@@ -189,10 +189,10 @@
           api.getUserClassAIProblemList(this.profile.user_join_contest[i]).then(res => {
             if (res.data.data.total) {
               this.classproblemList.push(res.data.data.results[0])
-              console.log('class res.data.data.results[0]', res.data.data.results[0])
+              // console.log('class res.data.data.results[0]', res.data.data.results[0])
             }
           })
-          console.log('classProblemList', this.classProblemList)
+          // console.log('classProblemList', this.classProblemList)
         }
         // this.classproblemList = this.classproblemList.reverse()
       }

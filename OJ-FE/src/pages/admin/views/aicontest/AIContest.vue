@@ -8,7 +8,6 @@
               <el-radio-group v-model="problem.p_type">
                 <el-radio label="General">일반</el-radio>
                 <el-radio label="Class">수업</el-radio> 
-
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -28,6 +27,16 @@
           <el-col :span="10">
             <el-form-item prop="title" :label="'문제 제목'" required>
               <el-input :placeholder="'문제 제목'" v-model="problem.title"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="24">
+            <el-form-item :label="'평가 방식'">
+              <el-select v-model="evalValue" value-key="value" placeholder="Select">
+                <el-option v-for="item in evalList" :key="item.value" :label="item.label" :value="item">
+                </el-option>
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
@@ -303,7 +312,18 @@
           languages: '',
           testCase: ''
         },
-        password: ''
+        password: '',
+        evalList: [
+          {
+            value: 'acc',
+            label: 'Accuracy'
+          },
+          {
+            value: 'mse',
+            label: 'MSE'
+          }
+        ],
+        evalValue: null
       }
     },
     mounted () {
@@ -346,7 +366,8 @@
           p_type: '',
           rank: [],
           password: '',
-          join_contest: []
+          join_contest: [],
+          eval_type: ''
         }
         let contestID = this.$route.params.contestId
         if (contestID) {
@@ -487,6 +508,8 @@
         }
         console.log(response)
         this.problem.solution_id = response.data.id
+        // eval value 처리
+        this.problem.eval_type = this.evalValue['value']
       },
       uploadDataSucceeded (response) {
         console.log(response)
@@ -496,6 +519,9 @@
         }
         console.log(response)
         this.problem.data_id = response.data.id
+        // console.log('evalValue', this.evalValue)
+        // console.log('evalValue[label]', this.evalValue['label'])
+        // console.log('evalValue[value]', this.evalValue['value'])
       },
       uploadFailed () {
         this.$error('Upload failed')

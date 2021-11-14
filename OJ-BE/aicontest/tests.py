@@ -30,7 +30,7 @@ DEFAULT_PROBLEM_DATA = {"_id": "A-110", "title": "test", "contest_description": 
                         "share_submission": False,
                         "rule_type": "ACM", "hint": "<p>test</p>", "source": "test", "solution_id": "499b26290cc7994e0b497212e842ea86",
                         "rank": [{"userid": "1.out", "username": "1.in", "score": 0}],
-                        "join_contest": ['username'],
+                        "join_contest": ['username'], "eval_type": "mse"
                         }
 
 
