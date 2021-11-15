@@ -12,15 +12,15 @@
         </div>
         <div id="problem-content">
           <b-tabs content-class="mt-3 tabs" align="center" pills card fill>
-            <b-tab title="대회안내" id="contest-content" active>
+            <b-tab class="tab" title="대회안내" id="contest-content" active>
               <p class="subtitle">{{'대회 주요 일정'}}</p>
               <b-tabs content-class="mt-3" fill>
-                <b-tab title="개요"><p class="markdown-body content" v-html=problem.contest_description></p></b-tab>
-                <b-tab title="규칙"><p class="markdown-body content" v-html=problem.rule_description></p></b-tab>
-                <b-tab title="일정"><p class="markdown-body content" v-html=problem.schedule_description></p></b-tab>
+                <b-tab class="tab" title="개요"><p class="markdown-body content" v-html=problem.contest_description></p></b-tab>
+                <b-tab class="tab" title="규칙"><p class="markdown-body content" v-html=problem.rule_description></p></b-tab>
+                <b-tab class="tab" title="일정"><p class="markdown-body content" v-html=problem.schedule_description></p></b-tab>
               </b-tabs>
             </b-tab>
-            <b-tab title="데이터">
+            <b-tab class="tab" title="데이터">
               <b-button class="download-button" variant="light" name="Download Data" @click="downloadData(problem.id)" :disabled="alreadyJoined == false">다운로드</b-button>
               <p class="subtitle">{{'설명'}}</p>
               <b-card class="data-card">
@@ -29,7 +29,7 @@
                 </b-text>
               </b-card>
             </b-tab>
-            <b-tab title="리더보드">
+            <b-tab class="tab" title="리더보드">
               <div>
                 <v-data-table
                   :headers="headers"
@@ -41,7 +41,7 @@
               </div>
               <!--<Table :data="problem.rank" :columns="columns" size="large"></Table>-->
             </b-tab>
-            <b-tab title="제출">
+            <b-tab class="tab" title="제출">
               <b-card>
                 <div style="text-align: center">
                 <p style="font-weight: bold; font-size: 20px; margin:15px">나의 제출</p>
@@ -660,7 +660,9 @@
 </script>
 
 <style lang="less" scoped>
-
+  .nav-pills .nav-link {
+    color: black !important;
+  }
   .problem-title {
     margin-top: 20px;
     margin-bottom: 20px;
@@ -703,6 +705,9 @@
     .tabs {
       font-weight: bold;
       font-size: 16px;
+    }
+    .tab {
+      color: black !important;
     }
     .card-img-top{
       width: 40rem;

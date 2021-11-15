@@ -15,7 +15,7 @@
         </ul>
       </div>
       <!-- 추가 부분 -->
-      <b-tabs content-class="block mt-3" fill >
+      <b-tabs content-class="block mt-3 tabs" pills fill >
         <b-tab title="일반용" id="contest-content" href="/">
         <div id="problem-group">
           <b-card v-for="problem in problemList"
@@ -340,6 +340,11 @@
   #card-deck{
     display: flex;
   }
+
+  .tabs {
+      font-weight: bold;
+      font-size: 16px;
+    }
 
   #problem-group{
 

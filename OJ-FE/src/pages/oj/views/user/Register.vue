@@ -45,7 +45,7 @@
         가입하기
       </Button>
       <Button
-        type="ghost"
+        type="primary"
         @click="switchMode('login')"
         class="btn" long>
         로그인으로 되돌아가기
@@ -173,5 +173,16 @@
         margin: 0;
       }
     }
+  }
+  .ivu-btn-primary {
+    background-color: #c44141;
+    color: white;
+    font-weight: 600;
+  }
+  .ivu-btn-primary:hover {
+    background-color: rgba(196, 65, 65, 0.8);
+    border-color: rgba(196, 65, 65, 0.8);
+    color: white;
+    font-weight: 600;
   }
 </style>

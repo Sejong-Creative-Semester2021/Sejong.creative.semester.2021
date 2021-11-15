@@ -15,7 +15,7 @@
         </ul>
       </div>
       <!-- 추가 부분 -->
-      <b-tabs content-class="block mt-3" fill>
+      <b-tabs content-class="block mt-3 tabs" fill pills>
         <b-tab title="일반용" id="contest-content" @click="goRouter()">
         <!-- <div id="problem-group">
           <b-card v-for="problem in problemList"
@@ -346,8 +346,12 @@
     display: flex;
   }
 
-  #problem-group{
+  .tabs {
+      font-weight: bold;
+      font-size: 16px;
+    }
 
+  #problem-group{
     .problem-card{
       border-radius: 20px 20px 20px 20px;
       max-height: 100px;

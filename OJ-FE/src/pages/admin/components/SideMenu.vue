@@ -36,6 +36,20 @@
 </script>
 
 <style scoped lang="less">
+  .el-menu-item.is-active {
+    background: #990000 !important;
+    color: #ffffff !important;
+    font-weight: bold;
+  }
+  .el-submenu__title:hover {
+    background-color: rgba(153, 0,0,0.1); 
+  }
+  .el-menu-item:hover {
+    background: rgba(153, 0,0,0.1);
+  }
+  .el-menu-item {
+    color: black;
+  }
   .vertical_menu {
     overflow: auto;
     width: 205px;

@@ -22,13 +22,13 @@
                   ref="loginBtn"
                   shape="circle"
                   @click="handleBtnClick('login')"
-                  style="background-color: #ffcc00; color: #000000">{{$t('m.Login')}}
+                  style="background-color: #ffcc00; bolder-color: #ffcc00; color: #000000">로그인
           </Button>
           <Button v-if="website.allow_register"
                   type="ghost"
                   shape="circle"
                   @click="handleBtnClick('register')"
-                  style="margin-left: 5px; background-color: #ffcc00; color: #000000">{{$t('m.Register')}}
+                  style="margin-left: 5px; background-color: #ffcc00; bolder-color: #ffcc00; color: #000000">회원가입
           </Button>
         </div>
       </template>
@@ -38,10 +38,10 @@
             <Icon type="arrow-down-b"></Icon>
           </Button>
           <Dropdown-menu slot="list">
-            <Dropdown-item name="/user-home">{{$t('m.MyHome')}}</Dropdown-item>
+            <Dropdown-item name="/user-home">마이페이지</Dropdown-item>
             <Dropdown-item name="/setting/profile">{{$t('m.Settings')}}</Dropdown-item>
-            <Dropdown-item v-if="isAdminRole" name="/admin">{{$t('m.Management')}}</Dropdown-item>
-            <Dropdown-item divided name="/logout">{{$t('m.Logout')}}</Dropdown-item>
+            <Dropdown-item v-if="isAdminRole" name="/admin">관리</Dropdown-item>
+            <Dropdown-item divided name="/logout">로그아웃</Dropdown-item>
           </Dropdown-menu>
         </Dropdown>
       </template>

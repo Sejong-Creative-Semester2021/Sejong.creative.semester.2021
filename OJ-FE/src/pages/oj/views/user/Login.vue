@@ -124,4 +124,15 @@
       }
     }
   }
+  .ivu-btn-primary {
+    background-color: #c44141;
+    color: white;
+    font-weight: 600;
+  }
+  .ivu-btn-primary:hover {
+    background-color: rgba(196, 65, 65, 0.8);
+    border-color: rgba(196, 65, 65, 0.8);
+    color: white;
+    font-weight: 600;
+  }
 </style>
