@@ -1,56 +1,59 @@
 <template>
-  <div id="header">
-    <Menu theme="light" mode="horizontal" @on-select="handleRoute" :active-name="activeMenu" class="oj-menu">
-      <div class="logo"><span>{{'OJ'}}</span></div>
-      <div class="menulist">
-      <Menu-item name="/" class='list'>
-        {{$t('m.Home')}}
-      </Menu-item>
-      <Menu-item name="/aicontest_general" class='list'>
-        {{'AI 대회'}}
-      </Menu-item>
-      <Menu-item name="/announcement" class='list'>
-        {{'공지사항'}}
-      </Menu-item>
-      <Menu-item name="/FAQ" class='list'>
-        {{$t('m.FAQ')}}
-      </Menu-item>
-      </div>
-      <template v-if="!isAuthenticated">
-        <div class="btn-menu">
-          <Button type="ghost"
-                  ref="loginBtn"
-                  shape="circle"
-                  @click="handleBtnClick('login')"
-                  style="background-color: #ffcc00; bolder-color: #ffcc00; color: #000000">로그인
-          </Button>
-          <Button v-if="website.allow_register"
-                  type="ghost"
-                  shape="circle"
-                  @click="handleBtnClick('register')"
-                  style="margin-left: 5px; background-color: #ffcc00; bolder-color: #ffcc00; color: #000000">회원가입
-          </Button>
+  <div id="header" class="scroll-y">
+    <div v-scroll:#header="onScroll">
+      <Menu theme="light" mode="horizontal" @on-select="handleRoute" :active-name="activeMenu" class="oj-menu">  
+        <div class="logo"><span>{{'OJ'}}</span></div>
+        <div class="menulist">
+          <Menu-item name="/" class='list'>
+            {{$t('m.Home')}}
+          </Menu-item>
+          <Menu-item name="/aicontest_general" class='list'>
+            {{'AI 대회'}}
+          </Menu-item>
+          <Menu-item name="/announcement" class='list'>
+            {{'공지사항'}}
+          </Menu-item>
+          <Menu-item name="/FAQ" style="margin-right: 30px" class='list'>
+            {{$t('m.FAQ')}}
+          </Menu-item>
+        <template v-if="!isAuthenticated">
+          <div class="btn-menu">
+            <Button class="login-btn"
+                    type="ghost"
+                    ref="loginBtn"
+                    shape="circle"
+                    @click="handleBtnClick('login')"
+                    style="color: #ffffff">로그인
+            </Button>
+            <Button v-if="website.allow_register"
+                    class="register-btn"
+                    shape="circle"
+                    @click="handleBtnClick('register')"
+                    style="margin-left: 15px; border-color: rgb(217, 95, 95); background-color: rgb(217, 95, 95); color: #ffffff">회원가입
+            </Button>
+          </div>
+        </template>
+        <template v-else>
+          <Dropdown class="drop-menu" @on-click="handleRoute" placement="bottom" trigger="click">
+            <Button type="text" class="drop-menu-title">{{ user.username }}
+              <Icon type="arrow-down-b"></Icon>
+            </Button>
+            <Dropdown-menu slot="list">
+              <Dropdown-item name="/user-home">마이페이지</Dropdown-item>
+              <Dropdown-item name="/setting/profile">{{$t('m.Settings')}}</Dropdown-item>
+              <Dropdown-item v-if="isAdminRole" name="/admin">관리</Dropdown-item>
+              <Dropdown-item divided name="/logout">로그아웃</Dropdown-item>
+            </Dropdown-menu>
+          </Dropdown>
+        </template>
         </div>
-      </template>
-      <template v-else>
-        <Dropdown class="drop-menu" @on-click="handleRoute" placement="bottom" trigger="click">
-          <Button type="text" class="drop-menu-title">{{ user.username }}
-            <Icon type="arrow-down-b"></Icon>
-          </Button>
-          <Dropdown-menu slot="list">
-            <Dropdown-item name="/user-home">마이페이지</Dropdown-item>
-            <Dropdown-item name="/setting/profile">{{$t('m.Settings')}}</Dropdown-item>
-            <Dropdown-item v-if="isAdminRole" name="/admin">관리</Dropdown-item>
-            <Dropdown-item divided name="/logout">로그아웃</Dropdown-item>
-          </Dropdown-menu>
-        </Dropdown>
-      </template>
-    </Menu>
-    <Modal v-model="modalVisible" :width="400">
-      <div slot="header" class="modal-title">{{$t('m.Welcome_to')}} {{website.website_name_shortcut}}</div>
-      <component :is="modalStatus.mode" v-if="modalVisible"></component>
-      <div slot="footer" style="display: none"></div>
-    </Modal>
+      </Menu>
+      <Modal v-model="modalVisible" :width="400">
+        <div slot="header" class="modal-title">{{$t('m.Welcome_to')}} {{website.website_name_shortcut}}</div>
+        <component :is="modalStatus.mode" v-if="modalVisible"></component>
+        <div slot="footer" style="display: none"></div>
+      </Modal>
+    </div>
   </div>
 </template>
 
@@ -64,8 +67,28 @@
       login,
       register
     },
+    data () {
+      return {
+        offsetTop: 0
+      }
+    },
     mounted () {
       this.getProfile()
+      // $(function() {
+      //   var lastScroll = 0
+      //   $(window).scroll(function(event) {
+      //     var scroll = $(this).scrollTop()
+      //     if (scroll > 0) {
+      //     //이벤트를 적용시킬 스크롤 높이
+      //         $("#header").addClass("add")
+      //     }
+      //     else {
+      //         $("#header").removeClass("add")
+      //     }
+      //     lastScroll = scroll
+      //   })
+      // })
+      // this.onscroll()
     },
     methods: {
       ...mapActions(['getProfile', 'changeModalStatus']),
@@ -81,6 +104,17 @@
           visible: true,
           mode: mode
         })
+      },
+      onScroll (e) {
+        this.offsetTop = e.target.scrollTop
+        console.log(this.offsetTop)
+        if (this.offsetTop !== 0) {
+          console.log('add')
+          document.getElementById('header').className = 'add'
+        } else {
+          console.log('remove')
+          document.getElementById('header').classList.remove('add')
+        }
       }
     },
     computed: {
@@ -102,6 +136,12 @@
 </script>
 
 <style lang="less" scoped>
+  .ivu-menu-horizontal {
+    height: 0px;
+  }
+  .add {
+    background-color: white !important;
+  }
   #header {
     min-width: 300px;
     position: fixed;
@@ -110,11 +150,14 @@
     height: auto;
     width: 100%;
     z-index: 1000;
-    background-color: transparent;
-
+    background-color: white;
+  
     li:hover {
       color: white !Important;
       border-bottom-width: 0px !Important;
+    }
+    .ivu-menu-light.ivu-menu-horizontal .ivu-menu-item:hover {
+      border-bottom: 0px;
     }
 
     .ivu-menu-item-selected {
@@ -123,11 +166,13 @@
     }
 
     .oj-menu {
-      background-color: #000000;
+      width: 70%;
+      margin-left: 15%;
+      background-color: transparent;
     }
 
     .menulist {
-      margin-left: 35%;
+      float: right;
     }
 
     .sublist {
@@ -169,8 +214,25 @@
       float: right;
       margin-right: 10px;
     }
+    .login-btn {
+      font-weight: bold;
+      border-width: 2px;
+      padding-top: 6px;
+      padding-bottom: 6px;
+      font-size: 14px;
+    }
+    .register-btn {
+      font-weight: bold;
+      border-width: 2px;
+      padding-top: 6px;
+      padding-bottom: 6px;
+      font-size: 14px;
+    }
+    .ivu-btn-ghost:hover {
+      background-color: #e3a8a8;
+      border-color: #e3a8a8;
+    }
   }
-
 
   .modal {
     &-title {

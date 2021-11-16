@@ -1,7 +1,21 @@
 <template>
   <div class="home">
     <Row align="center">
-      <b-carousel
+      <div class = "banner-img">
+        <img src="../../../../../static/img/ai.jpg" style="width: 100%">
+        <div class="banner-content">
+          <h1>무제한 코딩멤버십</h1>
+          <div class="banner-description">
+            <span>
+            11만 명이 넘는 <b>비전공자, 코딩 입문자</b>가
+            코드잇 무제한 멤버십을 선택했어요.
+            지금 함께 시작해보실래요?
+            </span>
+          </div>
+          <Button class="btn1" type="ghost" shape="circle">멤버십 시작하기</Button>
+        </div>
+      </div>
+      <!-- <b-carousel
           id="carousel-1"
           v-model="slide"
           :interval="3000"
@@ -14,7 +28,7 @@
           @sliding-start="onSlideStart"
           @sliding-end="onSlideEnd"
       >
-          <!-- Slide with blank fluid image to maintain slide aspect ratio -->
+          Slide with blank fluid image to maintain slide aspect ratio
         <b-carousel-slide img-src='../../../../../static/img/banner1.jpg'>
           <p>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse eros felis, tincidunt
@@ -35,7 +49,7 @@
             a tincidunt eget, convallis vel est. Ut pellentesque ut lacus vel interdum.
           </p>
         </b-carousel-slide>
-      </b-carousel>
+      </b-carousel> -->
     </Row>
     <AIContestHome class="aicontesthome"></AIContestHome>
   </div>
@@ -97,6 +111,26 @@
 </script>
 
 <style lang="less" scoped>
+.banner-img {
+  position: relative;
+}
+.banner-content {
+  position: absolute;
+  top: 30%;
+  left: 15%;
+  color: #ffffff;
+  .banner-description{
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+  .btn1 {
+    font-weight: bold;
+    border-width: 2px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    font-size: 20px;
+  }
+}
   // .contest {
   //   &-title {
   //     font-style: italic;
@@ -114,13 +148,13 @@
   //   margin-top: 20px;
   //   margin-right: 20px;
   // }
-  .home {
-    margin-top: -20px;
-  }
+  // .home {
+  //   margin-top: -20px;
+  // }
   
-  .aicontesthome {
-    margin-top: 10px;
-  }
+  // .aicontesthome {
+  //   margin-top: 10px;
+  // }
 
 
 </style>

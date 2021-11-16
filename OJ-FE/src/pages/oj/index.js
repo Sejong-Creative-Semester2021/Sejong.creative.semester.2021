@@ -8,6 +8,7 @@ import VueClipboard from 'vue-clipboard2'
 import VueAnalytics from 'vue-analytics'
 import { GOOGLE_ANALYTICS_ID } from '@/utils/constants'
 import VueDayjs from 'vue-dayjs-plugin'
+// import 'expose-loader?$!expose-loader?jQuery!jquery'
 
 import iView from 'iview'
 import 'iview/dist/styles/iview.css'

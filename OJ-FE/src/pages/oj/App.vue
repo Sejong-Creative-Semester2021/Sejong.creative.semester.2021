@@ -1,19 +1,21 @@
 <template>
-  <div>
+  <v-app>
     <NavBar class="nav-bar"></NavBar>
-    <div class="content-app">
-      <transition name="fadeInUp" mode="out-in">
-        <router-view></router-view>
-      </transition>
-      <div class="footer">
-        <p v-html="website.website_footer"></p>
-        <p>Powered by <a href="https://github.com/QingdaoU/OnlineJudge">OnlineJudge</a>
-          <span v-if="version">&nbsp; Version: {{ version }}</span>
-        </p>
+    <div class="content-app" id="content">
+      <div class="content-scroll" v-scroll:#content="onScroll">
+        <transition name="fadeInUp" mode="out-in">
+          <router-view></router-view>
+        </transition>
+        <div class="footer">
+          <p v-html="website.website_footer"></p>
+          <p>Powered by <a href="https://github.com/QingdaoU/OnlineJudge">OnlineJudge</a>
+            <!-- <span v-if="version">&nbsp; Version: {{ version }}</span> -->
+          </p>
+        </div>
       </div>
     </div>
     <BackTop></BackTop>
-  </div>
+  </v-app>
 </template>
 
 <script>
@@ -27,7 +29,8 @@
     },
     data () {
       return {
-        version: process.env.VERSION
+        offsetTop: 0
+        // version: process.env.VERSION
       }
     },
     created () {
@@ -40,7 +43,18 @@
       this.getWebsiteConfig()
     },
     methods: {
-      ...mapActions(['getWebsiteConfig', 'changeDomTitle'])
+      ...mapActions(['getWebsiteConfig', 'changeDomTitle']),
+      onScroll (e) {
+        this.offsetTop = e.target.scrollTop
+        console.log(this.offsetTop)
+        if (this.offsetTop !== 0) {
+          console.log('add')
+          document.getElementsByClassName('nav-bar').className = 'nav-bar-add'
+        } else {
+          console.log('remove')
+          document.getElementsByClassName('nav-bar-add').className = 'nav-bar'
+        }
+      }
     },
     computed: {
       ...mapState(['website'])
@@ -71,11 +85,16 @@
       outline-width: 0;
     }
   }
+  .content-app {
+    min-height: 100%;
+  }
 
+  .content-scroll{
+    max-height: 100%;
+  }
 
 @media screen and (max-width: 1200px) {
   .content-app {
-    margin-top: 80px;
     padding: 0;
   }
 }
@@ -83,7 +102,6 @@
 @media screen and (min-width: 1200px) {
   .content-app {
     background-color: transparent;
-    margin-top: 80px;
     padding: 0;
   }
 }
