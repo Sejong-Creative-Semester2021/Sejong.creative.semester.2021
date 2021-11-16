@@ -4,7 +4,7 @@
       <div class = "banner-img">
         <img src="../../../../../static/img/ai.jpg" style="width: 100%">
         <div class="banner-content">
-          <h1>무제한 코딩멤버십</h1>
+          <h1 class="font-weight-bold">무제한 코딩멤버십</h1>
           <div class="banner-description">
             <span>
             11만 명이 넘는 <b>비전공자, 코딩 입문자</b>가
@@ -12,7 +12,7 @@
             지금 함께 시작해보실래요?
             </span>
           </div>
-          <Button class="btn1" type="ghost" shape="circle">멤버십 시작하기</Button>
+          <Button class="btn1" size="large">시작하기</Button>
         </div>
       </div>
       <!-- <b-carousel
@@ -111,24 +111,36 @@
 </script>
 
 <style lang="less" scoped>
+.home {
+    margin-top: -80px !important;
+  }
 .banner-img {
   position: relative;
 }
 .banner-content {
   position: absolute;
-  top: 30%;
+  top: 40%;
   left: 15%;
   color: #ffffff;
+
+  h1 {
+  font-size: 3rem !important;
+  }
   .banner-description{
     margin-top: 10px;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
   }
   .btn1 {
     font-weight: bold;
     border-width: 2px;
-    padding-top: 20px;
-    padding-bottom: 20px;
     font-size: 20px;
+
+    padding: 1rem 3rem;
+    margin-top: 1rem;
+    margin-left: 0.7rem;
+    font-size: 1.7rem;
+    border-radius: 3rem;
+    color: black;
   }
 }
   // .contest {

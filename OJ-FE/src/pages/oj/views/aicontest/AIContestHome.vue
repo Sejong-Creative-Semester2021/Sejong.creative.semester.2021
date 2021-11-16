@@ -178,7 +178,7 @@
         })
       },
       getDuration (startTime, endTime) {
-        console.log(time.duration(startTime, endTime))
+        // console.log(time.duration(startTime, endTime))
         return time.duration(startTime, endTime)
       },
       filterByDifficulty (difficulty) {
