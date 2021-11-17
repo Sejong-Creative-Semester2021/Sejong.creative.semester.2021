@@ -321,7 +321,39 @@
           {
             value: 'mse',
             label: 'MSE'
+          },
+          {
+            value: 'rmse',
+            label: 'RMSE'
+          },
+          // {
+          //   value: 'auc',
+          //   label: 'AUC'
+          // },
+          {
+            value: 'mean_f_score',
+            label: 'MeanFScore'
+          },
+          {
+            value: 'mae',
+            label: 'MAE'
+          },
+          // {
+          //   value: 'f_beta',
+          //   label: 'F_{Beta}'
+          // },
+          {
+            value: 'logloss',
+            label: 'LogLoss'
+          },
+          {
+            value: 'rmsle',
+            label: 'RMSLE'
           }
+          // {
+          //   value: 'map@k',
+          //   label: 'map@{K}'
+          // }
         ],
         evalValue: null
       }

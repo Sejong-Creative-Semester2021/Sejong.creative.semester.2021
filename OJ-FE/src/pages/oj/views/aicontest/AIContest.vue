@@ -7,7 +7,7 @@
         <div style="padding:40px 0px 40px 0px">
           <div class="problem-title" slot="title" style="display:inline-block">{{problem.title}}</div>
           <div style="display:inline-block; float: right; margin-top: 30px; margin-bottom: 20px;">
-            <b-button variant="primary" @click="join" :disabled="alreadyJoined == true">참여</b-button>
+            <b-button variant="primary" @click="join" :disabled="alreadyJoined == true" style="width:80px">{{joinText}}</b-button>
           </div>
         </div>
         <div id="problem-content">
@@ -35,6 +35,7 @@
                   :headers="headers"
                   :items="itemsWithIndex"
                   :items-per-page="5"
+                  :item-class="itemRowBackground"
                   class="elevation-1"
                 >
                 </v-data-table>
@@ -130,6 +131,8 @@
         showRanks: [],
         today: null,
         submitTime: null,
+        // 0 - 오름차순, 1 - 내림차순
+        sortType: 0,
         // 추가 부분
         solutionIdGet: null,
         predictIdGet: null,
@@ -143,6 +146,7 @@
         profile: {},
         y_score: null,
         alreadyJoined: false,
+        joinText: '참여',
         join_contest: [],
         user_join_contest: [],
         // dataRank: [],
@@ -279,6 +283,11 @@
           console.log('problem join_contest', problem.join_contest)
           // this.join_contest = problem.join_contest
           console.log('this.join_contest', this.join_contest)
+          console.log('eval_type', this.problem.eval_type)
+          // 오름차순인지 내림차순인지 판단
+          // 오름차순을 디폴트로 - 평가 방식이 내림차순인거일때 내림차순으로 변경
+          // 0 - 오름차순, 1 - 내림차순
+          // 판단한거에 따라서 중복 제거
           this.showRanks = problem.rank
           for (let v in this.showRanks) {
             this.showRanks[v]['score'] = this.showRanks[v]['score'].toFixed(4)
@@ -319,26 +328,38 @@
             // console.log('before this.alreadyJoined', this.alreadyJoined)
             console.log(this.problem._id)
             this.alreadyJoined = this.join_contest.includes(this.problem._id)
+            if (this.alreadyJoined === true) {
+              this.joinText = '참여중'
+            }
             // console.log('after this.alreadyJoined', this.alreadyJoined)
           })
         })
+      },
+      // 리더보드 하이라이트
+      itemRowBackground (item) {
+        console.log('itemRowBackground 실행')
+        console.log('this.username', this.username)
+        console.log('item.username', item.username)
+        // console.log(item)
+        // const rowClass = 'myclass'
+        return item.username === this.username ? 'style-1' : null
       },
       downloadData (problemID) {
         let url = '/data_csv?problem_id=' + problemID
         console.log(problemID)
         utils.downloadFile(url)
       },
-      // 추가 부분
-      importTxt () {
-        if (!this.chosenFile) { this.data = 'No File Chosen' }
-        this.data = this.chosenFile
-        console.log(this.data)
-        api.upload_file(this.problem.id, this.data)
-      },
-      uploadFile (e) {
-        // let file = e
-        console.log(e)
-      },
+      // // 추가 부분
+      // importTxt () {
+      //   if (!this.chosenFile) { this.data = 'No File Chosen' }
+      //   this.data = this.chosenFile
+      //   console.log(this.data)
+      //   api.upload_file(this.problem.id, this.data)
+      // },
+      // uploadFile (e) {
+      //   // let file = e
+      //   console.log(e)
+      // },
       // 추가 부분
       uploadFileSucceeded (response) {
         console.log(response)
@@ -440,9 +461,11 @@
       },
       submit () {
         console.log('submit button')
-        api['editRank'](this.problem._id, this.rank)
-        this.$router.go()
-        console.log('submit button2')
+        api['editRank'](this.problem._id, this.rank).then(res => {
+          console.log('submit button2')
+          // 새로고침
+          this.$router.go()
+        })
       },
       changePie (problemData) {
         // 只显示特定的一些状态
@@ -659,7 +682,12 @@
   }
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
+
+  .style-1 {
+    background: pink
+  }
+
   .nav-pills .nav-link {
     color: black !important;
   }
