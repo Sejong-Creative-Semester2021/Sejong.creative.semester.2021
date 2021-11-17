@@ -35,8 +35,8 @@
           </template>
           <template v-else>
             <b-avatar button @click="handleRoute('/user-home')"></b-avatar>
-            <Button type="text" name="/user-home" @click="handleRoute('/user-home')" style="font-size: 16px; font-weight: bold; color:#cac8c8;">{{ user.username }}</Button>
-            <Button type="text" name="/logout" @click="handleRoute('/logout')" style="font-size: 16px; font-weight: bold; color:#cac8c8;">로그아웃</Button>
+            <Button type="text" name="/user-home" @click="handleRoute('/user-home')" style="font-size: 16px; font-weight: bold; color:#474747;">{{ user.username }}</Button>
+            <Button type="text" name="/logout" @click="handleRoute('/logout')" style="font-size: 16px; font-weight: bold; color:#474747;">로그아웃</Button>
             <!--<Dropdown class="drop-menu" @on-click="handleRoute" placement="bottom" trigger="click">
               <Button type="text" class="drop-menu-title">{{ user.username }}
                 <Icon type="arrow-down-b"></Icon>
@@ -250,7 +250,7 @@
     }
     
     .list {
-      color:#cac8c8;
+      color:#474747;
       font-weight: bold;
       font-size: large;
       display:table;

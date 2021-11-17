@@ -1,19 +1,20 @@
 <template>
   <div class="home">
-    <Row align="center">
       <div class = "banner-img">
-        <img src="../../../../../static/img/ai.jpg" style="width: 100%">
-        <div class="banner-content">
-          <h1 class="font-weight-bold">무제한 코딩멤버십</h1>
-          <div class="banner-description">
-            <span>
-            11만 명이 넘는 <b>비전공자, 코딩 입문자</b>가
-            코드잇 무제한 멤버십을 선택했어요.
-            지금 함께 시작해보실래요?
-            </span>
-          </div>
-          <Button class="btn1" size="large">시작하기</Button>
+        <img src="../../../../../static/img/bannerimg2.png" style="width: 100%">
+      </div>
+      <div class="banner-content">
+        <h1 class="font-weight-bold">Seggle</h1>
+        <div class="banner-description">
+          <span style="font-size: 25px">
+          세종인을 위한 AI 대회가 시작했어요! <br>
+          지금 함께 시작해보실래요?
+          </span>
         </div>
+        <Button class="btn1" size="large">시작하기</Button>
+      </div>
+      <div class="down">
+      <button class="btn2" type="button" @click="handledown()"><img src="../../../../../static/img/scroll.png" alt="down" style="width: 30px"></button>
       </div>
       <!-- <b-carousel
           id="carousel-1"
@@ -50,8 +51,7 @@
           </p>
         </b-carousel-slide>
       </b-carousel> -->
-    </Row>
-    <AIContestHome class="aicontesthome"></AIContestHome>
+    <AIContestHome class="aicontesthome" id="aicontesthome"></AIContestHome>
   </div>
 </template>
 
@@ -105,6 +105,9 @@
       },
       onSlideEnd (slide) {
         this.sliding = false
+      },
+      handledown () {
+        window.location.href = '#aicontesthome'
       }
     }
   }
@@ -118,13 +121,15 @@
   position: relative;
 }
 .banner-content {
-  position: absolute;
-  top: 40%;
-  left: 15%;
-  color: #ffffff;
+  position: relative;
+  top: -45rem;
+  left: 10%;
+  color: black;
 
   h1 {
-  font-size: 3rem !important;
+    font-size: 5rem !important;
+    font-weight: 800;
+    margin-bottom: 1rem;
   }
   .banner-description{
     margin-top: 10px;
@@ -133,16 +138,22 @@
   .btn1 {
     font-weight: bold;
     border-width: 2px;
-    font-size: 20px;
-
+    font-size: 25px;
+    background: linear-gradient( to right, rgb(48, 33, 184), rgb(119, 67, 214) );
     padding: 1rem 3rem;
     margin-top: 1rem;
-    margin-left: 0.7rem;
     font-size: 1.7rem;
     border-radius: 3rem;
-    color: black;
+    color: white;
   }
 }
+.down {
+    position: relative;
+    top: -20rem;
+    left: 60rem;
+  }
+
+
   // .contest {
   //   &-title {
   //     font-style: italic;
@@ -164,9 +175,9 @@
   //   margin-top: -20px;
   // }
   
-  // .aicontesthome {
-  //   margin-top: 10px;
-  // }
+  .aicontesthome {
+    margin-top: -200px;
+  }
 
 
 </style>
