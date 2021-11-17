@@ -1,50 +1,54 @@
 <template>
-  <div id="header">
-    <Menu theme="light" mode="horizontal" @on-select="handleRoute" :active-name="activeMenu" class="oj-menu">
+  <div id="header" class="scroll-y">
+    <Menu theme="light" mode="horizontal" @on-select="handleRoute" :active-name="activeMenu" class="oj-menu">  
       <div class="logo"><span>{{'OJ'}}</span></div>
       <div class="menulist">
-      <Menu-item name="/" class='list'>
-        {{$t('m.Home')}}
-      </Menu-item>
-      <Menu-item name="/aicontest_general" class='list'>
-        {{'AI 대회'}}
-      </Menu-item>
-      <Menu-item name="/announcement" class='list'>
-        {{'공지사항'}}
-      </Menu-item>
-      <Menu-item name="/FAQ" class='list'>
-        {{$t('m.FAQ')}}
-      </Menu-item>
+        <Menu-item name="/" class='list'>
+          {{$t('m.Home')}}
+        </Menu-item>
+        <Menu-item name="/aicontest_general" class='list'>
+          {{'AI 대회'}}
+        </Menu-item>
+        <Menu-item name="/announcement" class='list'>
+          {{'공지사항'}}
+        </Menu-item>
+        <Menu-item name="/FAQ" style="margin-right: 30px" class='list'>
+          {{$t('m.FAQ')}}
+        </Menu-item>
+        <template v-if="!isAuthenticated">
+          <div class="btn-menu">
+            <Button class="login-btn"
+                    type="ghost"
+                    ref="loginBtn"
+                    shape="circle"
+                    @click="handleBtnClick('login')"
+                    style="color: #ffffff">로그인
+            </Button>
+            <Button v-if="website.allow_register"
+                    class="register-btn"
+                    shape="circle"
+                    @click="handleBtnClick('register')"
+                    style="margin-left: 15px; border-color: rgb(217, 95, 95); background-color: rgb(217, 95, 95); color: #ffffff">회원가입
+            </Button>
+          </div>
+        </template>
+        <template v-else>
+          <b-avatar button @click="handleRoute('/user-home')"></b-avatar>
+          <Button type="text" name="/user-home" @click="handleRoute('/user-home')" style="font-size: 16px; font-weight: bold; color:#474747;">{{ user.username }}</Button>
+          <Button type="text" name="/logout" @click="handleRoute('/logout')" style="font-size: 16px; font-weight: bold; color:#474747;">로그아웃</Button>
+          <!--<Dropdown class="drop-menu" @on-click="handleRoute" placement="bottom" trigger="click">
+            <Button type="text" class="drop-menu-title">{{ user.username }}
+              <Icon type="arrow-down-b"></Icon>
+            </Button>
+            <Dropdown-menu slot="list">
+              <Dropdown-item name="/user-home">마이페이지</Dropdown-item>
+              <Dropdown-item name="/setting/profile">{{$t('m.Settings')}}</Dropdown-item>
+              <Dropdown-item v-if="isAdminRole" name="/admin">관리</Dropdown-item>
+              <Dropdown-item divided name="/logout">로그아웃</Dropdown-item>
+            </Dropdown-menu>
+          </Dropdown>-->
+        </template>
       </div>
-      <template v-if="!isAuthenticated">
-        <div class="btn-menu">
-          <Button type="ghost"
-                  ref="loginBtn"
-                  shape="circle"
-                  @click="handleBtnClick('login')"
-                  style="background-color: #ffcc00; bolder-color: #ffcc00; color: #000000">로그인
-          </Button>
-          <Button v-if="website.allow_register"
-                  type="ghost"
-                  shape="circle"
-                  @click="handleBtnClick('register')"
-                  style="margin-left: 5px; background-color: #ffcc00; bolder-color: #ffcc00; color: #000000">회원가입
-          </Button>
-        </div>
-      </template>
-      <template v-else>
-        <Dropdown class="drop-menu" @on-click="handleRoute" placement="bottom" trigger="click">
-          <Button type="text" class="drop-menu-title">{{ user.username }}
-            <Icon type="arrow-down-b"></Icon>
-          </Button>
-          <Dropdown-menu slot="list">
-            <Dropdown-item name="/user-home">마이페이지</Dropdown-item>
-            <Dropdown-item name="/setting/profile">{{$t('m.Settings')}}</Dropdown-item>
-            <Dropdown-item v-if="isAdminRole" name="/admin">관리</Dropdown-item>
-            <Dropdown-item divided name="/logout">로그아웃</Dropdown-item>
-          </Dropdown-menu>
-        </Dropdown>
-      </template>
     </Menu>
     <Modal v-model="modalVisible" :width="400">
       <div slot="header" class="modal-title">{{$t('m.Welcome_to')}} {{website.website_name_shortcut}}</div>
@@ -70,6 +74,8 @@
     methods: {
       ...mapActions(['getProfile', 'changeModalStatus']),
       handleRoute (route) {
+        console.log('route', route)
+        console.log('인')
         if (route && route.indexOf('admin') < 0) {
           this.$router.push(route)
         } else {
@@ -87,13 +93,16 @@
       ...mapGetters(['website', 'modalStatus', 'user', 'isAuthenticated', 'isAdminRole']),
       // 跟随路由变化
       activeMenu () {
+        console.log('active')
+        console.log('path', this.$route.path.split('/'))
+        console.log('path2', this.$route.path)
         return '/' + this.$route.path.split('/')[1]
       },
       modalVisible: {
         get () {
           return this.modalStatus.visible
         },
-        set (value) {
+        set (value) { 
           this.changeModalStatus({visible: value})
         }
       }
@@ -102,6 +111,12 @@
 </script>
 
 <style lang="less" scoped>
+  .ivu-menu-horizontal {
+    height: 0px;
+  }
+  .add {
+    background-color: white !important;
+  }
   #header {
     min-width: 300px;
     position: fixed;
@@ -110,24 +125,26 @@
     height: auto;
     width: 100%;
     z-index: 1000;
-    background-color: transparent;
-
+    background-color: white;
+  
     li:hover {
-      color: white !Important;
       border-bottom-width: 0px !Important;
     }
-
+    .ivu-menu-light.ivu-menu-horizontal .ivu-menu-item:hover {
+      border-bottom: 0px;
+    }
     .ivu-menu-item-selected {
-      color: white !Important;
-      border-bottom-width: 0px !Important;
+      border-bottom-width: 0px !important;
     }
-
+    
     .oj-menu {
-      background-color: #000000;
+      width: 70%;
+      margin-left: 15%;
+      background-color: transparent;
     }
 
     .menulist {
-      margin-left: 35%;
+      float: right;
     }
 
     .sublist {
@@ -135,7 +152,6 @@
     }
     
     .list {
-      color:#cac8c8;
       font-weight: bold;
       font-size: large;
       display:table;
@@ -154,7 +170,6 @@
       color: #ffcc00;
       float: right;
       margin-right: 30px;
-      position: absolute;
       right: 10px;
       &-title {
         font-size: 18px;
@@ -169,8 +184,25 @@
       float: right;
       margin-right: 10px;
     }
+    .login-btn {
+      font-weight: bold;
+      border-width: 2px;
+      padding-top: 6px;
+      padding-bottom: 6px;
+      font-size: 14px;
+    }
+    .register-btn {
+      font-weight: bold;
+      border-width: 2px;
+      padding-top: 6px;
+      padding-bottom: 6px;
+      font-size: 14px;
+    }
+    .ivu-btn-ghost:hover {
+      background-color: #e3a8a8;
+      border-color: #e3a8a8;
+    }
   }
-
 
   .modal {
     &-title {
