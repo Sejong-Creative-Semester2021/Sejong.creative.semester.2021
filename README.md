@@ -30,6 +30,7 @@ cd OJ-FE
 npm install
 export NODE_ENV=development
 npm run build:dll
-export TARGET=http://172.18.0.1위에 가져온 gateway 값 (ex: http://172.21.0.1)
+export TARGET=http://172.18.0.1
 npm run dev
 ```
+export TARGET=http://172.18.0.1위에 가져온 gateway 값 (ex: http://172.21.0.1)
