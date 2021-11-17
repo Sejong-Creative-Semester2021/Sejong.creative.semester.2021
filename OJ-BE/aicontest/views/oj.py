@@ -246,12 +246,13 @@ class FileAPI(CSRFExemptAPIView, TestCaseZipProcessor):
 
         if eval_type == 'mean_f_score':
             logger.info("if mean_f_score in")
-            accuracy = np.mean(np.equal(y_true, y_pred))
+            # accuracy = np.mean(np.equal(y_true, y_pred))
             right = np.sum(y_true * y_pred == 1)
             precision = right / np.sum(y_pred)
-            recall = right / np.sum(y)
+            recall = right / np.sum(y_true)
             f1 = 2 * precision*recall/(precision+recall)
             y_score = f1
+            logger.info("if mean_f_score out")
 
         if eval_type == 'mae':
             logger.info("if mae in")
@@ -471,29 +472,59 @@ class AIRankAPI(APIView):
         # todo check filename and score info
         # tags = data.pop("tags")
         # data["languages"] = list(data["languages"])
-
-
+        
         #rank = {'problemID': '211026 test', 'rank': [{'userid': 1, 'username': 'root', 'score': 10}, {'userid': 1, 'username': 'root', 'score': 10}]}
-
-
+        
+        sort_type = 0 
+        # sort_type = 0 -> ascending
+        # sort_type = 1 -> descending
+        
+        if problem.eval_type == 'acc':
+            logger.info("eval_type acc")
+            sort_type = 1
+        if problem.eval_type == 'mean_f_score':
+            logger.info("eval_type mean_f_score")
+            sort_type = 1
+            
+        logger.info("sort_type={}".format(sort_type))
         old_rank_list = problem.rank
 
         if old_rank_list == None:
             old_rank_list = []
-
-        same_person_flag = False
-        logger.info("before old_rank_list={}".format(old_rank_list))
-        for index, old_data in enumerate(old_rank_list):
-            if data['rank'][0]['userid'] == old_data['userid']:
-                same_person_flag = True
-                if old_data['score'] < data['rank'][0]['score']:
-                    del old_rank_list[index]
-                    old_rank_list.append(data['rank'][0])
-                    break
-        logger.info("after old_rank_list={}".format(old_rank_list))
-        if not same_person_flag:
-            old_rank_list.append(data['rank'][0])
-        logger.info("after2 old_rank_list={}".format(old_rank_list))
+########################changed this part descending#################################
+        if sort_type == 1:
+            same_person_flag = False
+            logger.info("before old_rank_list={}".format(old_rank_list))
+            for index, old_data in enumerate(old_rank_list):
+                if data['rank'][0]['userid'] == old_data['userid']:
+                    same_person_flag = True
+                    if old_data['score'] < data['rank'][0]['score']:
+                        del old_rank_list[index]
+                        old_rank_list.append(data['rank'][0])
+                        break
+            logger.info("after old_rank_list={}".format(old_rank_list))
+            if not same_person_flag:
+                old_rank_list.append(data['rank'][0])
+            logger.info("after2 old_rank_list={}".format(old_rank_list))
+            old_rank_list.sort(key=lambda x:(-x['score'], x['submitTime']))
+            logger.info("after sort old_rank_list={}".format(old_rank_list))
+############################to this ascending#############################
+        else:
+            same_person_flag = False
+            logger.info("before old_rank_list={}".format(old_rank_list))
+            for index, old_data in enumerate(old_rank_list):
+                if data['rank'][0]['userid'] == old_data['userid']:
+                    same_person_flag = True
+                    if old_data['score'] > data['rank'][0]['score']:
+                        del old_rank_list[index]
+                        old_rank_list.append(data['rank'][0])
+                        break
+            logger.info("after old_rank_list={}".format(old_rank_list))
+            if not same_person_flag:
+                old_rank_list.append(data['rank'][0])
+            logger.info("after old_rank_list={}".format(old_rank_list))
+            old_rank_list.sort(key=lambda x:(x['score'], x['submitTime']))
+            logger.info("after sort old_rank_list={}".format(old_rank_list))
 
         # logger.info("data['rank'][0]={}".format(data['rank'][0]))
         # for i in old_rank_list:
@@ -516,8 +547,8 @@ class AIRankAPI(APIView):
         #     logger.info("v={}".format(v))
             # data['rank']['rank_list'].append(v)
         # old_rank_list.sort(key=lambda x:x['score'], reverse=True)
-        old_rank_list.sort(key=lambda x:(-x['score'], x['submitTime']))
-        logger.info("after sort old_rank_list={}".format(old_rank_list))
+        # old_rank_list.sort(key=lambda x:(-x['score'], x['submitTime']))
+        # logger.info("after sort old_rank_list={}".format(old_rank_list))
         setattr(problem, 'rank', old_rank_list)
         # problem['rank'].sort(key = lambda x:x['y_score'])
         problem.save()
