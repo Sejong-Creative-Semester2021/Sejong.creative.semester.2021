@@ -2,7 +2,7 @@
   <Row type="flex" :gutter="18" align="center">
     <Col :span=14>
     <Panel shadow>
-      <div slot="title"><b>{{$t('진행중인 대회')}}</b></div>
+      <div slot="title" style="font-size: 30px"><b>{{$t('진행중인 대회')}}</b></div>
       <b-card-group deck id="problem-group">
         <div v-for="problem in problemList" :key="problem.title" >
           <b-card :img-src='`../../../../../static/img/${problem.id}.jpg`'
@@ -14,6 +14,17 @@
             <b-card-body class="problem-content">
               <b-card-title class="problem-title" @click="goProblem(problem._id)">{{problem.title}}</b-card-title>
               <b-card-sub-title class="problem-subtitle">{{problem.created_by.username}}</b-card-sub-title>
+              <b-card-text class="problem-tag">
+                <span v-for="tag in problem.tags" :key="tag.name">
+                  <Button @click="filterByTag(tag)"
+                          type="ghost"
+                          size="small"
+                          shape="circle"
+                          class="tag-btn"
+                          style="margin-top: 3px; font-size: 13px">{{tag}}
+                  </Button>
+                </span>
+              </b-card-text>
               <b-card-text class="problem-text">
                 <b-progress height="4px" :value="bar_value" show-progress class="mb-3 mt-3"></b-progress>
                 <div class="row ml-1 mr-1 mb-1">
@@ -22,7 +33,7 @@
                   <span>D-{{getDuration(problem.start_time, problem.end_time)}}</span>
                 </div>
               </b-card-text>
-              <!-- <b-button block variant="dark" size="sm" @click="goProblem(problem._id)">JOIN</b-button> -->
+              <!--<b-button variant="dark" size="sm" style="border-radius: 1rem; " @click="goProblem(problem._id)">JOIN</b-button>-->
             </b-card-body>
           </b-card>
         </div>
@@ -178,7 +189,7 @@
         })
       },
       getDuration (startTime, endTime) {
-        console.log(time.duration(startTime, endTime))
+        // console.log(time.duration(startTime, endTime))
         return time.duration(startTime, endTime)
       },
       filterByDifficulty (difficulty) {
@@ -219,6 +230,7 @@
 </script>
 
 <style scoped lang="less">
+
   .taglist-title {
     margin-left: -10px;
     margin-bottom: -10px;
@@ -243,24 +255,32 @@
     img {
       border-radius: 20px 20px 0 0;
     }
-
     .problem-content{
+      height: 200px;
       margin-top: -25px;
       margin-bottom: -25px;
     }
     .problem-title{
-      font-size: 17px;
+      margin-top: 10px;
+      font-size: 23px;
       font-weight: bold;
     }
     .problem-subtitle{
       font-size: 16px;
+      margin-top: 10px;
     }
     .problem-text{
-      margin-top: 10px;
+      margin-bottom: 10px;
       font-weight: 600;
       color: #686868;
     }
+    .problem-tag{
+      margin-top:10px;
+    }
   }
+
+
+
 
 </style>
 
