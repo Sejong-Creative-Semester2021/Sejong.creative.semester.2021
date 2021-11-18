@@ -6,12 +6,12 @@
       <div class="banner-content">
         <h1 class="font-weight-bold">Seggle</h1>
         <div class="banner-description">
-          <span style="font-size: 25px">
+          <span style="font-size: 25px; font-weight: bold; color: gray;">
           세종인을 위한 AI 대회가 시작했어요! <br>
           지금 함께 시작해보실래요?
           </span>
         </div>
-        <Button class="btn1" size="large">시작하기</Button>
+        <Button class="btn1" size="large" @click="goAIContest()">시작하기</Button>
       </div>
       <div class="down">
       <button class="btn2" type="button" @click="handledown()"><img src="../../../../../static/img/scroll.png" alt="down" style="width: 30px"></button>
@@ -108,6 +108,9 @@
       },
       handledown () {
         window.location.href = '#aicontesthome'
+      },
+      goAIContest () {
+        this.$router.push('/aicontest_general')
       }
     }
   }
@@ -128,15 +131,14 @@
 
   h1 {
     font-size: 5rem !important;
-    font-weight: 800;
-    margin-bottom: 1rem;
+    font-weight: 1000;
   }
   .banner-description{
     margin-top: 10px;
     margin-bottom: 20px;
   }
   .btn1 {
-    font-weight: bold;
+    font-weight: 800;
     border-width: 2px;
     font-size: 25px;
     background: linear-gradient( to right, rgb(48, 33, 184), rgb(119, 67, 214) );

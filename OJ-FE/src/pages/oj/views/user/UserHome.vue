@@ -9,59 +9,61 @@
           <span v-if="profile.user" class="emphasis">{{profile.user.username}}</span>
           <span v-if="profile.school">@{{profile.school}}</span>
         </p>
+        <Button type="text" class="setting-btn" @click="goSetting()">계정 관리</Button>
         <p v-if="profile.mood">
           {{profile.mood}}
         </p>
-        <hr id="split"/>
+        
         <div class="flex-container">
           <div class="middle">
-            <div slot="title" style="font-size: 25px; margin-bottom: 20px;"><b>참여중인 대회</b></div>
-      <b-tabs content-class="mt-3" pills card fill>
-        <b-tab title="일반용" id="contest-content">
-        <div id="problem-group">
-          <b-card v-for="problem in problemlist"
-                      :key="problem.title"
-                      :img-src='`../../../../../static/img/${problem.id}.jpg`'
-                      img-left
-                      img-height="200"
-                      img-width="400"
-                      shadow
-                      class="mb-2 problem-card">
-            <b-card-body class="problem-content">
-              <b-card-title class="problem-title" @click="goProblem(problem._id)">{{problem.title}}</b-card-title>
-              <b-card-sub-title class="problem-subtitle">{{problem.created_by.username}}</b-card-sub-title>
-              <b-card-text class="problem-text">
-                <p class="content">{{problem.start_time | localtime('YYYY-M-D HH:mm')}} - {{problem.end_time | localtime('YYYY-M-D HH:mm')}}</p> 
-              </b-card-text>
-              <b-button pill variant="outline-primary" @click="goProblem(problem._id)"><b>더보기</b></b-button>
-            </b-card-body>
-          </b-card>
-        </div>
-        </b-tab>
+            <div slot="title" style="font-size: 25px; margin-bottom: 20px; color: #263747; margin-left: -600px;"><b>참여중인 대회</b></div>
+            <b-tabs content-class="mt-3" pills card fill>
+              <b-tab title="일반용" id="contest-content">
+              <div id="problem-group">
+                <b-card v-for="problem in problemlist"
+                            :key="problem.title"
+                            :img-src='`../../../../../static/img/${problem.id}.jpg`'
+                            img-left
+                            img-height="200"
+                            img-width="400"
+                            shadow
+                            class="mb-2 problem-card">
+                  <b-card-body class="problem-content">
+                    <b-card-title class="problem-title" @click="goGeneralProblem(problem._id)">{{problem.title}}</b-card-title>
+                    <b-card-sub-title class="problem-subtitle">{{problem.created_by.username}}</b-card-sub-title>
+                    <b-card-text class="problem-text">
+                      <p class="content">{{problem.start_time | localtime('YYYY-M-D HH:mm')}} - {{problem.end_time | localtime('YYYY-M-D HH:mm')}}</p> 
+                    </b-card-text>
+                    <b-button pill variant="outline-primary" @click="goGeneralProblem(problem._id)"><b>더보기</b></b-button>
+                  </b-card-body>
+                </b-card>
+              </div>
+              </b-tab>
 
-        <b-tab title="수업용" id="contest-content">
-        <div id="problem-group">
-          <b-card v-for="problem in classproblemList"
-                      :key="problem.title"
-                      :img-src='`../../../../../static/img/${problem.id}.jpg`'
-                      img-left
-                      img-height="200"
-                      img-width="400"
-                      shadow
-                      class="mb-2 problem-card">
-            <b-card-body class="problem-content">
-              <b-card-title class="problem-title" @click="goProblem(problem._id)">{{problem.title}}</b-card-title>
-              <b-card-sub-title class="problem-subtitle">{{problem.created_by.username}}</b-card-sub-title>
-              <b-card-text class="problem-text">
-                <p class="content">{{problem.start_time | localtime('YYYY-M-D HH:mm')}} - {{problem.end_time | localtime('YYYY-M-D HH:mm')}}</p>
-              </b-card-text>
-              <b-button pill variant="outline-primary" @click="isModalViewed = true"><b>입장하기</b></b-button>
-              <ModalView v-if="isModalViewed" v-bind:problemID="problem._id" v-bind:problemPassword="problem.password" @close="isModalViewed = false"></ModalView>
-            </b-card-body>
-          </b-card>
-        </div>
-        </b-tab>
-      </b-tabs>
+              <b-tab title="수업용" id="contest-content">
+              <div id="problem-group">
+                <b-card v-for="problem in classproblemList"
+                            :key="problem.title"
+                            :img-src='`../../../../../static/img/${problem.id}.jpg`'
+                            img-left
+                            img-height="200"
+                            img-width="400"
+                            shadow
+                            class="mb-2 problem-card">
+                  <b-card-body class="problem-content">
+                    <b-card-title class="problem-title" @click="goClassProblem(problem._id)">{{problem.title}}</b-card-title>
+                    <b-card-sub-title class="problem-subtitle">{{problem.created_by.username}}</b-card-sub-title>
+                    <b-card-text class="problem-text">
+                      <p class="content">{{problem.start_time | localtime('YYYY-M-D HH:mm')}} - {{problem.end_time | localtime('YYYY-M-D HH:mm')}}</p>
+                    </b-card-text>
+                    <!--<b-button pill variant="outline-primary" @click="isModalViewed = true"><b>입장하기</b></b-button>
+                    <ModalView v-if="isModalViewed" v-bind:problemID="problem._id" v-bind:problemPassword="problem.password" @close="isModalViewed = false"></ModalView>-->
+                    <b-button pill variant="outline-primary" @click="goClassProblem(problem._id)"><b>입장하기</b></b-button>
+                  </b-card-body>
+                </b-card>
+              </div>
+              </b-tab>
+            </b-tabs>
             <!--<p class="emphasis">{{profile.user_join_contest}}</p>-->
           </div>
           <!--<div class="left">
@@ -159,8 +161,14 @@
         ACProblems.sort()
         this.problems = ACProblems
       },
-      goProblem (problemID) {
-        this.$router.push({name: 'aiproblem-details', params: {problemID: problemID}})
+      goSetting () {
+        this.$router.push('/setting/profile')
+      },
+      goGeneralProblem (problemID) {
+        this.$router.push({name: 'aiproblem-general-details', params: {problemID: problemID}})
+      },
+      goClassProblem (problemID) {
+        this.$router.push({name: 'aiproblem-class-details', params: {problemID: problemID}})
       },
       freshProblemDisplayID () {
         api.freshDisplayID().then(res => {
@@ -263,7 +271,10 @@
     }
     .flex-container {
       margin-top: 30px;
-      padding: auto 20px;
+
+      border: 0.0625rem solid #D7E2EB;
+      border-radius: 40px;
+      padding: 50px;
       .left {
         flex: 1 1;
       }
@@ -307,6 +318,17 @@
   .tag-btn {
     margin-right: 5px;
     margin-bottom: 10px;
+  }
+  
+  .setting-btn {
+    font-size: 16px; 
+    font-weight: bold; 
+    background: rgb(48, 33, 184);
+    color: white; 
+    float: right;
+    padding: 0.4rem 0.8rem;
+    line-height: 1.125rem;
+    margin-top: -40px;
   }
 
   #pick-one {

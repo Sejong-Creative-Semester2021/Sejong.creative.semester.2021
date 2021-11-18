@@ -18,7 +18,6 @@
               </Input>
             </slot>
           </div>
-
           <div class="modal-footer">
             <slot name="footer">
               <b-button
@@ -46,7 +45,7 @@
     methods: {
       goProblem (problemID) {
         if (this.passwordFromUser === this.problemPassword) {
-          this.$router.push({name: 'aiproblem-details', params: {problemID: problemID}})
+          this.$router.push({name: 'aiproblem-class-details', params: {problemID: problemID}})
         }
       }
     }

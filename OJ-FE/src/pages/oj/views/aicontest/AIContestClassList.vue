@@ -54,8 +54,8 @@
                       :key="problem.title"
                       :img-src='`../../../../../static/img/${problem.id}.jpg`'
                       img-left
-                      img-height="100"
-                      img-width="200"
+                      img-height="120"
+                      img-width="270"
                       shadow
                       class="mb-3 problem-card">
             <b-card-body class="problem-content">
@@ -363,17 +363,17 @@
   #problem-group{
     .problem-card{
       border-radius: 20px 20px 20px 20px;
-      max-height: 100px;
+      max-height: 120px;
     }
     img {
       border-radius: 20px 20px 20px 20px;
     }
-
     .problem-content{
-      margin-top: -27px;
+      margin-top: -20px;
+      margin-left: 10px;
     }
     .problem-title{
-      font-size: 20px;
+      font-size: 23x;
       font-weight: 800;
       color: #3399ff;
     }

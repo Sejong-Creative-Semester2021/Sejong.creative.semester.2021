@@ -2,9 +2,10 @@
   <Row type="flex" :gutter="18" align="center">
     <Col :span=14>
     <Panel shadow>
-      <div slot="title" style="font-size: 35px; font-weight: 800;"><b>{{$t('진행중인 대회')}}</b></div>
+      <div slot="title" style="font-size: 35px; font-weight: 800;"><b>{{'진행중인 대회'}}</b></div>
+      <p style="margin-left: 27px; color: gray; font-size: 20px; font-weight: bold;"> 지금 바로 대회에 참여해보세요.</p>
       <b-card-group deck id="problem-group">
-        <div v-for="problem in problemList" :key="problem.title" >
+        <div v-for="problem in problemList" :key="problem.title" style="margin-bottom: 10px">
           <b-card :img-src='`../../../../../static/img/${problem.id}.jpg`'
                   img-top
                   style="min-width: 10rem; max-width: 20rem; border-radius: 20px; box-shadow: 0 4px 5px rgba(0, 0, 0, 0.1);"
@@ -21,12 +22,12 @@
                           size="small"
                           shape="circle"
                           class="tag-btn"
-                          style="margin-top: 3px; font-size: 13px">{{tag}}
+                          style="margin-top: 3px; font-size: 13px;">{{tag}}
                   </Button>
                 </span>
               </b-card-text>
               <b-card-text class="problem-text">
-                <b-progress height="4px" :value="bar_value" show-progress class="mb-3 mt-3"></b-progress>
+                <b-progress height="4px" :value="bar_value" show-progress class="mb-4 mt-3"></b-progress>
                 <div class="row ml-1 mr-1 mb-1">
                   <span class="content">{{problem.start_time | localtime('YYYY-M-D')}}</span>
                   <div class="spacer"></div>

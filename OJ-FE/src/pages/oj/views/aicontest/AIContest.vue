@@ -736,7 +736,7 @@
   }
 
   #problem-content {
-    margin-top: -40px;
+    margin-top: -30px;
     .tabs {
       font-weight: bold;
       font-size: 16px;

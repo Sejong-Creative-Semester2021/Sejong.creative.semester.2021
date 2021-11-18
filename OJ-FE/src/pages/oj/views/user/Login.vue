@@ -2,13 +2,16 @@
   <div>
     <Form ref="formLogin" :model="formLogin" :rules="ruleLogin">
       <FormItem prop="username">
-        <Input type="text" v-model="formLogin.username" :placeholder="'ID'" size="large" @on-enter="handleLogin">
-        <Icon type="ios-person-outline" slot="prepend"></Icon>
+        <span class="label">아이디</span>
+        <Input type="text" v-model="formLogin.username" :placeholder="'아이디'" size="large" @on-enter="handleLogin">
+        <!--<Icon type="ios-person-outline" slot="prepend"></Icon>-->
         </Input>
       </FormItem>
       <FormItem prop="password">
+        <span class="label">비밀번호</span>
+        <a @click.stop="goResetPassword" style="float: right; color: rgb(48, 33, 184); font-weight: bold; font-size: 14px;">비밀번호 찾기</a>
         <Input type="password" v-model="formLogin.password" :placeholder="'비밀번호'" size="large" @on-enter="handleLogin">
-        <Icon type="ios-locked-outline" slot="prepend"></Icon>
+        <!--<Icon type="ios-locked-outline" slot="prepend"></Icon>-->
         </Input>
       </FormItem>
       <FormItem prop="tfa_code" v-if="tfaRequired">
@@ -25,8 +28,11 @@
         :loading="btnLoginLoading">
         로그인
       </Button>
-      <a v-if="website.allow_register" @click.stop="handleBtnClick('register')">가입하기</a>
-      <a @click.stop="goResetPassword" style="float: right">비밀번호 찾기</a>
+      <div style="font-size: 14px; color: #98A8B9; text-align: center;">
+        아직 계정이 없으신가요?
+        <a v-if="website.allow_register" @click.stop="handleBtnClick('register')" style="color: rgb(48, 33, 184); font-weight: bold; font-size: 15px;">가입하기</a>
+      </div>
+      <!--<a @click.stop="goResetPassword" style="float: right">비밀번호 찾기</a>-->
     </div>
   </div>
 </template>
@@ -112,6 +118,10 @@
 </script>
 
 <style scoped lang="less">
+  .label {
+    font-size: 16px;
+    font-weight: 500;
+  }
   .footer {
     overflow: auto;
     margin-top: 20px;
@@ -125,14 +135,23 @@
     }
   }
   .ivu-btn-primary {
-    background-color: #c44141;
+    background-color: rgb(119, 67, 214);
     color: white;
-    font-weight: 600;
+    font-size: 18px;
+    font-weight: 800;
+    border-radius: 40px;
   }
   .ivu-btn-primary:hover {
-    background-color: rgba(196, 65, 65, 0.8);
-    border-color: rgba(196, 65, 65, 0.8);
+    background-color: rgba(119, 67, 214, 0.8);
+    border-color: rgba(119, 67, 214, 0.8);
     color: white;
-    font-weight: 600;
+    font-size: 18px;
+    font-weight: 800;
+    border-radius: 40px;
+  }
+  .ivu-input-large {
+    font-size: 16px !important;
+    padding: 6px 7px !important;
+    height: 40px !important;
   }
 </style>

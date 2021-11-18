@@ -23,19 +23,19 @@
                       ref="loginBtn"
                       shape="circle"
                       @click="handleBtnClick('login')"
-                      style="color: #ffffff">로그인
+                      style="color: #474747">로그인
               </Button>
               <Button v-if="website.allow_register"
                       class="register-btn"
                       shape="circle"
                       @click="handleBtnClick('register')"
-                      style="margin-left: 15px; border-color: rgb(217, 95, 95); background-color: rgb(217, 95, 95); color: #ffffff">회원가입
+                      style="margin-left: 15px; border-color: rgb(119, 67, 214); background-color: rgb(119, 67, 214); color: #ffffff">회원가입
               </Button>
             </div>
           </template>
           <template v-else>
             <b-avatar :src="profile.avatar" button @click="handleRoute('/user-home')"></b-avatar>
-            <Button type="text" name="/user-home" @click="handleRoute('/user-home')" style="font-size: 16px; font-weight: bold; color:#474747;">{{ user.username }}</Button>
+            <Button type="text" name="/user-home" @click="handleRoute('/user-home')" style="font-size: 16px; font-weight: bold; color: rgb(119, 67, 214);">{{ user.username }}</Button>
             <Button type="text" name="/logout" @click="handleRoute('/logout')" style="font-size: 16px; font-weight: bold; color:#474747;">로그아웃</Button>
             <!--<Dropdown class="drop-menu" @on-click="handleRoute" placement="bottom" trigger="click">
               <Button type="text" class="drop-menu-title">{{ user.username }}
@@ -51,9 +51,9 @@
           </template>
         </div>
       </Menu>
-      <Modal v-model="modalVisible" :width="400">
-        <div slot="header" class="modal-title">{{$t('m.Welcome_to')}} {{website.website_name_shortcut}}</div>
-        <component :is="modalStatus.mode" v-if="modalVisible"></component>
+      <Modal v-model="modalVisible" :width="500">
+        <div slot="header" class="modal-title" style="text-align: center; font-weight: 800; font-size: 20ox;">{{$t('m.Welcome_to')}} {{website.website_name_shortcut}}</div>
+        <component :is="modalStatus.mode" v-if="modalVisible" style="padding: 35px; margin-bottom: 40px;"></component>
         <div slot="footer" style="display: none"></div>
       </Modal>
     </div>
@@ -349,6 +349,7 @@
       margin-right: 10px;
     }
     .login-btn {
+      border-color: #474747;
       font-weight: bold;
       border-width: 2px;
       padding-top: 6px;
@@ -363,8 +364,9 @@
       font-size: 14px;
     }
     .ivu-btn-ghost:hover {
-      background-color: #e3a8a8;
-      border-color: #e3a8a8;
+      color: white;
+      background-color: rgba(119, 67, 214, 0.5);
+      border-color: rgb(119, 67, 214, 0.5);
     }
   }
 
