@@ -1,19 +1,27 @@
 <template>
   <Row type="flex" :gutter="18" align="center">
+    <img src="../../../../../static/img/contest-bg.png" style="width: 100%; height: 400px; position: relative;">
+    <!--<img :src='`../../../../../static/img/${problem.id}.jpg`' style="width: 100%; height: 500px; position: relative;">-->
+    <div style="padding:40px 0px 40px 0px; position: absolute; margin-top: 100px; left: 10%;">
+      <!--<img :src='`../../../../../static/img/${problem.id}.jpg`'>-->
+      <div class="problem-title" slot="title" style="display: inline-block; font-size: 50px; color: white;">{{problem.title}}</div>
+      <!--<div style="display:flex;">
+        <b-button variant="primary" @click="join" :disabled="alreadyJoined == true" style="width: 80px;font-weight: bold; font-size: 20px;">{{joinText}}</b-button>
+      </div>-->
+    </div>
     <Col id="problem-main" :span=17>
       <!--problem main-->
-      <!--<img class="problem-img" src="https://i.postimg.cc/rFSwYd77/banner1.jpg">-->
       <Panel :padding="40" shadow>
-        <div style="padding:40px 0px 40px 0px">
-          <div class="problem-title" slot="title" style="display:inline-block">{{problem.title}}</div>
+        <div style="padding:40px 0px 40px 0px; margin-top: -120px;">
+          <!--<div class="problem-title" slot="title" style="display:inline-block">{{problem.title}}</div>-->
           <div style="display:inline-block; float: right; margin-top: 30px; margin-bottom: 20px;">
-            <b-button variant="primary" @click="join" :disabled="alreadyJoined == true" style="width:80px">{{joinText}}</b-button>
+            <b-button variant="primary" @click="join" :disabled="alreadyJoined == true" style="width: 180px; height: 60px; font-weight: bold; font-size: 25px; border-radius: 40px; margin-top: -220px;">{{joinText}}</b-button>
           </div>
         </div>
         <div id="problem-content">
           <b-tabs content-class="mt-3 tabs" align="center" pills card fill>
             <b-tab class="tab" title="대회안내" id="contest-content" active>
-              <p class="subtitle">{{'대회 주요 일정'}}</p>
+              <p class="subtitle" style="font-size: 25px">{{'대회 주요 일정'}}</p>
               <b-tabs content-class="mt-3" fill>
                 <b-tab class="tab" title="개요"><p class="markdown-body content" v-html=problem.contest_description></p></b-tab>
                 <b-tab class="tab" title="규칙"><p class="markdown-body content" v-html=problem.rule_description></p></b-tab>
@@ -93,7 +101,7 @@
   import CodeMirror from '@oj/components/CodeMirror.vue'
   import storage from '@/utils/storage'
   import {FormMixin} from '@oj/components/mixins'
-  import {JUDGE_STATUS, CONTEST_STATUS, buildProblemCodeKey, RULE_TYPE} from '@/utils/constants'
+  import {JUDGE_STATUS, CONTEST_STATUS, buildProblemCodeKey} from '@/utils/constants'
   import api from '@oj/api'
   import {pie, largePie} from './chartData'
   import utils from '@/utils/utils'
@@ -692,9 +700,8 @@
     color: black !important;
   }
   .problem-title {
-    margin-top: 20px;
     margin-bottom: 20px;
-    font-size: 30px;
+    font-size: 40px;
     font-weight: 750;
   }
 
@@ -714,7 +721,7 @@
   }
 
   .subtitle{
-    font-size: 18px;
+    font-size: 25px;
     font-weight: bold;
   }
   

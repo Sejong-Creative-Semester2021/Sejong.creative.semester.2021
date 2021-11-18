@@ -2,8 +2,8 @@
   <Row type="flex" :gutter="18" align="center">
     <Col :span=15>
     <Panel shadow>
-      <div slot="title" style="font-size: 20px;"><b>{{$t('진행중인 대회')}}</b></div>
-      <div slot="extra">
+      <div slot="title" style="font-size: 30px; margin-bottom: 20px; font-weight: 800;"><b>{{'진행중인 대회'}}</b></div>
+      <div slot="extra" style="margin-left: -400px;">
         <ul class="filter">
           <li>
             <Input v-model="query.keyword"
@@ -15,7 +15,7 @@
         </ul>
       </div>
       <!-- 추가 부분 -->
-      <b-tabs content-class="block mt-3 tabs" pills fill >
+      <b-tabs content-class="block mt-3 tabs" pills card fill >
         <b-tab title="일반용" id="contest-content" href="/">
         <div id="problem-group">
           <b-card v-for="problem in problemList"
@@ -79,7 +79,6 @@
 <script>
   import {mapGetters} from 'vuex'
   import api from '@oj/api'
-  import utils from '@/utils/utils'
   import { ProblemMixin } from '@oj/components/mixins'
   import Pagination from '@oj/components/Pagination'
   import ModalView from '@oj/components/ModalView'
@@ -323,6 +322,12 @@
 </script>
 
 <style scoped lang="less">
+  .ivu-input-wrapper {
+    width: 230%;
+  }
+  .ivu-card {
+    margin-top: 30px;
+  }
   .taglist-title {
     margin-left: -10px;
     margin-bottom: -10px;
@@ -357,11 +362,11 @@
     }
 
     .problem-content{
-      margin-top: -25px;
+      margin-top: -27px;
     }
     .problem-title{
-      font-size: 18px;
-      font-weight: bold;
+      font-size: 20px;
+      font-weight: 800;
       color: #3399ff;
     }
     .problem-subtitle{

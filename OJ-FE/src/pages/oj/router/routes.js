@@ -76,19 +76,7 @@ export default [
     name: 'aiproblem-list',
     path: '/aicontest_general',
     meta: {title: 'AIProblem List'},
-    component: AIContestList,
-    children: [
-      {
-        path: '',
-        name: 'general',
-        component: AIContestList
-      },
-      {
-        path: 'class',
-        name: 'class',
-        component: AIContestClassList
-      }
-    ]
+    component: AIContestList
   },
   {
     name: 'aiproblem-list-class',

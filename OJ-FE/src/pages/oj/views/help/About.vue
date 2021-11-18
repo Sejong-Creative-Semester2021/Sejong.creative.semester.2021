@@ -1,6 +1,6 @@
 <template>
   <Panel shadow :padding="10" class="panel">
-    <div v-if="listVisible" slot="title">
+    <div v-if="listVisible" slot="title" style="font-size: 30px; font-weight: bold; margin-bottom: 20px;">
       {{title}}
     </div>
     <div v-else slot="title" class="detailtitle">
@@ -245,10 +245,12 @@
     margin-top: -10px;
     margin-bottom: 10px;
     .bar {
+        font-weight: bold;
+        color: white;
         padding-top: 10px;
         padding-bottom: 10px;
-        font-size: 15px;
-        background-color: rgb(233, 233, 233);
+        font-size: 20px;
+        background-color: rgb(48, 33, 184);
       }
       .bar2 {
         padding-top: 15px;

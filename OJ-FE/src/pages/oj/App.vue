@@ -34,7 +34,7 @@
             </div>
           </template>
           <template v-else>
-            <b-avatar button @click="handleRoute('/user-home')"></b-avatar>
+            <b-avatar :src="profile.avatar" button @click="handleRoute('/user-home')"></b-avatar>
             <Button type="text" name="/user-home" @click="handleRoute('/user-home')" style="font-size: 16px; font-weight: bold; color:#474747;">{{ user.username }}</Button>
             <Button type="text" name="/logout" @click="handleRoute('/logout')" style="font-size: 16px; font-weight: bold; color:#474747;">로그아웃</Button>
             <!--<Dropdown class="drop-menu" @on-click="handleRoute" placement="bottom" trigger="click">
@@ -64,10 +64,38 @@
           <router-view></router-view>
         </transition>
         <div class="footer">
-          <p v-html="website.website_footer"></p>
-          <p>Powered by <a href="https://github.com/QingdaoU/OnlineJudge">OnlineJudge</a>
-            <!-- <span v-if="version">&nbsp; Version: {{ version }}</span> -->
-          </p>
+          <!--<div class="container">
+            <div class="row justify-content-center">
+              <div class="text-left col-md-4 col-auto">
+                <h5 class="bd-text-white mb-1">Documentation</h5>
+                <ul class="list-unsyled ml-3">
+                  <li>example 1</li>
+                  <li>example 2</li>
+                </ul>
+              </div>
+              <div class="text-left col-md-4 col-auto">
+                <h5 class="bd-text-white mb-1">Documentation</h5>
+                <ul class="list-unsyled ml-3">
+                  <li>example 1</li>
+                  <li>example 2</li>
+                </ul>
+              </div>
+              <div class="text-left col-auto">
+                <h5 class="bd-text-white mb-1">Documentation</h5>
+                <ul class="list-unsyled ml-3">
+                  <li>example 1</li>
+                  <li>example 2</li>
+                </ul>
+              </div>
+            </div>
+            <p class="mt-4 mb-2">Designed and built with all the love in the world. Maintained by the core team with the help of our contributors.</p>
+            <p>Currently v2.21.2. Code licensed MIT. Docs generated with Nuxt.js and proudly hosted on Vercel.</p>
+            <p class="mt-3 text-center"></p>
+          </div>-->
+          <!--<p v-html="website.website_footer"></p>-->
+          <!--<p>Powered by <a href="https://github.com/QingdaoU/OnlineJudge">OnlineJudge</a>
+             <span v-if="version">&nbsp; Version: {{ version }}</span>
+          </p>-->
         </div>
       </div>
     </div>
@@ -79,6 +107,7 @@
   import { mapActions, mapState, mapGetters } from 'vuex'
   import login from '@oj/views/user/Login'
   import register from '@oj/views/user/Register'
+  import api from '@oj/api'
 
   export default {
     name: 'app',
@@ -88,8 +117,9 @@
     },
     data () {
       return {
-        offsetTop: 0
+        offsetTop: 0,
         // version: process.env.VERSION
+        profile: {}
       }
     },
     created () {
@@ -101,6 +131,7 @@
     mounted () {
       this.getProfile()
       this.getWebsiteConfig()
+      this.init()
       window.addEventListener('scroll', this.onScroll, true)
     },
     beforeDestroy () {
@@ -108,8 +139,15 @@
     },
     methods: {
       ...mapActions(['getWebsiteConfig', 'changeDomTitle', 'getProfile', 'changeModalStatus']),
+      init () {
+        this.username = this.$route.query.username
+        api.getUserInfo(this.username).then(res => {
+          this.changeDomTitle({title: res.data.data.user.username})
+          this.profile = res.data.data
+        })
+      },
       handleRoute (route) {
-        console.log('route', route)
+        // console.log('route', route)
         if (route && route.indexOf('admin') < 0) {
           this.$router.push(route)
         } else {
@@ -138,6 +176,8 @@
       ...mapState(['website']),
       ...mapGetters(['website', 'modalStatus', 'user', 'isAuthenticated', 'isAdminRole']),
       activeMenu () {
+        console.log('active menu')
+        console.log('path', this.$route.path.split('/')[1])
         return '/' + this.$route.path.split('/')[1]
       },
       modalVisible: {
@@ -175,6 +215,7 @@
     }
   }
   .content-app {
+    background: transparent;
     min-height: 100%;
   }
 
@@ -198,12 +239,36 @@
 }
 
   .footer {
-    margin-top: 20px;
-    margin-bottom: 10px;
+    // width: 100%;
+    // max-width: 100%;
+    // height: 350px;
+    // color: white;
+    // padding: 3rem 0;
+    margin-top:100px;
+    margin-bottom: -100px;
     text-align: center;
     font-size: small;
+  //   background: linear-gradient( to right, rgb(48, 33, 184), rgb(119, 67, 214) );
+  //   .container {
+  //     margin-top: 25px;
+  //   }
+  //   h5 {
+  //     font-weight: bold;
+  //     font-size: 18px;
+  //   }
+  // }
+  // ul {
+  //   display: block;
+  //   margin-block-start: 2em;
+  //   margin-block-end: 2em;
+  //   padding-inline-start: 40px;
+  //   font-weight: 600;
+  //   font-size: 15px;
+  // }
+  // li {
+  //   display: list-item;
+  //   letter-spacing: -0.009em;
   }
-
   .fadeInUp-enter-active {
     animation: fadeInUp .8s;
   }

@@ -58,9 +58,9 @@
 <script>
   // import Announcements from './Announcements.vue'
   import AIContestHome from '../aicontest/AIContestHome.vue'
-  import api from '@oj/api'
-  import time from '@/utils/time'
-  import { CONTEST_STATUS } from '@/utils/constants'
+  // import api from '@oj/api'
+  // import time from '@/utils/time'
+  // import { CONTEST_STATUS } from '@/utils/constants'
 
   export default {
     name: 'home',
@@ -176,7 +176,7 @@
   // }
   
   .aicontesthome {
-    margin-top: -200px;
+    margin-top: -250px;
   }
 
 

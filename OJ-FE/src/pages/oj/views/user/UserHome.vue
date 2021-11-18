@@ -15,8 +15,8 @@
         <hr id="split"/>
         <div class="flex-container">
           <div class="middle">
-            <div slot="title" style="font-size: 25px;"><b>참여중인 대회</b></div>
-            <b-tabs content-class="mt-3" fill>
+            <div slot="title" style="font-size: 25px; margin-bottom: 20px;"><b>참여중인 대회</b></div>
+      <b-tabs content-class="mt-3" pills card fill>
         <b-tab title="일반용" id="contest-content">
         <div id="problem-group">
           <b-card v-for="problem in problemlist"
@@ -332,7 +332,7 @@
       margin-bottom: -25px;
     }
     .problem-title{
-      font-size: 18px;
+      font-size: 22px;
       font-weight: bold;
       color: #3399ff;
     }

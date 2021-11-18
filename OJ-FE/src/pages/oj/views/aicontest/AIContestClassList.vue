@@ -2,8 +2,8 @@
   <Row type="flex" :gutter="18" align="center">
     <Col :span=15>
     <Panel shadow>
-      <div slot="title" style="font-size: 20px;"><b>{{$t('진행중인 대회')}}</b></div>
-      <div slot="extra">
+      <div slot="title" style="font-size: 30px; margin-bottom: 20px; font-weight: 800;"><b>{{'진행중인 대회'}}</b></div>
+      <div slot="extra" style="margin-left: -400px;">
         <ul class="filter">
           <li>
             <Input v-model="query.keyword"
@@ -15,7 +15,7 @@
         </ul>
       </div>
       <!-- 추가 부분 -->
-      <b-tabs content-class="block mt-3 tabs" fill pills>
+      <b-tabs content-class="block mt-3 tabs" fill card pills>
         <b-tab title="일반용" id="contest-content" @click="goRouter()">
         <!-- <div id="problem-group">
           <b-card v-for="problem in problemList"
@@ -62,9 +62,9 @@
               <b-card-title class="problem-title" @click="goProblem(problem._id)">{{problem.title}}</b-card-title>
               <b-card-sub-title class="problem-subtitle">{{problem.created_by.username}}</b-card-sub-title>
               <b-card-text class="problem-text">
-                <p class="content" style="font-size: 16px; float: right; margin-top: -40px;">{{problem.start_time | localtime('YYYY-M-D')}} - {{problem.end_time | localtime('YYYY-M-D')}}</p>
+                <p class="content" style="font-size: 16px; float: right; margin-top: -45px;">{{problem.start_time | localtime('YYYY-M-D')}} - {{problem.end_time | localtime('YYYY-M-D')}}</p>
               </b-card-text>
-              <b-button pill variant="outline-primary" @click="isModalViewed = true" size="sm" style="float: right; margin-top: -25px;"><b>입장하기</b></b-button>
+              <b-button pill variant="outline-primary" @click="isModalViewed = true" size="sm" style="float: right; margin-top: -30px; font-size: 1.1rem;"><b>입장하기</b></b-button>
               <ModalView v-if="isModalViewed" v-bind:problemID="problem._id" v-bind:problemPassword="problem.password" @close="isModalViewed = false"></ModalView>
             </b-card-body>
           </b-card>
@@ -328,6 +328,15 @@
 </script>
 
 <style scoped lang="less">
+  .btn-sm {
+    padding: 0.4rem 0.9rem;
+  }
+  .ivu-input-wrapper {
+    width: 230%;
+  }
+  .ivu-card {
+    margin-top: 30px;
+  }
   .taglist-title {
     margin-left: -10px;
     margin-bottom: -10px;
@@ -361,11 +370,11 @@
     }
 
     .problem-content{
-      margin-top: -25px;
+      margin-top: -27px;
     }
     .problem-title{
-      font-size: 18px;
-      font-weight: bold;
+      font-size: 20px;
+      font-weight: 800;
       color: #3399ff;
     }
     .problem-subtitle{

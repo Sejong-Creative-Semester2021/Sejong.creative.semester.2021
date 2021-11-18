@@ -2,7 +2,7 @@
   <Row type="flex" :gutter="18" align="center">
     <Col :span=14>
     <Panel shadow>
-      <div slot="title" style="font-size: 30px"><b>{{$t('진행중인 대회')}}</b></div>
+      <div slot="title" style="font-size: 35px; font-weight: 800;"><b>{{$t('진행중인 대회')}}</b></div>
       <b-card-group deck id="problem-group">
         <div v-for="problem in problemList" :key="problem.title" >
           <b-card :img-src='`../../../../../static/img/${problem.id}.jpg`'

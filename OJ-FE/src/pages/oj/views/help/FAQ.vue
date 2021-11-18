@@ -1,6 +1,6 @@
 <template>
   <Panel shadow :padding="10" class="size">
-    <div slot="title">
+    <div slot="title" style="font-size: 30px; margin-bottom: 20px; font-weight: 800;">
       {{$t('m.FAQ')}}
     </div>
     <v-expansion-panels focusable>
@@ -77,6 +77,7 @@
     order:0;
     text-align: left;
     font-size: 20px;
+    font-weight: bold;
   }
   .size{
     margin-right: 15%;
