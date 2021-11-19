@@ -10,7 +10,6 @@
               <b-button-close @click="$emit('close')"></b-button-close>
             </slot>
           </div>
-
           <div class="modal-body">
             <slot name="body">
               <Input type="password" v-model="passwordFromUser" placeholder="비밀번호를 입력하세요" size="large">

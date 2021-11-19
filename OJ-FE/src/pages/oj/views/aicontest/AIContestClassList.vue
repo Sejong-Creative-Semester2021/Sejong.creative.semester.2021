@@ -65,6 +65,7 @@
                 <p class="content" style="font-size: 16px; float: right; margin-top: -45px;">{{problem.start_time | localtime('YYYY-M-D')}} - {{problem.end_time | localtime('YYYY-M-D')}}</p>
               </b-card-text>
               <b-button pill variant="outline-primary" @click="isModalViewed = true" size="sm" style="float: right; margin-top: -30px; font-size: 1.1rem;"><b>입장하기</b></b-button>
+
               <ModalView v-if="isModalViewed" v-bind:problemID="problem._id" v-bind:problemPassword="problem.password" @close="isModalViewed = false"></ModalView>
             </b-card-body>
           </b-card>
@@ -209,7 +210,7 @@
       },
       pushRouter () {
         this.$router.push({
-          name: 'aiproblem-list',
+          name: 'aiproblem-list-class',
           query: utils.filterEmptyValue(this.query)
         })
       },

@@ -24,8 +24,8 @@
                             :key="problem.title"
                             :img-src='`../../../../../static/img/${problem.id}.jpg`'
                             img-left
-                            img-height="200"
-                            img-width="400"
+                            img-height="150"
+                            img-width="300"
                             shadow
                             class="mb-2 problem-card">
                   <b-card-body class="problem-content">
@@ -34,12 +34,12 @@
                     <b-card-text class="problem-text">
                       <p class="content">{{problem.start_time | localtime('YYYY-M-D HH:mm')}} - {{problem.end_time | localtime('YYYY-M-D HH:mm')}}</p> 
                     </b-card-text>
-                    <b-button pill variant="outline-primary" @click="goGeneralProblem(problem._id)"><b>더보기</b></b-button>
+                    <b-button pill variant="outline-primary" @click="goGeneralProblem(problem._id)" style="float: right;"><b>더보기</b></b-button>
                   </b-card-body>
                 </b-card>
               </div>
               </b-tab>
-
+              
               <b-tab title="수업용" id="contest-content">
               <div id="problem-group">
                 <b-card v-for="problem in classproblemList"

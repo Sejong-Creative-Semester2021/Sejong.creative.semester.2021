@@ -79,6 +79,7 @@
 <script>
   import {mapGetters} from 'vuex'
   import api from '@oj/api'
+  import utils from '@/utils/utils'
   import { ProblemMixin } from '@oj/components/mixins'
   import Pagination from '@oj/components/Pagination'
   import ModalView from '@oj/components/ModalView'
@@ -270,6 +271,12 @@
       filterByKeyword () {
         this.query.page = 1
         this.pushRouter()
+      },
+      pushRouter () {
+        this.$router.push({
+          name: 'aiproblem-list',
+          query: utils.filterEmptyValue(this.query)
+        })
       },
       handleTagsVisible (value) {
         if (value) {
