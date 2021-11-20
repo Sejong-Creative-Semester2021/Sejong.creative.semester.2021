@@ -35,6 +35,7 @@
     "tar-simditor-markdown": "^1.2.3",
     "vue": "^2.5.16",
     "vue-analytics": "^5.10.4",
+    "vue-calendar-heatmap": "^0.8.4",
     "vue-clipboard2": "^0.2.1",
     "vue-codemirror-lite": "^1.0.4",
     "vue-cropper": "^0.4.6",

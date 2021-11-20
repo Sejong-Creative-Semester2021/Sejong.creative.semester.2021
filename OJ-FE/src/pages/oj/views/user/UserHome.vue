@@ -87,8 +87,11 @@
           <div class="echarts">
             <ECharts :options="options" ref="chart" auto-resize></ECharts>
           </div>
-        </Panel>
-      </div>
+          </Panel>
+        </div>
+        <div>
+          <calendar-heatmap :values="heatmapValues" :end-date="endDate"/>
+        </div>
         <!--<div id="problems">
           <div v-if="problems.length">{{$t('m.List_Solved_Problems')}}
             <Poptip v-if="refreshVisible" trigger="hover" placement="right-start">
@@ -121,13 +124,24 @@
     </Card>
   </div>
 </template>
+
+<link rel="stylesheet" href="vue-calendar-heatmap/dist/vue-calendar-heatmap.css"/>
+<script src="vue.js"></script>
+<script src="vue-calendar-heatmap/dist/vue-calendar-heatmap.browser.js"></script>
+
 <script>
   import { mapActions } from 'vuex'
   import time from '@/utils/time'
   import api from '@oj/api'
   import utils from '@/utils/utils'
+  // import Vue from 'vue'
+  
+  // Vue.use(VueCalendarHeatmap)
   
   export default {
+    // conponents: {
+    //   CalendarHeatmap
+    // },
     data () {
       return {
         username: '',
@@ -141,6 +155,15 @@
         problemIdList: [],
         myScoreList: [],
         displayScoreList: [],
+        submitInfo: [],
+        heatmapValues: [
+          // { date: '2021-9-22', count: 6 },
+          // { date: '2021-10-22', count: 4 },
+          // { date: '2021-10-30', count: 1 },
+          // { date: '2021-11-10', count: 5 },
+          // { date: '2021-11-20', count: 6 }
+        ],
+        endDate: '2021-11-21',
         options: {
           tooltip: {
             trigger: 'axis'
@@ -228,7 +251,10 @@
           this.getClassProblemList()
           this.getUserRank()
         }).then(res => {
+          this.submitInfo = this.profile.submit_info
+          // console.log('this.submitInfo', this.submitInfo)
           this.changeCharts()
+          this.getSubmitInfo()
         })
       },
       getSolvedProblems () {
@@ -360,6 +386,36 @@
         this.options.xAxis[0].data = this.problemIdList
         this.options.series[0].data = this.myScoreList // 빨간색
         this.options.series[1].data = this.displayScoreList // 파란색
+      },
+      getSubmitInfo () {
+        console.log('getSubmitInfo in')
+        var date = []
+        console.log(this.submitInfo)
+        for (var i in this.submitInfo) {
+          date.push(this.submitInfo[i]['submit_time'].substring(0, 10))
+        }
+        const result = {}
+        date.forEach((x) => {
+          result[x] = (result[x] || 0) + 1
+        })
+        console.log('result', result)
+        for (i in result) {
+          console.log('i', i)
+          console.log('result[i] 1', result[i])
+          let temp = {
+            'date': i,
+            'count': result[i]
+          }
+          this.heatmapValues.push(temp)
+        }
+        // result = { "2021-11-19": 2, "2021-11-21": 1 }
+        console.log('this.heatmapValues', this.heatmapValues)
+        var today = new Date()
+        var year = today.getFullYear()
+        var month = ('0' + (today.getMonth() + 1)).slice(-2)
+        var day = ('0' + today.getDate()).slice(-2)
+        this.endDate = year + '-' + month + '-' + day
+        console.log('this.endDate', this.endDate)
       }
       // createProblemList () {
       //   // console.log('createProblemList in')

@@ -40,7 +40,15 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import '@/styles/app.scss'
 
+// 추가
+import 'vue-calendar-heatmap/dist/vue-calendar-heatmap.css'
+import VueCalendarHeatmap from 'vue-calendar-heatmap/dist/vue-calendar-heatmap.common'
+
+Vue.use(VueCalendarHeatmap)
+
 // import Vuetify from '@/plugins/vuetify'
+// 추가
+// import { CalendarHeatmap } from 'vue-calendar-heatmap'
 
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
@@ -52,6 +60,7 @@ Vue.use(iView, {
 })
 
 // Vue.use(Vuetify)
+// Vue.use(VueCalendarHeatmap)
 Vue.use(VueDayjs)
 Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
@@ -67,6 +76,8 @@ Vue.component('ECharts', ECharts)
 Vue.component(VerticalMenu.name, VerticalMenu)
 Vue.component(VerticalMenuItem.name, VerticalMenuItem)
 Vue.component(Panel.name, Panel)
+// 추가
+// Vue.component('calendarHeatmap', CalendarHeatmap)
 
 // 注册全局消息提示
 Vue.prototype.$Message.config({
