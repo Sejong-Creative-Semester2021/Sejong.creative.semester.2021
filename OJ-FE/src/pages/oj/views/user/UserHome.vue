@@ -9,11 +9,13 @@
           <span v-if="profile.user" class="emphasis">{{profile.user.username}}</span>
           <span v-if="profile.school">@{{profile.school}}</span>
         </p>
-        <Button type="text" class="setting-btn" @click="goSetting()">계정 관리</Button>
+        <div>
+          <Button type="text" class="setting-btn" @click="goSetting()">계정 관리</Button>
+          <Button type="text" class="admin-btn" @click="goAmdin()" v-if="profile.user.username === 'root'">Admin</Button>
+        </div>
         <p v-if="profile.mood">
           {{profile.mood}}
         </p>
-        
         <div class="flex-container">
           <div class="middle">
             <div slot="title" style="font-size: 25px; margin-bottom: 20px; color: #263747; margin-left: -600px;"><b>참여중인 대회</b></div>
@@ -79,6 +81,14 @@
             <p class="emphasis">{{profile.total_score}}</p>
           </div>-->
         </div>
+        <div>
+          <Panel :padding="10">
+          <div slot="title">{{'점수'}}</div>
+          <div class="echarts">
+            <ECharts :options="options" ref="chart" auto-resize></ECharts>
+          </div>
+        </Panel>
+      </div>
         <!--<div id="problems">
           <div v-if="problems.length">{{$t('m.List_Solved_Problems')}}
             <Poptip v-if="refreshVisible" trigger="hover" placement="right-start">
@@ -115,7 +125,8 @@
   import { mapActions } from 'vuex'
   import time from '@/utils/time'
   import api from '@oj/api'
-
+  import utils from '@/utils/utils'
+  
   export default {
     data () {
       return {
@@ -123,7 +134,77 @@
         profile: {},
         problems: [],
         problemlist: [],
-        classproblemList: []
+        classproblemList: [],
+        userProblemScoreList: [],
+        alluserrank: [],
+        sumscore: 0,
+        problemIdList: [],
+        myScoreList: [],
+        displayScoreList: [],
+        options: {
+          tooltip: {
+            trigger: 'axis'
+          },
+          legend: {
+            data: ['평균 점수', 'My Score']
+          },
+          grid: {
+            x: '3%',
+            x2: '3%'
+          },
+          toolbox: {
+            show: true,
+            feature: {
+              dataView: {show: true, readOnly: true},
+              magicType: {show: true, type: ['line', 'bar', 'stack']},
+              saveAsImage: {show: true}
+            },
+            right: '10%'
+          },
+          calculable: true,
+          xAxis: [ // x축
+            {
+              type: 'category',
+              data: ['root'],
+              axisLabel: {
+                interval: 0,
+                showMinLabel: true,
+                showMaxLabel: true,
+                align: 'center',
+                formatter: (value, index) => {
+                  return utils.breakLongWords(value, 10)
+                }
+              }
+            }
+          ],
+          yAxis: [
+            {
+              type: 'value'
+            }
+          ],
+          series: [
+            {
+              name: 'My Score',
+              type: 'bar',
+              data: [0],
+              markPoint: {
+                data: [
+                  {type: 'max', name: 'max'}
+                ]
+              }
+            },
+            {
+              name: '평균 점수',
+              type: 'bar',
+              data: [0],
+              markPoint: {
+                data: [
+                  {type: 'max', name: 'max'}
+                ]
+              }
+            }
+          ]
+        }
       }
     },
     mounted () {
@@ -135,15 +216,19 @@
         this.username = this.$route.query.username
         api.getUserInfo(this.username).then(res => {
           this.changeDomTitle({title: res.data.data.user.username})
+          this.username = res.data.data.user.username
           this.profile = res.data.data
           this.getSolvedProblems()
           let registerTime = time.utcToLocal(this.profile.user.create_time, 'YYYY-MM-D')
           console.log('The guy registered at ' + registerTime + '.')
         }).then(res => {
-          console.log('hihiasd')
+          // console.log('hihiasd')
           // this.createProblemList()
           this.getProblemList()
           this.getClassProblemList()
+          this.getUserRank()
+        }).then(res => {
+          this.changeCharts()
         })
       },
       getSolvedProblems () {
@@ -163,6 +248,10 @@
       },
       goSetting () {
         this.$router.push('/setting/profile')
+      },
+      goAmdin () {
+        window.open('/admin/')
+        // this.$router.push('/admin')
       },
       goGeneralProblem (problemID) {
         this.$router.push({name: 'aiproblem-general-details', params: {problemID: problemID}})
@@ -193,16 +282,84 @@
       },
       getClassProblemList () {
         for (var i in this.profile.user_join_contest) {
-          console.log('class this.profile.user_join_contest', this.profile.user_join_contest)
+          // console.log('class this.profile.user_join_contest', this.profile.user_join_contest)
           api.getUserClassAIProblemList(this.profile.user_join_contest[i]).then(res => {
             if (res.data.data.total) {
               this.classproblemList.push(res.data.data.results[0])
               // console.log('class res.data.data.results[0]', res.data.data.results[0])
             }
+            // this.getUserRank()
           })
           // console.log('classProblemList', this.classProblemList)
         }
         // this.classproblemList = this.classproblemList.reverse()
+      },
+      getUserRank () {
+        // userProblemScoreList 변수 사용
+        // console.log('this.profile.user_join_contest', this.profile.user_join_contest)
+        for (var i in this.profile.user_join_contest) {
+          // console.log('i', i)
+          // console.log('this.profile.user_join_contest[i]', this.profile.user_join_contest[i])
+          api.getAIProblem(this.profile.user_join_contest[i]).then(res => {
+            // i가 연속으로 두번 반복됨.
+            // var index = parseInt(i)
+            this.alluserrank = res.data.data.rank
+            this.sumscore = 0
+            var k = 0
+            for (k in this.alluserrank) {
+              this.sumscore = this.sumscore + this.alluserrank[k]['score']
+              if (k >= 10) break
+            }
+            // console.log('sumscore', this.sumscore)
+            // console.log('k', k)
+            let tempScore = this.sumscore / (parseInt(k) + 1)
+            this.sumscore = tempScore
+            // console.log('this.sumscore', this.sumscore)
+            for (var j in this.alluserrank) {
+              if (this.username === this.alluserrank[j]['username']) {
+                this.problemIdList.push(res.data.data.title)
+                // console.log('')
+                this.myScoreList.push(this.alluserrank[j]['score'].toFixed(1))
+                this.displayScoreList.push(this.sumscore.toFixed(1))
+                // this.temp = {
+                //   'problemId': res.data.data._id,
+                //   'myScore': this.alluserrank[j]['score'],
+                //   'displayScore': this.sumscore
+                // }
+                // this.userProblemScoreList.push(this.temp)
+                // console.log('this.userProblemScoreList', this.userProblemScoreList[0])
+                // console.log('temp', this.temp)
+                // console.log('this.alluserrank[j]', this.alluserrank[j]['score'])
+                break
+              }
+            }
+          })
+        }
+      },
+      changeCharts () {
+        // let [problemId, myScore, displayScore] = [[], [], []]
+        // console.log('changeCharts')
+        // console.log('this.userProblemScoreList', this.userProblemScoreList)
+        // console.log('this.userProblemScoreList["0"]', this.userProblemScoreList['0'])
+        // console.log('this.userProblemScoreList', this.userProblemScoreList[0].problemId)
+        // for (var i in this.userProblemScoreList) {
+        //   console.log('forfor')
+        //   console.log('this.userProblemScoreList[i].problemId', this.userProblemScoreList[i].problemId)
+        //   problemId.push(this.userProblemScoreList[i].problemId)
+        //   myScore.push(this.userProblemScoreList[i].myScore)
+        //   displayScore.push(this.userProblemScoreList[i].displayScore)
+        // }
+        // this.userProblemScoreList.forEach(ele => {
+        //   problemId.push(ele.problemId)
+        //   console.log('ele.problemId', ele.problemId)
+        //   myScore.push(ele.myScore)
+        //   displayScore.push(ele.displayScore)
+        // })
+        // console.log('[problemId, myScore, displayScore]', [problemId, myScore, displayScore])
+        // console.log('[problemId, myScore, displayScore][problemId]', problemId)
+        this.options.xAxis[0].data = this.problemIdList
+        this.options.series[0].data = this.myScoreList // 빨간색
+        this.options.series[1].data = this.displayScoreList // 파란색
       }
       // createProblemList () {
       //   // console.log('createProblemList in')
@@ -220,7 +377,6 @@
       //   // console.log('createProblemList out')
       // }
     },
-
     computed: {
       refreshVisible () {
         if (!this.username) return true
@@ -327,6 +483,18 @@
     color: white; 
     float: right;
     padding: 0.4rem 0.8rem;
+    line-height: 1.125rem;
+    margin-top: -40px;
+  }
+
+  .admin-btn {
+    font-size: 16px; 
+    font-weight: bold; 
+    background: rgb(48, 33, 184);
+    color: white; 
+    float: right;
+    padding: 0.4rem 0.8rem;
+    margin-right: 7em;
     line-height: 1.125rem;
     margin-top: -40px;
   }

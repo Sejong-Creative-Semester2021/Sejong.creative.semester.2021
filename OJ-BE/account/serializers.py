@@ -82,6 +82,12 @@ class UserProfileSerializer(serializers.ModelSerializer):
     def get_real_name(self, obj):
         return obj.real_name if self.show_real_name else None
 
+# submit 관련 추가
+# class CreateSubmitSerializer(serializers.Serializer):
+#     # submit에 problem_id, score, 제출날짜 저장
+#     problem_id = serializers.TextField(null=True)
+#     score = serializers.FloatField(min_value=0)
+#     submit_time = serializers.CharField(max_length=32)
 
 class EditUserSerializer(serializers.Serializer):
     id = serializers.IntegerField()
@@ -106,7 +112,8 @@ class EditUserProfileSerializer(serializers.Serializer):
     school = serializers.CharField(max_length=64, allow_blank=True, required=False)
     major = serializers.CharField(max_length=64, allow_blank=True, required=False)
     language = serializers.CharField(max_length=32, allow_blank=True, required=False)
-
+    # submit 추가
+    # submit = serializers.ListField(child=CreateSubmitSerializer(), allow_empty=True, required=False)
 
 class ApplyResetPasswordSerializer(serializers.Serializer):
     email = serializers.EmailField()

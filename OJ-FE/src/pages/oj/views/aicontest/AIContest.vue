@@ -157,6 +157,7 @@
         joinText: '참여',
         join_contest: [],
         user_join_contest: [],
+        submitInfo: {},
         // dataRank: [],
         // showRank: [],
         // 추가 부분
@@ -468,11 +469,30 @@
         })
       },
       submit () {
-        console.log('submit button')
+        // console.log('submit button')
         api['editRank'](this.problem._id, this.rank).then(res => {
-          console.log('submit button2')
-          // 새로고침
-          this.$router.go()
+          // console.log('submit button2')
+          // submit 되었을 때 submit_info 저장
+          api.getUserInfo(this.username).then(res => {
+            this.profile = res.data.data
+            console.log('this.problem._id', this.problem._id)
+            console.log('this.y_score', this.y_score)
+            console.log('this.submitTime', this.submitTime)
+            this.submitInfo = {
+              'problem_id': this.problem._id,
+              'problem_name': this.problem.name,
+              'score': this.y_score,
+              'submit_time': this.submitTime
+            }
+            this.profile.submit_info.push(this.submitInfo)
+            console.log('this.profile.submit_info', this.profile.submit_info)
+            api.updateProfileSubmitInfo(this.profile).then(res => {
+              console.log('api updateProfileSubmitInfo out')
+            })
+          }).then(res => {
+            // 새로고침
+            this.$router.go()
+          })
         })
       },
       changePie (problemData) {

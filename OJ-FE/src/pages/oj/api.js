@@ -75,6 +75,12 @@ export default {
       data: profile
     })
   },
+  updateProfileSubmitInfo (profile) {
+    console.log('api updateProfileSubmitInfo in')
+    return ajax('profile_submit_info', 'put', {
+      data: profile
+    })
+  },
   freshDisplayID (userID) {
     return ajax('profile/fresh_display_id', 'get', {
       params: {
