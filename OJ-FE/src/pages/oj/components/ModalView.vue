@@ -22,7 +22,7 @@
               <b-button
                 pill variant="outline-primary"
                 class="modal-default-button"
-                @click="goProblem (problemID)">
+                @click="goProblem()">
                 <b>입장하기</b>
               </b-button>
             </slot>
@@ -42,9 +42,12 @@
       }
     },
     methods: {
-      goProblem (problemID) {
+      goProblem () {
         if (this.passwordFromUser === this.problemPassword) {
-          this.$router.push({name: 'aiproblem-class-details', params: {problemID: problemID}})
+          this.$router.push({name: 'aiproblem-class-details', params: {problemID: this.problemID}})
+          console.log('p-id', this.problemID)
+          console.log('p-pwd', this.problemPassword)
+          console.log('pwd', this.passwordFromUser)
         }
       }
     }

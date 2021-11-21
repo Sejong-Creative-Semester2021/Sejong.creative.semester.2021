@@ -64,9 +64,8 @@
               <b-card-text class="problem-text">
                 <p class="content" style="font-size: 16px; float: right; margin-top: -45px;">{{problem.start_time | localtime('YYYY-M-D')}} - {{problem.end_time | localtime('YYYY-M-D')}}</p>
               </b-card-text>
-              <b-button pill variant="outline-primary" @click="isModalViewed = true" size="sm" style="float: right; margin-top: -30px; font-size: 1.1rem;"><b>입장하기</b></b-button>
-
-              <ModalView v-if="isModalViewed" v-bind:problemID="problem._id" v-bind:problemPassword="problem.password" @close="isModalViewed = false"></ModalView>
+              <b-button pill variant="outline-primary" @click="modalButtonClick(problem._id, problem.password)" size="sm" style="float: right; margin-top: -30px; font-size: 1.1rem;"><b>입장하기</b></b-button>
+              <ModalView v-if="isModalViewed" v-bind:problemID="modalProblemID" v-bind:problemPassword="modalProblemPwd" @close="isModalViewed = false"></ModalView>
             </b-card-body>
           </b-card>
         </div>
@@ -97,6 +96,8 @@
       return {
         // tagList: [],
         isModalViewed: false,
+        modalProblemID: '',
+        modalProblwmPwd: '',
         problemTableColumns: [
           {
             title: '#',
@@ -215,6 +216,12 @@
         })
       },
      // 추가 부분
+      modalButtonClick (problemID, problemPwd) {
+        console.log('modal button')
+        this.isModalViewed = true
+        this.modalProblemID = problemID
+        this.modalProblemPwd = problemPwd
+      },
       goRouter () {
         this.$router.push({name: 'aiproblem-list'})
       },
