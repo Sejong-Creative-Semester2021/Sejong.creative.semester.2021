@@ -210,9 +210,41 @@
       },
       // 추가 부분
       getDuration (startTime, endTime) {
-        var duration = time.duration(startTime, endTime)
-        var day = duration.replace(/days|hours/, '')
-        return day
+        // console.log(time.duration(startTime, endTime))
+        // this.currentTime = new Date()
+        var year = endTime.slice(0, 4)
+        var month = endTime.slice(5, 7)
+        var day = endTime.slice(8, 10)
+        // console.log('endTime', endTime)
+        // console.log(year, month, day)
+        var Dday = new Date(year, month - 1, day)
+        var nowTime = Date.now()
+        var gap = nowTime - Dday.getTime()
+        // console.log('gap1', gap)
+        // console.log('nowTime', nowTime)
+        // console.log('Dday', Dday)
+        var result = Math.floor(gap / (1000 * 60 * 60 * 24)) * -1
+        // console.log('result', result)
+        if (result === 0) {
+          result = 'D-day'
+        }
+        if (result > 0) { // 평상시 상황
+          result = 'D-' + result
+        }
+        if (result < 0) { // dday 지난 경우
+          result = '종료'
+        }
+        // 지금 시간이 대회 시작 날짜보다 이전이면...
+        var startDay = new Date(startTime.slice(0, 4), startTime.slice(5, 7) - 1, startTime.slice(8, 10))
+        console.log('nowTime', nowTime)
+        console.log('startDay.getTime()', startDay.getTime())
+        gap = nowTime - startDay.getTime()
+        var result2 = Math.floor(gap / (1000 * 60 * 60 * 24)) * -1
+        console.log('gap2', gap)
+        if (gap < 0) {
+          result = 'OPEN D-' + result2
+        }
+        return result
       },
       goProblem (problemID) {
         this.$router.push({name: 'aiproblem-general-details', params: {problemID: problemID}})

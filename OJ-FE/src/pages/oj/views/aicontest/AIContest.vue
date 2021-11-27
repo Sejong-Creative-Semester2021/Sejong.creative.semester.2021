@@ -15,7 +15,7 @@
         <div style="padding:40px 0px 40px 0px; margin-top: -120px;">
           <!--<div class="problem-title" slot="title" style="display:inline-block">{{problem.title}}</div>-->
           <div style="display:inline-block; float: right; margin-top: 30px; margin-bottom: 20px;">
-            <b-button variant="primary" @click="join" :disabled="alreadyJoined == true" style="width: 180px; height: 60px; font-weight: bold; font-size: 25px; border-radius: 40px; margin-top: -220px;">{{joinText}}</b-button>
+            <b-button variant="primary" @click="join" :disabled="alreadyJoined == true || breforeStart === true" style="width: 180px; height: 60px; font-weight: bold; font-size: 25px; border-radius: 40px; margin-top: -220px;">{{joinText}}</b-button>
           </div>
         </div>
         <div id="problem-content">
@@ -154,6 +154,7 @@
         profile: {},
         y_score: null,
         alreadyJoined: false,
+        beforeStart: false,
         joinText: '참여',
         join_contest: [],
         user_join_contest: [],
@@ -341,6 +342,9 @@
               this.joinText = '참여중'
             }
             // console.log('after this.alreadyJoined', this.alreadyJoined)
+          }).then(res => {
+            this.getDuration(this.problem.start_time, this.problem.end_time)
+            console.log('this.beforeStart', this.beforeStart)
           })
         })
       },
@@ -467,6 +471,21 @@
             console.log('updateProfileJoinContest out')
           })
         })
+      },
+      getDuration (startTime, endTime) {
+        console.log('startTime', startTime)
+        console.log('endTime', endTime)
+        console.log('getDuration in')
+        var nowTime = Date.now()
+        var startDay = new Date(startTime.slice(0, 4), startTime.slice(5, 7) - 1, startTime.slice(8, 10))
+        console.log('nowTime', nowTime)
+        console.log('startDay.getTime()', startDay.getTime())
+        var gap = nowTime - startDay.getTime()
+        var result2 = Math.floor(gap / (1000 * 60 * 60 * 24)) * -1
+        console.log('gap2', gap)
+        if (gap < 0) {
+          this.beforeStart = true
+        }
       },
       submit () {
         // console.log('submit button')

@@ -11,7 +11,7 @@
         </p>
         <div>
           <Button type="text" class="setting-btn" @click="goSetting()">계정 관리</Button>
-          <Button type="text" class="admin-btn" @click="goAmdin()" v-if="profile.user.username === 'root'">Admin</Button>
+          <Button type="text" class="admin-btn" @click="goAdmin()" v-if="profile.user.admin_type !== 'Regular User'">Admin</Button>
         </div>
         <p v-if="profile.mood">
           {{profile.mood}}
@@ -139,9 +139,6 @@
   // Vue.use(VueCalendarHeatmap)
   
   export default {
-    // conponents: {
-    //   CalendarHeatmap
-    // },
     data () {
       return {
         username: '',
@@ -275,7 +272,7 @@
       goSetting () {
         this.$router.push('/setting/profile')
       },
-      goAmdin () {
+      goAdmin () {
         window.open('/admin/')
         // this.$router.push('/admin')
       },

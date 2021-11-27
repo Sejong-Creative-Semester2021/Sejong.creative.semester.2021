@@ -27,11 +27,11 @@
                 </span>
               </b-card-text>
               <b-card-text class="problem-text">
-                <b-progress height="4px" :value="bar_value" show-progress class="mb-4 mt-3"></b-progress>
+                <b-progress height="8px" :value="getProgress(problem.start_time, problem.end_time)" class="mb-3"></b-progress>
                 <div class="row ml-1 mr-1 mb-1">
                   <span class="content">{{problem.start_time | localtime('YYYY-M-D')}}</span>
                   <div class="spacer"></div>
-                  <span>D-{{getDuration(problem.start_time, problem.end_time)}}</span>
+                  <span>{{getDuration(problem.start_time, problem.end_time)}}</span>
                 </div>
               </b-card-text>
               <!--<b-button variant="dark" size="sm" style="border-radius: 1rem; " @click="goProblem(problem._id)">JOIN</b-button>-->
@@ -61,8 +61,10 @@
     data () {
       return {
         // tagList: [],
-        bar_value: '',
+        bar_value: '70',
         imgpath: '',
+        // currentTime: '',
+        day: null,
         problemTableColumns: [
           {
             title: '#',
@@ -191,7 +193,60 @@
       },
       getDuration (startTime, endTime) {
         // console.log(time.duration(startTime, endTime))
-        return time.duration(startTime, endTime)
+        // this.currentTime = new Date()
+        var year = endTime.slice(0, 4)
+        var month = endTime.slice(5, 7)
+        var day = endTime.slice(8, 10)
+        // console.log('endTime', endTime)
+        // console.log(year, month, day)
+        var Dday = new Date(year, month - 1, day)
+        var nowTime = Date.now()
+        var gap = nowTime - Dday.getTime()
+        // console.log('gap1', gap)
+        // console.log('nowTime', nowTime)
+        // console.log('Dday', Dday)
+        var result = Math.floor(gap / (1000 * 60 * 60 * 24)) * -1
+        // console.log('result', result)
+        if (result === 0) {
+          result = 'D-day'
+        }
+        if (result > 0) { // 평상시 상황
+          result = 'D-' + result
+        }
+        if (result < 0) { // dday 지난 경우
+          result = '종료'
+        }
+        // 지금 시간이 대회 시작 날짜보다 이전이면...
+        var startDay = new Date(startTime.slice(0, 4), startTime.slice(5, 7) - 1, startTime.slice(8, 10))
+        console.log('nowTime', nowTime)
+        console.log('startDay.getTime()', startDay.getTime())
+        gap = nowTime - startDay.getTime()
+        var result2 = Math.floor(gap / (1000 * 60 * 60 * 24)) * -1
+        console.log('gap2', gap)
+        if (gap < 0) {
+          result = 'OPEN D-' + result2
+        }
+        return result
+      },
+      getProgress (startTime, endTime) {
+        // totalDay 계산
+        var startDay = new Date(startTime.slice(0, 4), startTime.slice(5, 7) - 1, startTime.slice(8, 10))
+        var endDay = new Date(endTime.slice(0, 4), endTime.slice(5, 7) - 1, endTime.slice(8, 10))
+        var gap1 = startDay.getTime() - endDay.getTime()
+        var totalDay = Math.floor(gap1 / (1000 * 60 * 60 * 24)) * -1
+        // result 계산
+        var year = endTime.slice(0, 4)
+        var month = endTime.slice(5, 7)
+        var day = endTime.slice(8, 10)
+        var Dday = new Date(year, month - 1, day)
+        var nowTime = Date.now()
+        var gap2 = nowTime - Dday.getTime()
+        var result = Math.floor(gap2 / (1000 * 60 * 60 * 24)) * -1
+        console.log('totalDay', totalDay)
+        console.log('result', result)
+        var barValue = ((totalDay - result) / totalDay) * 100
+        console.log('barValue', barValue)
+        return barValue
       },
       filterByDifficulty (difficulty) {
         this.query.difficulty = difficulty
