@@ -401,6 +401,7 @@
     }
 
     .problem-content{
+      cursor: pointer;
       margin-top: -20px;
       margin-left: 10px;
     }

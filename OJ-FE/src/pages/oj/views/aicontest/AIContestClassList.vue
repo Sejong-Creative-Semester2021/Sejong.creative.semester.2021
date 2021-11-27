@@ -59,7 +59,7 @@
                       shadow
                       class="mb-3 problem-card">
             <b-card-body class="problem-content">
-              <b-card-title class="problem-title" @click="goProblem(problem._id)">{{problem.title}}</b-card-title>
+              <b-card-title class="problem-title">{{problem.title}}</b-card-title>
               <b-card-sub-title class="problem-subtitle">{{problem.created_by.username}}</b-card-sub-title>
               <b-card-text class="problem-text">
                 <p class="content" style="font-size: 16px; float: right; margin-top: -45px;">{{problem.start_time | localtime('YYYY-M-D')}} - {{problem.end_time | localtime('YYYY-M-D')}}</p>
@@ -381,9 +381,9 @@
       margin-left: 10px;
     }
     .problem-title{
-      font-size: 23x;
+      font-size: 23px;
       font-weight: 800;
-      color: #3399ff;
+      color: #2d2762;
     }
     .problem-subtitle{
       font-size: 16px;

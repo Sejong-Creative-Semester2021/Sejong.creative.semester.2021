@@ -2,26 +2,26 @@
   <Row type="flex" :gutter="18" align="center">
     <img src="../../../../../static/img/contest-bg.png" style="width: 100%; height: 400px; position: relative;">
     <!--<img :src='`../../../../../static/img/${problem.id}.jpg`' style="width: 100%; height: 500px; position: relative;">-->
-    <div style="padding:40px 0px 40px 0px; position: absolute; margin-top: 100px; left: 10%;">
+    <div style="padding:40px 0px 40px 0px; position: absolute; margin-top: 100px; left: 10%; width: 100%">
       <!--<img :src='`../../../../../static/img/${problem.id}.jpg`'>-->
       <div class="problem-title" slot="title" style="display: inline-block; font-size: 50px; color: white;">{{problem.title}}</div>
-      <!--<div style="display:flex;">
-        <b-button variant="primary" @click="join" :disabled="alreadyJoined == true" style="width: 80px;font-weight: bold; font-size: 20px;">{{joinText}}</b-button>
-      </div>-->
+    </div>
+    <div style="position: absolute; display:inline-block; float: right; margin-top: 19%; margin-right: -50%;">
+      <b-button variant="primary" @click="join" :disabled="alreadyJoined == true || breforeStart === true" style="width: 180px; height: 60px; font-weight: bold; font-size: 25px; border-radius: 40px; margin-top: -220px;">{{joinText}}</b-button>
     </div>
     <Col id="problem-main" :span=17>
       <!--problem main-->
       <Panel :padding="40" shadow>
         <div style="padding:40px 0px 40px 0px; margin-top: -120px;">
           <!--<div class="problem-title" slot="title" style="display:inline-block">{{problem.title}}</div>-->
-          <div style="display:inline-block; float: right; margin-top: 30px; margin-bottom: 20px;">
+          <!--<div style="display:inline-block; float: right; margin-top: 30px; margin-bottom: 20px;">
             <b-button variant="primary" @click="join" :disabled="alreadyJoined == true || breforeStart === true" style="width: 180px; height: 60px; font-weight: bold; font-size: 25px; border-radius: 40px; margin-top: -220px;">{{joinText}}</b-button>
-          </div>
+          </div>-->
         </div>
         <div id="problem-content">
           <b-tabs content-class="mt-3 tabs" align="center" pills card fill>
             <b-tab class="tab" title="대회안내" id="contest-content" active>
-              <p class="subtitle" style="font-size: 25px">{{'대회 주요 일정'}}</p>
+              <!--<p class="subtitle" style="font-size: 25px">{{'대회 주요 일정'}}</p>-->
               <b-tabs content-class="mt-3" fill>
                 <b-tab class="tab" title="개요"><p class="markdown-body content" v-html=problem.contest_description></p></b-tab>
                 <b-tab class="tab" title="규칙"><p class="markdown-body content" v-html=problem.rule_description></p></b-tab>
@@ -64,6 +64,7 @@
                   :data="{id: problem._id}"
                   :show-file-list="true"
                   :on-success="uploadFileSucceeded"
+                  accept=".csv"
                   style="margin: 3px">
                   <div style="padding: 30px 0">
                     <Icon type="ios-cloud-upload" size="52" style="color: #3399ff; margin: 3px"></Icon>
@@ -278,22 +279,14 @@
         this.$Loading.start()
         this.$router.push(this.route)
         this.contestID = this.$route.params.contestID
-        console.log('this.$route', this.$route)
         this.problemID = this.$route.params.problemID
-        console.log('this.$route.params', this.$route.params)
         this.username = this.$route.params.username
         let func = 'getAIProblem'
         console.log(func)
         api[func](this.problemID, this.contestID).then(res => {
           this.$Loading.finish()
           let problem = res.data.data
-          console.log(problem)
-          console.log(problem.id)
-          console.log('problem rank', problem.rank)
-          console.log('problem join_contest', problem.join_contest)
           // this.join_contest = problem.join_contest
-          console.log('this.join_contest', this.join_contest)
-          console.log('eval_type', this.problem.eval_type)
           // 오름차순인지 내림차순인지 판단
           // 오름차순을 디폴트로 - 평가 방식이 내림차순인거일때 내림차순으로 변경
           // 0 - 오름차순, 1 - 내림차순
@@ -304,9 +297,7 @@
             console.log('this.showRanks[v][score]', this.showRanks[v]['score'])
           }
           // this.showRank.append(problem.rank)
-          console.log('show Ranks', this.showRanks)
           this.changeDomTitle({title: problem.title})
-          console.log('10')
           // api.submissionExists(problem.id).then(res => {
           //   this.submissionExists = res.data.data
           // })
@@ -470,6 +461,9 @@
           api.updateProfileJoinContest(this.profile).then(res => {
             console.log('updateProfileJoinContest out')
           })
+        }).then(res => {
+          // 새로고침
+          this.$router.go()
         })
       },
       getDuration (startTime, endTime) {
@@ -744,10 +738,6 @@
     font-weight: 750;
   }
 
-  .card-title {
-    margin-left: 8px;
-  }
-
   .flex-container {
     #problem-main {
       flex: auto;
@@ -819,14 +809,9 @@
   }
 
   #contest-content{
-    text-align: center;
     font-weight: bold;
     .subtitle{
       margin-top: 50px;
-    }
-    p.content {
-      text-align: left;
-      margin-bottom: 50px;
     }
   }
 
@@ -835,10 +820,6 @@
     margin-bottom: 20px;
     .status {
       float: left;
-      span {
-        margin-right: 10px;
-        margin-left: 10px;
-      }
     }
     .captcha-container {
       display: inline-block;

@@ -2,7 +2,7 @@
   <v-app>
     <div id="header" class="nav-bar">
       <Menu theme="light" mode="horizontal" @on-select="handleRoute" :active-name="activeMenu" class="oj-menu">  
-        <div class="logo"><span>{{'OJ'}}</span></div>
+        <div class="logo"><span>{{'Seggle'}}</span></div>
         <div class="menulist">
           <Menu-item name="/" class='list'>
             {{$t('m.Home')}}
@@ -290,7 +290,7 @@
     background-color: white;
   
     li:hover {
-      color: white !important;
+      color: black !important;
       border-bottom-width: 0px !Important;
     }
     .ivu-menu-light.ivu-menu-horizontal .ivu-menu-item:hover {
@@ -324,7 +324,8 @@
     .logo {
       margin-left: 2%;
       margin-right: 2%;
-      font-size: 20px;
+      font-size: 23px;
+      font-weight: bold;
       float: left;
       line-height: 60px;
       color: #ffffff;

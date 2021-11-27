@@ -8,32 +8,33 @@
         <div v-for="problem in problemList" :key="problem.title" style="margin-bottom: 10px">
           <b-card :img-src='`../../../../../static/img/${problem.id}.jpg`'
                   img-top
-                  style="min-width: 10rem; max-width: 20rem; border-radius: 20px; box-shadow: 0 4px 5px rgba(0, 0, 0, 0.1);"
+                  style="min-width: 10rem; max-width: 20rem; border-radius: 20px;"
                   class="mb-3"
                   id="problem-card"
                   @click="goProblem(problem._id)">
             <b-card-body class="problem-content">
               <b-card-title class="problem-title" @click="goProblem(problem._id)">{{problem.title}}</b-card-title>
-              <b-card-sub-title class="problem-subtitle">{{problem.created_by.username}}</b-card-sub-title>
-              <b-card-text class="problem-tag">
-                <span v-for="tag in problem.tags" :key="tag.name">
-                  <Button @click="filterByTag(tag)"
-                          type="ghost"
-                          size="small"
-                          shape="circle"
-                          class="tag-btn"
-                          style="margin-top: 3px; font-size: 13px;">{{tag}}
-                  </Button>
-                </span>
-              </b-card-text>
-              <b-card-text class="problem-text">
-                <b-progress height="8px" :value="getProgress(problem.start_time, problem.end_time)" class="mb-3"></b-progress>
-                <div class="row ml-1 mr-1 mb-1">
-                  <span class="content">{{problem.start_time | localtime('YYYY-M-D')}}</span>
-                  <div class="spacer"></div>
-                  <span>{{getDuration(problem.start_time, problem.end_time)}}</span>
-                </div>
-              </b-card-text>
+              <!--<b-card-sub-title class="problem-subtitle">{{problem.created_by.username}}</b-card-sub-title>-->
+              <div class="problem-describe">
+                <b-card-text class="problem-text">
+                  <b-progress height="8px" :value="getProgress(problem.start_time, problem.end_time)" class="mb-3"></b-progress>
+                  <div class="row ml-1 mr-1 mb-1" style="font-size: 17px">
+                    <span class="content">{{problem.start_time | localtime('YYYY-M-D')}}</span>
+                    <div class="spacer"></div>
+                    <span>{{getDuration(problem.start_time, problem.end_time)}}</span>
+                  </div>
+                </b-card-text>  
+                <b-card-text class="problem-tag">
+                  <span v-for="tag in problem.tags" :key="tag.name">
+                    <Button type="ghost"
+                            size="small"
+                            shape="circle"
+                            class="tag-btn"
+                            style="margin-top: 3px; font-size: 15px;">{{tag}}
+                    </Button>
+                  </span>
+                </b-card-text>  
+              </div>
               <!--<b-button variant="dark" size="sm" style="border-radius: 1rem; " @click="goProblem(problem._id)">JOIN</b-button>-->
             </b-card-body>
           </b-card>
@@ -305,11 +306,16 @@
     display: flex;
   }
 
-  #problem-group{
-    padding: 20px;
+  .card-body {
+    padding: 20px 5px 0;
+  }
 
+  #problem-group{
+    .card {
+      border: 1px solid rgba(0, 0, 0, 0);
+    }
     img {
-      border-radius: 20px 20px 0 0;
+      border-radius: 20px 20px 20px 20px;
     }
     .problem-content{
       height: 200px;
@@ -318,20 +324,24 @@
     }
     .problem-title{
       margin-top: 10px;
-      font-size: 23px;
+      font-size: 21px;
       font-weight: bold;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
     }
     .problem-subtitle{
       font-size: 16px;
       margin-top: 10px;
     }
     .problem-text{
-      margin-bottom: 10px;
       font-weight: 600;
       color: #686868;
     }
-    .problem-tag{
-      margin-top:10px;
+    .problem-describe {
+      margin-bottom: -10px;
     }
   }
 
