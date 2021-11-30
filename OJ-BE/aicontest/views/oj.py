@@ -15,7 +15,7 @@ import os
 import json
 import csv
 # import pandas as pd
-# import numpy as np
+import numpy as np
 # import sklearn
 
 import logging
@@ -88,7 +88,8 @@ class ProblemAPI(APIView):
                 logger.info('problem_data={}'.format(problem_data))
                 return self.success(problem_data)
             except AIProblem.DoesNotExist:
-                return self.error("Problem does not exist")
+                # return self.error("Problem does not exist-aicontest-views-oj.py2")
+                return None
         logger.info('problem get continue')
         # limit = request.GET.get("limit")
         # if not limit:
@@ -219,98 +220,98 @@ class FileAPI(CSRFExemptAPIView, TestCaseZipProcessor):
         2,13
         3,346
         """
-        # y_true = np.array(np.loadtxt(os.path.join(settings.SOLUTION_DIR, csv.solution_id, "solution.csv"), delimiter=",", dtype=np.float32, skiprows=1, usecols = (1,)))
-        # y_pred = np.array(np.loadtxt(os.path.join(settings.PREDICT_DIR, predict_id, "predict.csv"), delimiter=",", dtype=np.float32, skiprows=1, usecols = (1,)))
-        # logger.info("y_true={}".format(str(y_true)))
-        # logger.info("y_pred={}".format(str(y_pred)))
+        y_true = np.array(np.loadtxt(os.path.join(settings.SOLUTION_DIR, csv.solution_id, "solution.csv"), delimiter=",", dtype=np.float32, skiprows=1, usecols = (1,)))
+        y_pred = np.array(np.loadtxt(os.path.join(settings.PREDICT_DIR, predict_id, "predict.csv"), delimiter=",", dtype=np.float32, skiprows=1, usecols = (1,)))
+        logger.info("y_true={}".format(str(y_true)))
+        logger.info("y_pred={}".format(str(y_pred)))
         
-        # eval_type = csv.eval_type
-        # logger.info("eval_type={}".format(eval_type))
+        eval_type = csv.eval_type
+        logger.info("eval_type={}".format(eval_type))
 
-        # if eval_type == 'mse':
-        #     logger.info("if mse in")
-        #     y_score = np.square(np.subtract(y_true, y_pred)).mean()
-        #     logger.info("y_score={}".format(str(y_score)))
+        if eval_type == 'mse':
+            logger.info("if mse in")
+            y_score = np.square(np.subtract(y_true, y_pred)).mean()
+            logger.info("y_score={}".format(str(y_score)))
 
-        # if eval_type == 'acc':
-        #     logger.info("if acc in")
-        #     y_score = (y_true == y_pred).mean()
-        #     logger.info("y_score={}".format(str(y_score)))
+        if eval_type == 'acc':
+            logger.info("if acc in")
+            y_score = (y_true == y_pred).mean()
+            logger.info("y_score={}".format(str(y_score)))
 
-        # if eval_type == 'rmse':
-        #     logger.info("if rmse in")
-        #     y_score = np.sqrt(np.mean(np.subtract(y_true, y_pred)**2))
+        if eval_type == 'rmse':
+            logger.info("if rmse in")
+            y_score = np.sqrt(np.mean(np.subtract(y_true, y_pred)**2))
         
-        # if eval_type == 'auc':
-        #     logger.info("if auc in")
+        if eval_type == 'auc':
+            logger.info("if auc in")
 
-        # if eval_type == 'mean_f_score':
-        #     logger.info("if mean_f_score in")
-        #     # accuracy = np.mean(np.equal(y_true, y_pred))
-        #     right = np.sum(y_true * y_pred == 1)
-        #     precision = right / np.sum(y_pred)
-        #     recall = right / np.sum(y_true)
-        #     f1 = 2 * precision*recall/(precision+recall)
-        #     y_score = f1
-        #     logger.info("if mean_f_score out")
+        if eval_type == 'mean_f_score':
+            logger.info("if mean_f_score in")
+            # accuracy = np.mean(np.equal(y_true, y_pred))
+            right = np.sum(y_true * y_pred == 1)
+            precision = right / np.sum(y_pred)
+            recall = right / np.sum(y_true)
+            f1 = 2 * precision*recall/(precision+recall)
+            y_score = f1
+            logger.info("if mean_f_score out")
 
-        # if eval_type == 'mae':
-        #     logger.info("if mae in")
-        #     y_score = np.mean(np.abs(np.subtract(y_true, y_pred)))
+        if eval_type == 'mae':
+            logger.info("if mae in")
+            y_score = np.mean(np.abs(np.subtract(y_true, y_pred)))
 
-        # if eval_type == 'f_beta':
-        #     logger.info("if f_beta in")
+        if eval_type == 'f_beta':
+            logger.info("if f_beta in")
 
-        # if eval_type == 'logloss':
-        #     logger.info("if logloss in")
-        #     def my_logloss(answer_array, proba_array):
-        #         # 출처 https://velog.io/@skyepodium/logloss-%EC%95%8C%EC%95%84%EB%B3%B4%EA%B8%B0
-        #         # 0이면 무한대 값이 나오기 때문에 0에 가까운 값으로 치환해줍니다.
-        #         MIN_VALUE = 1e-15
-        #         # array의 크기를 가져옵니다.
-        #         size = answer_array.shape[0]
-        #         # 반복문을 사용해서 logloss의 합을 계산합니다.
-        #         logloss_sum = 0
-        #         # zip함수로 묶으면 함께 순회할 수 있습니다.
-        #         for answer, arr in zip(answer_array, proba_array):
-        #             proba = arr[answer - 1]
-        #             # 0이면 무한대 값이 나오기 때문에 0에 가까운 값으로 치환해줍니다.
-        #             if proba <= MIN_VALUE:
-        #                 proba = MIN_VALUE
-        #             # 음의 로그함수에 넣어서 logloss 계산
-        #             logloss_sum += -np.log(proba)
-        #         # logloss의 평균 계산
-        #         result = logloss_sum / size
-        #         # 반환
-        #         return result
-        #     y_score = my_logloss(y_true, y_pred)
+        if eval_type == 'logloss':
+            logger.info("if logloss in")
+            def my_logloss(answer_array, proba_array):
+                # 출처 https://velog.io/@skyepodium/logloss-%EC%95%8C%EC%95%84%EB%B3%B4%EA%B8%B0
+                # 0이면 무한대 값이 나오기 때문에 0에 가까운 값으로 치환해줍니다.
+                MIN_VALUE = 1e-15
+                # array의 크기를 가져옵니다.
+                size = answer_array.shape[0]
+                # 반복문을 사용해서 logloss의 합을 계산합니다.
+                logloss_sum = 0
+                # zip함수로 묶으면 함께 순회할 수 있습니다.
+                for answer, arr in zip(answer_array, proba_array):
+                    proba = arr[answer - 1]
+                    # 0이면 무한대 값이 나오기 때문에 0에 가까운 값으로 치환해줍니다.
+                    if proba <= MIN_VALUE:
+                        proba = MIN_VALUE
+                    # 음의 로그함수에 넣어서 logloss 계산
+                    logloss_sum += -np.log(proba)
+                # logloss의 평균 계산
+                result = logloss_sum / size
+                # 반환
+                return result
+            y_score = my_logloss(y_true, y_pred)
 
-        # if eval_type == 'rmsle':
-        #     logger.info("if rmsle in")
-        #     def rmsle(predicted_values, actual_values):
-        #         # 예측값과 실제 값에 1을 더하고 로그를 씌워준다.
-        #         log_predict = np.log(predicted_values + 1)
-        #         log_actual = np.log(actual_values + 1)
-        #         # 위에서 계산한 예측값에서 실제값을 빼주고 제곱을 해준다.
-        #         difference = log_predict - log_actual
-        #         # difference = (log_predict - log_actual) ** 2
-        #         difference = np.square(difference)
-        #         # 평균을 낸다.
-        #         mean_difference = difference.mean()
-        #         # 다시 루트를 씌운다.
-        #         score = np.sqrt(mean_difference)
-        #         return score
-        #     y_score = rmsle(y_true, y_pred)
+        if eval_type == 'rmsle':
+            logger.info("if rmsle in")
+            def rmsle(predicted_values, actual_values):
+                # 예측값과 실제 값에 1을 더하고 로그를 씌워준다.
+                log_predict = np.log(predicted_values + 1)
+                log_actual = np.log(actual_values + 1)
+                # 위에서 계산한 예측값에서 실제값을 빼주고 제곱을 해준다.
+                difference = log_predict - log_actual
+                # difference = (log_predict - log_actual) ** 2
+                difference = np.square(difference)
+                # 평균을 낸다.
+                mean_difference = difference.mean()
+                # 다시 루트를 씌운다.
+                score = np.sqrt(mean_difference)
+                return score
+            y_score = rmsle(y_true, y_pred)
 
-        # if eval_type == 'map@k':
-        #     logger.info("if map@k in")
+        if eval_type == 'map@k':
+            logger.info("if map@k in")
                 
-        # os.remove(tmp_file)
+        os.remove(tmp_file)
 
-        # y_score = float(y_score)
+        y_score = float(y_score)
         
-        # logger.info("float change - y_score={}".format(y_score))
-        y_score = 55
+        logger.info("float change - y_score={}".format(y_score))
+        # y_score = 55
         return self.success({"predictId": predict_id, "solutionId": csv.solution_id, "info": info, "y_score": y_score})
 
 
@@ -458,7 +459,7 @@ class AIRankAPI(APIView):
             logger.info('problem={}'.format(problem))
             # ensure_created_by(problem, request.user)
         except AIProblem.DoesNotExist:
-            return self.error("Problem does not exist")
+            return self.error("Problem does not exist-aicontest-views-oj.py")
 
         # _id = data["_id"] # Display ID
         # if not _id:

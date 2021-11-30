@@ -7,7 +7,7 @@
       <div class="problem-title" slot="title" style="display: inline-block; font-size: 50px; color: white;">{{problem.title}}</div>
     </div>
     <div style="position: absolute; display:inline-block; float: right; margin-top: 19%; margin-right: -50%;">
-      <b-button variant="primary" @click="join" :disabled="alreadyJoined == true || breforeStart === true" style="width: 180px; height: 60px; font-weight: bold; font-size: 25px; border-radius: 40px; margin-top: -220px;">{{joinText}}</b-button>
+      <b-button variant="primary" @click="join" :disabled="alreadyJoined == true || beforeStart === true" style="width: 180px; height: 60px; font-weight: bold; font-size: 25px; border-radius: 40px; margin-top: -220px;">{{joinText}}</b-button>
     </div>
     <Col id="problem-main" :span=17>
       <!--problem main-->
@@ -479,6 +479,7 @@
         console.log('gap2', gap)
         if (gap < 0) {
           this.beforeStart = true
+          this.joinText = '참여 불가'
         }
       },
       submit () {

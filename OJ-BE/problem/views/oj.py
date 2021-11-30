@@ -56,7 +56,7 @@ class ProblemAPI(APIView):
                 self._add_problem_status(request, problem_data)
                 return self.success(problem_data)
             except Problem.DoesNotExist:
-                return self.error("Problem does not exist")
+                return self.error("Problem does not exist-problem-views-oj.py-2")
 
         limit = request.GET.get("limit")
         if not limit:
@@ -103,7 +103,7 @@ class ContestProblemAPI(APIView):
                                                                            contest=self.contest,
                                                                            visible=True)
             except Problem.DoesNotExist:
-                return self.error("Problem does not exist.")
+                return self.error("Problem does not exist-problem-views-oj.py-1")
             if self.contest.problem_details_permission(request.user):
                 problem_data = ProblemSerializer(problem).data
                 self._add_problem_status(request, [problem_data, ])
