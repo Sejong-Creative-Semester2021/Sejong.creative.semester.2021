@@ -26,17 +26,18 @@
                             :key="problem.title"
                             :img-src='`../../../../../static/img/${problem.id}.jpg`'
                             img-left
-                            img-height="150"
-                            img-width="300"
+                            img-height="120"
+                            img-width="270"
                             shadow
-                            class="mb-2 problem-card">
+                            class="mb-3 problem-card">
                   <b-card-body class="problem-content">
                     <b-card-title class="problem-title" @click="goGeneralProblem(problem._id)">{{problem.title}}</b-card-title>
                     <b-card-sub-title class="problem-subtitle">{{problem.created_by.username}}</b-card-sub-title>
                     <b-card-text class="problem-text">
                       <p class="content">{{problem.start_time | localtime('YYYY-M-D HH:mm')}} - {{problem.end_time | localtime('YYYY-M-D HH:mm')}}</p> 
                     </b-card-text>
-                    <b-button pill variant="outline-primary" @click="goGeneralProblem(problem._id)" style="float: right;"><b>더보기</b></b-button>
+                      <!--<span style="font-size: 23px; float: right; margin-top:-8px; font-weight:bold;">D-{{getDuration(problem.start_time, problem.end_time)}}</span>-->
+                    <!--<b-button pill variant="outline-primary" @click="goProblem(problem._id)" size="sm" style="float: right; margin-top: -60px;"><b>더보기</b></b-button>-->
                   </b-card-body>
                 </b-card>
               </div>
@@ -48,19 +49,18 @@
                             :key="problem.title"
                             :img-src='`../../../../../static/img/${problem.id}.jpg`'
                             img-left
-                            img-height="200"
-                            img-width="400"
+                            img-height="120"
+                            img-width="270"
                             shadow
-                            class="mb-2 problem-card">
+                            class="mb-3 problem-card">
                   <b-card-body class="problem-content">
                     <b-card-title class="problem-title" @click="goClassProblem(problem._id)">{{problem.title}}</b-card-title>
                     <b-card-sub-title class="problem-subtitle">{{problem.created_by.username}}</b-card-sub-title>
                     <b-card-text class="problem-text">
                       <p class="content">{{problem.start_time | localtime('YYYY-M-D HH:mm')}} - {{problem.end_time | localtime('YYYY-M-D HH:mm')}}</p>
                     </b-card-text>
-                    <!--<b-button pill variant="outline-primary" @click="isModalViewed = true"><b>입장하기</b></b-button>
-                    <ModalView v-if="isModalViewed" v-bind:problemID="problem._id" v-bind:problemPassword="problem.password" @close="isModalViewed = false"></ModalView>-->
-                    <b-button pill variant="outline-primary" @click="goClassProblem(problem._id)"><b>입장하기</b></b-button>
+                      <!--<span style="font-size: 23px; float: right; margin-top:-8px; font-weight:bold;">D-{{getDuration(problem.start_time, problem.end_time)}}</span>-->
+                    <!--<b-button pill variant="outline-primary" @click="goProblem(problem._id)" size="sm" style="float: right; margin-top: -60px;"><b>더보기</b></b-button>-->
                   </b-card-body>
                 </b-card>
               </div>
@@ -561,23 +561,22 @@
   }
 
   #problem-group{
-    padding: 20px;
-
     .problem-card{
+      cursor: pointer;
       border-radius: 20px 20px 20px 20px;
-      margin-bottom: 10px;
+      max-height: 120px;
     }
     img {
       border-radius: 20px 20px 20px 20px;
     }
-
     .problem-content{
-      margin-bottom: -25px;
+      margin-top: -20px;
+      margin-left: 10px;
     }
     .problem-title{
-      font-size: 22px;
-      font-weight: bold;
-      color: #3399ff;
+      font-size: 23px;
+      font-weight: 800;
+      color: #2d2762;
     }
     .problem-subtitle{
       font-size: 16px;

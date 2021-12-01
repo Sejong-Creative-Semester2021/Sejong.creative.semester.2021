@@ -1,9 +1,8 @@
 <template>
   <Row type="flex" :gutter="18" align="center">
     <Col :span=14>
-    <Panel shadow>
-      <div slot="title" style="font-size: 35px; font-weight: 800;"><b>{{'진행중인 대회'}}</b></div>
-      <p style="margin-left: 27px; color: gray; font-size: 20px; font-weight: bold;"> 지금 바로 대회에 참여해보세요.</p>
+      <div style="font-size: 35px; font-weight: 800;"><b>{{'진행중인 대회'}}</b></div>
+      <p style="color: gray; font-size: 20px; font-weight: bold;"> 지금 바로 대회에 참여해보세요.</p>
       <b-card-group deck id="problem-group">
         <div v-for="problem in problemList" :key="problem.title" style="margin-bottom: 10px">
           <b-card :img-src='`../../../../../static/img/${problem.id}.jpg`'
@@ -40,7 +39,7 @@
           </b-card>
         </div>
       </b-card-group>
-    </Panel>
+
     </Col>
   </Row>
 </template>
@@ -315,6 +314,7 @@
       border: 1px solid rgba(0, 0, 0, 0);
     }
     img {
+      cursor: pointer;
       border-radius: 20px 20px 20px 20px;
     }
     .problem-content{
@@ -323,6 +323,7 @@
       margin-bottom: -25px;
     }
     .problem-title{
+      cursor: pointer;
       margin-top: 10px;
       font-size: 21px;
       font-weight: bold;

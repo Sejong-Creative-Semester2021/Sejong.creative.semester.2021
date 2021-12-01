@@ -261,12 +261,12 @@
     float: left;
   }
   .el-button--primary {
-    background-color: #990000 !important;
-    border-color: #990000 !important;
+    background-color: #3021b8 !important;
+    border-color: #3021b8 !important;
     font-weight: bold;
   }
   .el-button--primary:hover {
-    background-color: rgba(153,0,0,0.8) !important;
-    border-color: rgba(153,0,0,0.8) !important;
+    background-color: #3021b8 !important;
+    border-color: #3021b8!important;
   }
 </style>

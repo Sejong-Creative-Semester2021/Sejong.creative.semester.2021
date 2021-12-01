@@ -849,7 +849,7 @@ class DataFileAPI(CSRFExemptAPIView, FileProcessor):
 
         with open(tmp_file, "wb") as f:
             for chunk in file:
-                logger.info("chunk={}".format(chunk))
+                # logger.info("chunk={}".format(chunk))
                 f.write(chunk)
 
         info, data_id = self.process_data(tmp_file)

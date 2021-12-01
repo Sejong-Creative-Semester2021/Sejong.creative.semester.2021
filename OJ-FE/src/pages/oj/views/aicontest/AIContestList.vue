@@ -16,7 +16,7 @@
       </div>
       <!-- 추가 부분 -->
       <b-tabs content-class="block mt-3 tabs" pills card fill >
-        <b-tab title="일반용" id="contest-content">
+        <b-tab title="일반용" id="contest-content" href="/">
         <div id="problem-group">
           <b-card v-for="problem in problemList"
                       :key="problem.title"
@@ -27,13 +27,21 @@
                       shadow
                       class="mb-3 problem-card">
             <b-card-body class="problem-content">
-              <b-card-title class="problem-title">{{problem.title}}</b-card-title>
+              <b-card-title class="problem-title" @click="goProblem(problem._id)">{{problem.title}}</b-card-title>
               <b-card-sub-title class="problem-subtitle">{{problem.created_by.username}}</b-card-sub-title>
               <b-card-text class="problem-text">
                 <p class="content" style="font-size: 16px; float: right; margin-top: -40px;">{{problem.start_time | localtime('YYYY-M-D')}} - {{problem.end_time | localtime('YYYY-M-D')}}</p> 
+                <span v-for="tag in problem.tags" :key="tag.name">
+                  <Button @click="filterByTag(tag)"
+                          type="ghost"
+                          size="small"
+                          shape="circle"
+                          class="tag-btn"
+                          style="margin-top: 3px;">{{tag}}
+                  </Button>
+                </span>
+                <span style="font-size: 23px; float: right; margin-top:-8px; font-weight:bold;">{{getDuration(problem.start_time, problem.end_time)}}</span>
               </b-card-text>
-              <b-button pill variant="outline-primary" @click="goProblem(problem._id)" size="sm" style="float: right; margin-top: -30px; font-size: 1.1rem;"><b>입장하기</b></b-button>
-                <!--<span style="font-size: 23px; float: right; margin-top:-8px; font-weight:bold;">D-{{getDuration(problem.start_time, problem.end_time)}}</span>-->
               <!--<b-button pill variant="outline-primary" @click="goProblem(problem._id)" size="sm" style="float: right; margin-top: -60px;"><b>더보기</b></b-button>-->
             </b-card-body>
           </b-card>
@@ -76,7 +84,6 @@
   import Pagination from '@oj/components/Pagination'
   import ModalView from '@oj/components/ModalView'
   import time from '@/utils/time'
-
   export default {
     name: 'AIContestList',
     mixins: [ProblemMixin],
@@ -200,11 +207,43 @@
         this.getProblemList()
         this.getClassProblemList()
       },
-      modalButtonClick (problemID, problemPwd) {
-        console.log('modal button')
-        this.isModalViewed = true
-        this.modalProblemID = problemID
-        this.modalProblemPwd = problemPwd
+      // 추가 부분
+      getDuration (startTime, endTime) {
+        // console.log(time.duration(startTime, endTime))
+        // this.currentTime = new Date()
+        var year = endTime.slice(0, 4)
+        var month = endTime.slice(5, 7)
+        var day = endTime.slice(8, 10)
+        // console.log('endTime', endTime)
+        // console.log(year, month, day)
+        var Dday = new Date(year, month - 1, day)
+        var nowTime = Date.now()
+        var gap = nowTime - Dday.getTime()
+        // console.log('gap1', gap)
+        // console.log('nowTime', nowTime)
+        // console.log('Dday', Dday)
+        var result = Math.floor(gap / (1000 * 60 * 60 * 24)) * -1
+        // console.log('result', result)
+        if (result === 0) {
+          result = 'D-day'
+        }
+        if (result > 0) { // 평상시 상황
+          result = 'D-' + result
+        }
+        if (result < 0) { // dday 지난 경우
+          result = '종료'
+        }
+        // 지금 시간이 대회 시작 날짜보다 이전이면...
+        var startDay = new Date(startTime.slice(0, 4), startTime.slice(5, 7) - 1, startTime.slice(8, 10))
+        console.log('nowTime', nowTime)
+        console.log('startDay.getTime()', startDay.getTime())
+        gap = nowTime - startDay.getTime()
+        var result2 = Math.floor(gap / (1000 * 60 * 60 * 24)) * -1
+        console.log('gap2', gap)
+        if (gap < 0) {
+          result = 'OPEN D-' + result2
+        }
+        return result
       },
       goProblem (problemID) {
         this.$router.push({name: 'aiproblem-general-details', params: {problemID: problemID}})
@@ -331,12 +370,10 @@
     margin-left: -10px;
     margin-bottom: -10px;
   }
-
   .tag-btn {
     margin-right: 5px;
     margin-bottom: 10px;
   }
-
   #pick-one {
     margin-top: 10px;
   }
@@ -344,14 +381,11 @@
   #card-deck{
     display: flex;
   }
-
   .tabs {
       font-weight: bold;
       font-size: 16px;
     }
-
   #problem-group{
-
     .problem-card{
       border-radius: 20px 20px 20px 20px;
       max-height: 120px;
@@ -359,21 +393,15 @@
     img {
       border-radius: 20px 20px 20px 20px;
     }
-
     .problem-content{
       cursor: pointer;
       margin-top: -20px;
       margin-left: 10px;
     }
-    // .problem-title{
-    //   font-size: 23px;
-    //   font-weight: 800;
-    //   color: #3399ff;
-    // }
     .problem-title{
       font-size: 23px;
       font-weight: 800;
-      color: #2d2762;
+      color: #3399ff;
     }
     .problem-subtitle{
       font-size: 16px;
@@ -383,7 +411,6 @@
       color: #686868;
     }
   }
-
   
   #list {
     margin-bottom: 10px;
