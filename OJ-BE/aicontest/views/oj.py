@@ -194,8 +194,10 @@ class FileAPI(CSRFExemptAPIView, TestCaseZipProcessor):
         else:
             return self.error("Upload failed")
         logger.info("file_name={}".format(file.name))
+        
         if not file.name.endswith('.csv'):
             raise APIError("CSV파일이 아닙니다. 파일 형식을 다시 확인해주세요")
+        
         logger.info("file={}".format(file))
         tmp_file = f"/tmp/{rand_str()}.csv"
         logger.info("tmp_file={}".format(tmp_file))
@@ -226,7 +228,8 @@ class FileAPI(CSRFExemptAPIView, TestCaseZipProcessor):
         y_pred = np.array(np.loadtxt(os.path.join(settings.PREDICT_DIR, predict_id, "predict.csv"), delimiter=",", dtype=np.float32, skiprows=1, usecols = (1,)))
         logger.info("y_true={}".format(str(y_true)))
         logger.info("y_pred={}".format(str(y_pred)))
-        if y_true.shape[0]!=y_pred.shape[0]:
+        
+        if y_true.shape[0] != y_pred.shape[0]:
             raise APIError("해당 문제의 csv파일이 아닙니다. 파일 내용을 다시 확인해주세요")
 
         eval_type = csv.eval_type

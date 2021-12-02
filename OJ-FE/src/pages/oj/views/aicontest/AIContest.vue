@@ -64,6 +64,7 @@
                   :data="{id: problem._id}"
                   :show-file-list="true"
                   :on-success="uploadFileSucceeded"
+                  ref="inputFile"
                   accept=".csv"
                   style="margin: 3px">
                   <div style="padding: 30px 0">
@@ -71,6 +72,7 @@
                     <p>한 개의 파일(csv)만 가능합니다.</p>
                   </div>
                 </Upload>
+                <ModalNotify v-if="isModalViewed" @close="modalclose"></ModalNotify>
                 <!-- <v-file-input truncate-length="15" @change="uploadFile"></v-file-input> -->
                 <!--<v-file-input
                   accept=".csv"
@@ -106,12 +108,7 @@
   import api from '@oj/api'
   import {pie, largePie} from './chartData'
   import utils from '@/utils/utils'
-  // import * as dfd from 'danfojs/danfojs/src'
-  // import {DataFrame} from 'danfojs/dist/core/frame'
-  // import {Series} from 'danfojs/dist/core/series'
-  // import './App.css'
-  // import * as dfd from 'danfojs'
-  // import * as dfd from 'danfojs/danfojs/src/index'
+  import ModalNotify from '@oj/components/ModalNotify'
 
   // 只显示这些状态的图形占用
   const filtedStatus = ['-1', '-2', '0', '1', '2', '3', '4', '8']
@@ -119,11 +116,13 @@
   export default {
     name: 'AIContest',
     components: {
-      CodeMirror
+      CodeMirror,
+      ModalNotify
     },
     mixins: [FormMixin],
     data () {
       return {
+        isModalViewed: false,
         // table 추가 부분
         headers: [
           // {
@@ -366,10 +365,16 @@
       // },
       // 추가 부분
       uploadFileSucceeded (response) {
-        console.log(response)
-        console.log(response.data)
+        // console.log(response)
+        // console.log('response.data', response.data)
         if (response.error) {
           this.$error(response.data)
+          console.log('this.$error(response.data)', this.$error(response.data))
+          // this.$refs.fileupload.value = null
+          // this.$refs.inputFile.value = null
+          // this.$refs.fileupload.reset()
+          // this.$router.go()
+          this.isModalViewed = true
           return
         }
         this.y_score = response.data.y_score
@@ -672,6 +677,10 @@
       },
       onCopyError (e) {
         this.$error('Failed to copy code')
+      },
+      modalclose () {
+        this.isModalViewed = false
+        this.$router.go()
       }
     },
     computed: {
