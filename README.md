@@ -37,13 +37,6 @@ export TARGET=http://172.18.0.1위에 가져온 gateway 값 (ex: http://172.21.0
 
 --------------------------------------------------------------------------------------------
 AIProblem 새로 만드는 방법
-- root 계정으로 로그인 (id:root, passwd: rootroot)
+- root 계정으로 로그인
 - UserHome으로 이동
 - Amin 버튼 클릭시 admin 페이지로 이동 -> 이곳에서 유저 관리 및 AI문제 생성
----------------------------------------
-dist폴더 - index.html, static 폴더, admin 폴더
-static 폴더
-- css 폴더
-- fonts 폴더
-- js 폴더
-- img 폴더
